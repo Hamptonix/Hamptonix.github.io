@@ -1,11 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hamptonix</title>
-</head>
-<body>
-    <h1>I love my Dad</h1>
-</body>
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Hamptonix's Calculator</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.creazilla.com/cliparts/3163674/calculator-clipart-xl.png">
+    <style>
+      p {
+        font-family: verdana;
+        font-size: 20px;
+        color: black;
+        align-content: center;
+      }
+      h1 {
+        font-family: verdana;
+        font-size: 40px;
+        color:black;
+      }
+      body {
+        background-color: white;
+      }
+      #para1 {
+        border: 2px solid black;
+        border-bottom-left-radius:10px;
+        border-bottom-right-radius:10px;
+        border-top-left-radius:10px;
+        border-top-right-radius:10px;
+        margin: 0px 50px 0px 50px;
+      }
+    </style>
+  </head>
+  <body><br><br>
+    <h1 align="center">Calculator</h1>
+    <p align="center" id="para1">&nbsp;</p><br>
+    <div align="center">
+      <button onclick="add1()">1</button>
+      <button onclick="add2()">2</button>
+      <button onclick="add3()">3</button>&nbsp;&nbsp;&nbsp;&nbsp;
+      <button onclick="setOperator('+')">+</button>
+      <button onclick="setOperator('-')">-</button><br>
+    </div>
+    <div align="center">
+      <button onclick="add4()">4</button>
+      <button onclick="add5()">5</button>
+      <button onclick="add6()">6</button>&nbsp;&nbsp;&nbsp;&nbsp;
+      <button onclick="setOperator('*')">x</button>
+      <button onclick="setOperator('/')">/</button><br>
+    </div>
+    <div align="center">
+      <button onclick="add7()">7</button>
+      <button onclick="add8()">8</button>
+      <button onclick="add9()">9</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+    </div>
+    <div align="center">
+      <button onclick="add0()">0</button>
+    <button onclick="reset()">Reset</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button onclick="equal()">=</button><br>
+    <p style="font-size:15px;">made by hamptonix</p>
+    </div>
+    
+   
+    
+   
+    <script>
+      const amount = document.querySelector("#para1");
+      let currentInput = "";
+      let savedInput = "";
+      let operator = "";
+
+      function reset() {
+        amount.innerHTML = "&nbsp;";
+        currentInput = "";
+        savedInput = "";
+        operator = "";
+      }
+
+      function add1() { currentInput += "1"; updateDisplay(); }
+      function add2() { currentInput += "2"; updateDisplay(); }
+      function add3() { currentInput += "3"; updateDisplay(); }
+      function add4() { currentInput += "4"; updateDisplay(); }
+      function add5() { currentInput += "5"; updateDisplay(); }
+      function add6() { currentInput += "6"; updateDisplay(); }
+      function add7() { currentInput += "7"; updateDisplay(); }
+      function add8() { currentInput += "8"; updateDisplay(); }
+      function add9() { currentInput += "9"; updateDisplay(); }
+      function add0() { currentInput += "0"; updateDisplay(); }
+
+      function updateDisplay() {
+        amount.innerHTML = currentInput;
+      }
+
+      function setOperator(op) {
+        if (savedInput === "") {
+          savedInput = currentInput;
+        } else {
+          savedInput = evaluate(savedInput, currentInput, operator);
+        }
+        operator = op;
+        currentInput = "";
+      }
+
+      function equal() {
+        if (savedInput !== "") {
+          let result = evaluate(savedInput, currentInput, operator);
+          amount.innerHTML = result;
+          currentInput = result; 
+          savedInput = "";
+          operator = "";
+        }
+      }
+
+      function evaluate(a, b, op) {
+        a = parseFloat(a);
+        b = parseFloat(b);
+        if (op === "+") return a + b;
+        if (op === "-") return a - b;
+        if (op === "*") return a * b;
+        if (op === "/") return a / b;
+        return b; 
+      }
+    </script>
+  </body>
 </html>
