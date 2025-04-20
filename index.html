@@ -1,121 +1,170 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Hamptonix's Calculator</title>
-    <link rel="icon" type="image/x-icon" href="https://cdn.creazilla.com/cliparts/3163674/calculator-clipart-xl.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elis Website</title>
     <style>
-      p {
-        font-family: verdana;
-        font-size: 20px;
-        color: black;
-        align-content: center;
+      /* Reset some default styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      h1 {
-        font-family: verdana;
-        font-size: 40px;
-        color:black;
-      }
+
+      /* Body styles */
       body {
-        background-color: white;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
       }
-      #para1 {
-        border: 2px solid black;
-        border-bottom-left-radius:10px;
-        border-bottom-right-radius:10px;
-        border-top-left-radius:10px;
-        border-top-right-radius:10px;
-        margin: 0px 50px 0px 50px;
+
+      /* Header */
+      header {
+        background-color: #6c63ff;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
       }
+
+      header:hover {
+        background-color: #5a50e6;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      /* Main content */
+      main {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .card {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .card h2 {
+        color: #333;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+
+      .card p {
+        font-size: 1rem;
+        color: #777;
+      }
+
+      /* Button style */
+      button {
+        background-color: #6c63ff;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      button:hover {
+        background-color: #5a50e6;
+        transform: scale(1.05);
+      }
+
+      button:focus {
+        outline: none;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 0.9rem;
+        color: #aaa;
+      }
+
+      footer a {
+        text-decoration: none;
+        color: #6c63ff;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Responsive styling */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        .card {
+          width: 90%;
+        }
+      }
+
     </style>
   </head>
-  <body><br><br>
-    <h1 align="center">Calculator</h1>
-    <p align="center" id="para1">&nbsp;</p><br>
-    <div align="center">
-      <button onclick="add1()">1</button>
-      <button onclick="add2()">2</button>
-      <button onclick="add3()">3</button>&nbsp;&nbsp;&nbsp;&nbsp;
-      <button onclick="setOperator('+')">+</button>
-      <button onclick="setOperator('-')">-</button><br>
-    </div>
-    <div align="center">
-      <button onclick="add4()">4</button>
-      <button onclick="add5()">5</button>
-      <button onclick="add6()">6</button>&nbsp;&nbsp;&nbsp;&nbsp;
-      <button onclick="setOperator('*')">x</button>
-      <button onclick="setOperator('/')">/</button><br>
-    </div>
-    <div align="center">
-      <button onclick="add7()">7</button>
-      <button onclick="add8()">8</button>
-      <button onclick="add9()">9</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
-    </div>
-    <div align="center">
-      <button onclick="add0()">0</button>
-    <button onclick="reset()">Reset</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button onclick="equal()">=</button><br>
-    <p style="font-size:15px;">made by hamptonix</p>
-    </div>
-    
-   
-    
-   
+  <body>
+    <header>
+      <h1>Welcome to Elis Website</h1>
+      <p>its my website</p>
+    </header>
+
+    <main>
+      <div class="card">
+        <h2 id="cat">Please Press The Button</h2>
+        <button id="thebutton" onclick="nobert()">Press Me!</button>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2025 Elis Website | <a href="#">Privacy Policy</a> | <a href="#">Contact</a></p>
+    </footer>
+
     <script>
-      const amount = document.querySelector("#para1");
-      let currentInput = "";
-      let savedInput = "";
-      let operator = "";
+      async function nobert() {
+        document.getElementById("cat").innerHTML = "Good Boy";
+        document.getElementById("thebutton").innerHTML = ":)";
+       
+        // Wait for 3 seconds before resetting
+        await wait(3000);
+
+        // Reset the content after the wait
+        reset();
+      }
 
       function reset() {
-        amount.innerHTML = "&nbsp;";
-        currentInput = "";
-        savedInput = "";
-        operator = "";
+        document.getElementById("cat").innerHTML = "Please Press The Button";
+        document.getElementById("thebutton").innerHTML = "Press Me!";
       }
 
-      function add1() { currentInput += "1"; updateDisplay(); }
-      function add2() { currentInput += "2"; updateDisplay(); }
-      function add3() { currentInput += "3"; updateDisplay(); }
-      function add4() { currentInput += "4"; updateDisplay(); }
-      function add5() { currentInput += "5"; updateDisplay(); }
-      function add6() { currentInput += "6"; updateDisplay(); }
-      function add7() { currentInput += "7"; updateDisplay(); }
-      function add8() { currentInput += "8"; updateDisplay(); }
-      function add9() { currentInput += "9"; updateDisplay(); }
-      function add0() { currentInput += "0"; updateDisplay(); }
-
-      function updateDisplay() {
-        amount.innerHTML = currentInput;
-      }
-
-      function setOperator(op) {
-        if (savedInput === "") {
-          savedInput = currentInput;
-        } else {
-          savedInput = evaluate(savedInput, currentInput, operator);
-        }
-        operator = op;
-        currentInput = "";
-      }
-
-      function equal() {
-        if (savedInput !== "") {
-          let result = evaluate(savedInput, currentInput, operator);
-          amount.innerHTML = result;
-          currentInput = result; 
-          savedInput = "";
-          operator = "";
-        }
-      }
-
-      function evaluate(a, b, op) {
-        a = parseFloat(a);
-        b = parseFloat(b);
-        if (op === "+") return a + b;
-        if (op === "-") return a - b;
-        if (op === "*") return a * b;
-        if (op === "/") return a / b;
-        return b; 
+      function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
       }
     </script>
   </body>
