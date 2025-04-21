@@ -222,6 +222,24 @@
           flex-direction: column;
           align-items: center;
         }
+        
+        .social-icons {
+          margin-top: 15px;
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .social-icons img {
+          width: 36px;
+          height: 36px;
+          transition: transform 0.3s, filter 0.3s;
+        }
+        
+        .social-icons img:hover {
+          transform: scale(1.1);
+          filter: brightness(1.2);
+        }
       }
     </style>
   </head>
@@ -229,7 +247,23 @@
     <header>
       <h1>Welcome to my Website</h1>
       <p>I have all my cool projects and games on here</p>
+      <p>follow my socials if you want</p>
     </header>
+    
+    <div class="social-icons">
+      <a href="https://www.youtube.com/@hamptonix" target="_blank" aria-label="YouTube">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
+      </a>
+      <a href="https://instagram.com/eliahamp" target="_blank" aria-label="Instagram">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" alt="Instagram" />
+      </a>
+      <a href="https://discord.com/users/862493254272286730" target="_blank" aria-label="Discord">
+       <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" />
+      </a>
+      <a href="https://guns.lol/hx9" target="_blank" aria-label="mySocials">
+       <img src="https://assets.guns.lol/guns_logo_no_background_cropped.png" alt="All Socials" />
+      </a>
+    </div>
 
     <!-- Theme toggle button -->
     <div class="toggle-wrapper">
