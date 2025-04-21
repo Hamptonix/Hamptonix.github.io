@@ -4,29 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eli's Website</title>
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"
+    />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      :root {
+        --bg-color: #f4f7fc;
+        --text-color: #333;
+        --card-bg: #fff;
+        --accent: #6c63ff;
+        --accent-hover: #5a50e6;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --card-bg: #1e1e1e;
+        --accent: #8a7fff;
+        --accent-hover: #a298ff;
+        --shadow: rgba(255, 255, 255, 0.1);
       }
 
       body {
         font-family: 'Arial', sans-serif;
-        background-color: #f4f7fc;
-        color: #333;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         line-height: 1.6;
         padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
       }
 
       header {
-        background-color: #6c63ff;
+        background-color: var(--accent);
         color: #fff;
         padding: 20px 0;
         text-align: center;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px var(--shadow);
       }
 
       h1 {
@@ -34,37 +51,58 @@
         margin-bottom: 10px;
       }
 
+      .toggle-wrapper {
+        text-align: center;
+        margin: 20px auto;
+      }
+
+      .mode-toggle {
+        background-color: #fff;
+        color: var(--accent);
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 8px 18px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .mode-toggle:hover {
+        background-color: var(--accent);
+        color: #fff;
+      }
+
       .nav {
         display: flex;
         flex-direction: column;
         align-items: center;
-        background-color: #fff;
+        background-color: var(--card-bg);
         padding: 15px;
         border-radius: 10px;
         margin: 20px auto;
         max-width: 800px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px var(--shadow);
       }
 
       .nav h3 {
         margin-bottom: 10px;
-        color: #6c63ff;
+        color: var(--accent);
         font-size: 1.2rem;
       }
 
       .nav a {
-        color: #6c63ff;
+        color: var(--accent);
         text-decoration: none;
         font-weight: bold;
         margin: 5px;
         padding: 8px 16px;
-        border: 2px solid #6c63ff;
+        border: 2px solid var(--accent);
         border-radius: 20px;
         transition: all 0.3s ease;
       }
 
       .nav a:hover {
-        background-color: #6c63ff;
+        background-color: var(--accent);
         color: white;
       }
 
@@ -78,25 +116,26 @@
       .card,
       .game-container,
       .converter-container {
-        background-color: #fff;
+        background-color: var(--card-bg);
         padding: 30px;
         border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px var(--shadow);
         width: 90%;
         max-width: 600px;
         text-align: center;
         margin-bottom: 20px;
+        transition: background-color 0.3s, color 0.3s;
       }
 
       .card:hover,
       .game-container:hover,
       .converter-container:hover {
         transform: translateY(-10px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 15px var(--shadow);
       }
 
       h2 {
-        color: #333;
+        color: var(--text-color);
         font-size: 1.8rem;
         margin-bottom: 15px;
       }
@@ -108,15 +147,10 @@
         margin-top: 10px;
       }
 
-      iframe:fullscreen {
-        width: 100vw;
-        height: 100vh;
-      }
-
       button {
-        background-color: #fff;
-        color: #6c63ff;
-        border: 2px solid #6c63ff;
+        background-color: var(--card-bg);
+        color: var(--accent);
+        border: 2px solid var(--accent);
         padding: 10px 20px;
         border-radius: 30px;
         font-size: 1rem;
@@ -126,7 +160,7 @@
       }
 
       button:hover {
-        background-color: #6c63ff;
+        background-color: var(--accent);
         color: #fff;
       }
 
@@ -158,7 +192,7 @@
 
       footer a {
         text-decoration: none;
-        color: #6c63ff;
+        color: var(--accent);
       }
 
       footer a:hover {
@@ -197,6 +231,11 @@
       <p>I have all my cool projects and games on here</p>
     </header>
 
+    <!-- Theme toggle button -->
+    <div class="toggle-wrapper">
+      <button class="mode-toggle" onclick="toggleMode()">Dark Mode</button>
+    </div>
+
     <!-- Navigation index -->
     <nav class="nav">
       <h3>Jump to Projects</h3>
@@ -208,6 +247,9 @@
       <!-- Game Project -->
       <div class="game-container" id="game">
         <h2>Play Cube 2</h2>
+        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+          (This game may not be compatible on mobile devices)
+        </p>
         <button onclick="goFullscreen()">Fullscreen Game</button>
         <iframe
           id="scratchGame"
@@ -233,7 +275,7 @@
     </main>
 
     <footer>
-      <p>© 2025 Eli's Website | <a href="#">Privacy Policy</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
+      <p>© 2025 Eli's Website | <a href="https://github.com/Hamptonix">Github</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
     </footer>
 
     <script>
@@ -262,6 +304,24 @@
         if (!isNaN(miles)) {
           document.getElementById("roberts").value = (miles * ratio).toFixed(5);
         }
+      }
+
+      // Load theme from localStorage
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          document.body.classList.add("dark");
+          document.querySelector(".mode-toggle").textContent = "Light Mode";
+        }
+      });
+
+      function toggleMode() {
+        const body = document.body;
+        const toggleBtn = document.querySelector(".mode-toggle");
+        body.classList.toggle("dark");
+        const mode = body.classList.contains("dark") ? "dark" : "light";
+        toggleBtn.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
+        localStorage.setItem("theme", mode);
       }
     </script>
   </body>
