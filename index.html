@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eli's Website</title>
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
     <style>
       /* Reset some default styling */
       * {
@@ -98,6 +99,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
+        margin-bottom: 20px;
       }
 
       .game-container h2 {
@@ -177,6 +179,21 @@
           <a href="https://scratch.mit.edu/projects/787460465">click here to view the page directly.</a>
         </iframe>
       </div>
+
+      <!-- Conversion Calculator card -->
+      <div class="card">
+        <h2>Convert Mile's into Miles</h2>
+        <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+          <div style="display: flex; flex-direction: column;">
+            <label for="milesRoberts"><strong>Miles Roberts</strong></label>
+            <input id="milesRoberts" type="number" step="any" placeholder="Enter value" style="padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;">
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <label for="miles"><strong>Miles</strong></label>
+            <input id="miles" type="number" step="any" placeholder="Enter value" style="padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;">
+          </div>
+        </div>
+      </div>
     </main>
 
     <footer>
@@ -210,6 +227,29 @@
           iframe.msRequestFullscreen();
         }
       }
+
+      // Mile's to Miles calculator logic
+      const conversionRate = 905.142857143;
+      const milesRobertsInput = document.getElementById('milesRoberts');
+      const milesInput = document.getElementById('miles');
+
+      let isUpdating = false;
+
+      milesRobertsInput.addEventListener('input', () => {
+        if (isUpdating) return;
+        isUpdating = true;
+        const value = parseFloat(milesRobertsInput.value);
+        milesInput.value = isNaN(value) ? '' : (value / conversionRate).toFixed(6);
+        isUpdating = false;
+      });
+
+      milesInput.addEventListener('input', () => {
+        if (isUpdating) return;
+        isUpdating = true;
+        const value = parseFloat(milesInput.value);
+        milesRobertsInput.value = isNaN(value) ? '' : (value * conversionRate).toFixed(6);
+        isUpdating = false;
+      });
     </script>
   </body>
 </html>
