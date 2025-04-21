@@ -6,7 +6,6 @@
     <title>Eli's Website</title>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
     <style>
-      /* Reset some default styling */
       * {
         margin: 0;
         padding: 0;
@@ -28,16 +27,45 @@
         text-align: center;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s;
-      }
-
-      header:hover {
-        background-color: #5a50e6;
       }
 
       h1 {
         font-size: 2.5rem;
         margin-bottom: 10px;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px auto;
+        max-width: 800px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav h3 {
+        margin-bottom: 10px;
+        color: #6c63ff;
+        font-size: 1.2rem;
+      }
+
+      .nav a {
+        color: #6c63ff;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 5px;
+        padding: 8px 16px;
+        border: 2px solid #6c63ff;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .nav a:hover {
+        background-color: #6c63ff;
+        color: white;
       }
 
       main {
@@ -47,7 +75,9 @@
         align-items: center;
       }
 
-      .card {
+      .card,
+      .game-container,
+      .converter-container {
         background-color: #fff;
         padding: 30px;
         border-radius: 10px;
@@ -56,56 +86,19 @@
         max-width: 600px;
         text-align: center;
         margin-bottom: 20px;
-        transition: transform 0.3s, box-shadow 0.3s;
       }
 
-      .card:hover {
+      .card:hover,
+      .game-container:hover,
+      .converter-container:hover {
         transform: translateY(-10px);
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
       }
 
-      .card h2 {
+      h2 {
         color: #333;
         font-size: 1.8rem;
         margin-bottom: 15px;
-      }
-
-      button {
-        background-color: #6c63ff;
-        color: white;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 30px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
-        margin-top: 10px;
-      }
-
-      button:hover {
-        background-color: #5a50e6;
-        transform: scale(1.05);
-      }
-
-      button:focus {
-        outline: none;
-      }
-
-      .game-container {
-        width: 90%;
-        max-width: 800px;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .game-container h2 {
-        font-size: 1.8rem;
-        color: #333;
-        margin-bottom: 10px;
       }
 
       iframe {
@@ -118,7 +111,42 @@
       iframe:fullscreen {
         width: 100vw;
         height: 100vh;
-        border: none;
+      }
+
+      button {
+        background-color: #fff;
+        color: #6c63ff;
+        border: 2px solid #6c63ff;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background-color: #6c63ff;
+        color: #fff;
+      }
+
+      .converter-inputs {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .converter-inputs label {
+        flex: 1;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
       }
 
       footer {
@@ -143,12 +171,22 @@
         }
 
         .card,
-        .game-container {
+        .game-container,
+        .converter-container {
           width: 90%;
         }
 
         iframe {
           height: 300px;
+        }
+
+        .converter-inputs {
+          flex-direction: column;
+        }
+
+        .nav {
+          flex-direction: column;
+          align-items: center;
         }
       }
     </style>
@@ -159,64 +197,46 @@
       <p>I have all my cool projects and games on here</p>
     </header>
 
-    <main>
-      <!-- Interaction card -->
-      <div class="card">
-        <h2 id="cat">Please Press The Button</h2>
-        <button id="thebutton" onclick="nobert()">Press Me!</button>
-      </div>
+    <!-- Navigation index -->
+    <nav class="nav">
+      <h3>Jump to Projects</h3>
+      <a href="#game">Cube 2 Game</a>
+      <a href="#converter">Miles Converter</a>
+    </nav>
 
-      <!-- Game embed card -->
-      <div class="game-container">
+    <main>
+      <!-- Game Project -->
+      <div class="game-container" id="game">
         <h2>Play Cube 2</h2>
         <button onclick="goFullscreen()">Fullscreen Game</button>
         <iframe
           id="scratchGame"
           src="https://scratch.mit.edu/projects/787460465/embed"
           allowfullscreen
-        >
-          Your browser does not support iframes.
-          <a href="https://scratch.mit.edu/projects/787460465">click here to view the page directly.</a>
-        </iframe>
+        ></iframe>
       </div>
 
-      <!-- Conversion Calculator card -->
-      <div class="card">
+      <!-- Conversion Project -->
+      <div class="converter-container" id="converter">
         <h2>Convert Mile's into Miles</h2>
-        <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
-          <div style="display: flex; flex-direction: column;">
-            <label for="milesRoberts"><strong>Miles Roberts</strong></label>
-            <input id="milesRoberts" type="number" step="any" placeholder="Enter value" style="padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;">
-          </div>
-          <div style="display: flex; flex-direction: column;">
-            <label for="miles"><strong>Miles</strong></label>
-            <input id="miles" type="number" step="any" placeholder="Enter value" style="padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;">
-          </div>
+        <div class="converter-inputs">
+          <label>
+            Miles Roberts:
+            <input type="number" id="roberts" oninput="convertFromRoberts()" />
+          </label>
+          <label>
+            Miles:
+            <input type="number" id="miles" oninput="convertFromMiles()" />
+          </label>
         </div>
       </div>
     </main>
 
     <footer>
-      <p>© 2025 Elis Website | <a href="#">Privacy Policy</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
+      <p>© 2025 Eli's Website | <a href="#">Privacy Policy</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
     </footer>
 
     <script>
-      async function nobert() {
-        document.getElementById("cat").innerHTML = "Good Boy";
-        document.getElementById("thebutton").innerHTML = ":)";
-        await wait(3000);
-        reset();
-      }
-
-      function reset() {
-        document.getElementById("cat").innerHTML = "Please Press The Button";
-        document.getElementById("thebutton").innerHTML = "Press Me!";
-      }
-
-      function wait(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-
       function goFullscreen() {
         const iframe = document.getElementById("scratchGame");
         if (iframe.requestFullscreen) {
@@ -228,28 +248,21 @@
         }
       }
 
-      // Mile's to Miles calculator logic
-      const conversionRate = 905.142857143;
-      const milesRobertsInput = document.getElementById('milesRoberts');
-      const milesInput = document.getElementById('miles');
+      const ratio = 905.142857143;
 
-      let isUpdating = false;
+      function convertFromRoberts() {
+        const roberts = parseFloat(document.getElementById("roberts").value);
+        if (!isNaN(roberts)) {
+          document.getElementById("miles").value = (roberts / ratio).toFixed(5);
+        }
+      }
 
-      milesRobertsInput.addEventListener('input', () => {
-        if (isUpdating) return;
-        isUpdating = true;
-        const value = parseFloat(milesRobertsInput.value);
-        milesInput.value = isNaN(value) ? '' : (value / conversionRate).toFixed(6);
-        isUpdating = false;
-      });
-
-      milesInput.addEventListener('input', () => {
-        if (isUpdating) return;
-        isUpdating = true;
-        const value = parseFloat(milesInput.value);
-        milesRobertsInput.value = isNaN(value) ? '' : (value * conversionRate).toFixed(6);
-        isUpdating = false;
-      });
+      function convertFromMiles() {
+        const miles = parseFloat(document.getElementById("miles").value);
+        if (!isNaN(miles)) {
+          document.getElementById("roberts").value = (miles * ratio).toFixed(5);
+        }
+      }
     </script>
   </body>
 </html>
