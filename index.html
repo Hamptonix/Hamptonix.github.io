@@ -263,6 +263,7 @@
       <a href="#game">Cube 2 Game</a>
       <a href="#converter">Miles Converter</a>
       <a href="#crazycattle">Crazy Cattle 3D</a>
+      <a href="#googlesnake">Google Snake</a>
     </nav>
 
     <main>
@@ -308,6 +309,21 @@
           allowfullscreen
         ></iframe>
       </div>
+      
+      <!-- Google Snake Game -->
+      <div class="game-container" id="googlesnake">
+        <h2>Play Google Snake</h2>
+        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+          (This game may not be compatible on mobile devices)
+        </p>
+        <button onclick="goFullscreenSnake()">Fullscreen Game</button>
+        <iframe
+          id="snakeGame"
+          src="https://www.google.com/search?q=google+snake&sca_esv=cc91aa7b516a412e&rlz=1CAJEHJ_enUS1122&ei=teYHaKXdAuKYkPIP8ryyyAQ&ved=0ahUKEwjli8CAqeyMAxViDEQIHXKeDEkQ4dUDCBI&uact=5&oq=google+snake&gs_lp=Egxnd3Mtd2l6LXNlcnAiDGdvb2dsZSBzbmFrZTIIEAAYgAQYsQMyCxAAGIAEGJECGIoFMg4QABiABBiRAhixAxiKBTIOEAAYgAQYkQIYsQMYigUyCBAAGIAEGLEDMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgARIxA1Q7wJYvAdwAXgAkAEAmAFkoAGgBKoBAzYuMbgBA8gBAPgBAZgCB6ACygTCAgoQABiwAxjWBBhHwgIGEAAYFhgewgILEAAYgAQYhgMYigXCAgUQABjvBcICCBAAGIAEGKIEmAMAiAYBkAYIkgcDNS4yoAfKI7IHAzQuMrgHsAQ&sclient=gws-wiz-serp&safe=active&ssui=on"
+          allowfullscreen
+        ></iframe>
+      </div>
+
     </main>
 
     <footer>
@@ -384,6 +400,18 @@
       function scrollToTop() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
+      
+      function goFullscreenSnake() {
+      const iframe = document.getElementById("snakeGame");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    }
+
     </script>
     
     <button id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
