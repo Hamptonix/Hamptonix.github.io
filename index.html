@@ -241,6 +241,7 @@
       <h3>Jump to Projects</h3>
       <a href="#game">Cube 2 Game</a>
       <a href="#converter">Miles Converter</a>
+      <a href="#crazycattle">Crazy Cattle 3D</a>
     </nav>
 
     <main>
@@ -272,6 +273,20 @@
           </label>
         </div>
       </div>
+
+      <!-- Crazy Cattle 3D Game -->
+      <div class="game-container" id="crazycattle">
+        <h2>Play Crazy Cattle 3D</h2>
+        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+          (This game may not be compatible on mobile devices)
+        </p>
+        <button onclick="goFullscreenCattle()">Fullscreen Game</button>
+        <iframe
+          id="cattleGame"
+          src="https://1games.io/game/crazy-cattle-3d/"
+          allowfullscreen
+        ></iframe>
+      </div>
     </main>
 
     <footer>
@@ -281,6 +296,17 @@
     <script>
       function goFullscreen() {
         const iframe = document.getElementById("scratchGame");
+        if (iframe.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe.webkitRequestFullscreen) {
+          iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) {
+          iframe.msRequestFullscreen();
+        }
+      }
+
+      function goFullscreenCattle() {
+        const iframe = document.getElementById("cattleGame");
         if (iframe.requestFullscreen) {
           iframe.requestFullscreen();
         } else if (iframe.webkitRequestFullscreen) {
