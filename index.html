@@ -264,6 +264,7 @@
       <a href="#converter">Miles Converter</a>
       <a href="#crazycattle">Crazy Cattle 3D</a>
       <a href="#googlesnake">Google Snake</a>
+      <a href="#unblockedbrowser">Unblocked Browser</a>
     </nav>
 
     <main>
@@ -312,7 +313,7 @@
       
       <!-- Google Snake Game -->
       <div class="game-container" id="googlesnake">
-        <h2>Play Google Snake</h2>
+        <h2>Play Modded Google Snake</h2>
         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
           (This game may not be compatible on mobile devices)
         </p>
@@ -323,6 +324,21 @@
           allowfullscreen
         ></iframe>
       </div>
+      
+      <!-- Unblocked Browser -->
+      <div class="game-container" id="unblockedbrowser">
+        <h2>Unblocked Browser</h2>
+        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+          (This browser may not be compatible on mobile devices)
+        </p>
+        <button onclick="goFullscreenBrowser()">Fullscreen Browser</button>
+        <iframe
+          id="browserFrame"
+          src="https://pluralsight.gq/"
+          allowfullscreen
+        ></iframe>
+      </div>
+
 
     </main>
 
@@ -410,7 +426,18 @@
       } else if (iframe.msRequestFullscreen) {
         iframe.msRequestFullscreen();
       }
+      
+      function goFullscreenBrowser() {
+      const iframe = document.getElementById("browserFrame");
+      if (iframe.requestFullscreen) {
+       iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+       iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
     }
+    
 
     </script>
     
