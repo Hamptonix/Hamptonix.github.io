@@ -1,448 +1,420 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hamptonix | Eli</title>
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"
-    />
-    <style>
-      :root {
-        --bg-color: #f4f7fc;
-        --text-color: #333;
-        --card-bg: #fff;
-        --accent: #6c63ff;
-        --accent-hover: #5a50e6;
-        --shadow: rgba(0, 0, 0, 0.1);
-      }
-
-      :root.dark {
-        --bg-color: #121212;
-        --text-color: #e0e0e0;
-        --card-bg: #1e1e1e;
-        --accent: #8a7fff;
-        --accent-hover: #a298ff;
-        --shadow: rgba(255, 255, 255, 0.1);
-      }
-
-
-      body {
-        font-family: 'Arial', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        line-height: 1.6;
-        padding: 20px;
-        transition: background-color 0.3s, color 0.3s;
-      }
-
-      header {
-        background-color: var(--accent);
-        color: #fff;
-        padding: 20px 0;
-        text-align: center;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px var(--shadow);
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-      }
-
-      .toggle-wrapper {
-        text-align: center;
-        margin: 20px auto;
-      }
-
-      .mode-toggle {
-        background-color: #fff;
-        color: var(--accent);
-        border: 2px solid var(--accent);
-        border-radius: 20px;
-        padding: 8px 18px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-      }
-
-      .mode-toggle:hover {
-        background-color: var(--accent);
-        color: #fff;
-      }
-
-      .nav {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: var(--card-bg);
-        padding: 15px;
-        border-radius: 10px;
-        margin: 20px auto;
-        max-width: 800px;
-        box-shadow: 0 4px 10px var(--shadow);
-      }
-
-      .nav h3 {
-        margin-bottom: 10px;
-        color: var(--accent);
-        font-size: 1.2rem;
-      }
-
-      .nav a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: bold;
-        margin: 5px;
-        padding: 8px 16px;
-        border: 2px solid var(--accent);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-      }
-
-      .nav a:hover {
-        background-color: var(--accent);
-        color: white;
-      }
-
-      main {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .card,
-      .game-container,
-      .converter-container {
-        background-color: var(--card-bg);
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px var(--shadow);
-        width: 90%;
-        max-width: 600px;
-        text-align: center;
-        margin-bottom: 20px;
-        transition: background-color 0.3s, color 0.3s;
-      }
-
-      .card:hover,
-      .game-container:hover,
-      .converter-container:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 6px 15px var(--shadow);
-      }
-
-      h2 {
-        color: var(--text-color);
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-      }
-
-      iframe {
-        width: 100%;
-        height: 480px;
-        border: none;
-        margin-top: 10px;
-      }
-
-      button {
-        background-color: var(--card-bg);
-        color: var(--accent);
-        border: 2px solid var(--accent);
-        padding: 10px 20px;
-        border-radius: 30px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 10px;
-      }
-
-      button:hover {
-        background-color: var(--accent);
-        color: #fff;
-      }
-
-      .converter-inputs {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 15px;
-      }
-
-      .converter-inputs label {
-        flex: 1;
-      }
-
-      input[type="number"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 1rem;
-      }
-
-      footer {
-        text-align: center;
-        margin-top: 50px;
-        font-size: 0.9rem;
-        color: #aaa;
-      }
-
-      footer a {
-        text-decoration: none;
-        color: var(--accent);
-      }
-
-      footer a:hover {
-        text-decoration: underline;
-      }
-
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2rem;
-        }
-
-        .card,
-        .game-container,
-        .converter-container {
-          width: 90%;
-        }
-
-        iframe {
-          height: 300px;
-        }
-
-        .converter-inputs {
-          flex-direction: column;
-        }
-
-        .nav {
-          flex-direction: column;
-          align-items: center;
-        }
-        
-        #backToTop {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          background-color: var(--accent);
-          color: white;
-          border: none;
-          padding: 12px 16px;
-          border-radius: 50%;
-          font-size: 1.5rem;
-          cursor: pointer;
-          box-shadow: 0 4px 10px var(--shadow);
-          display: none;
-          z-index: 1000;
-          transition: opacity 0.3s ease;
-        }
-
-        #backToTop.show {
-          display: block;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Welcome to my Website</h1>
-      <p>I have all my cool projects and games on here</p>
-    </header>
-
-    <!-- Theme toggle button -->
-    <div class="toggle-wrapper">
-      <button class="mode-toggle" onclick="toggleMode()">Dark Mode</button>
-    </div>
-
-    <!-- Navigation index -->
-    <nav class="nav">
-      <h3>Jump to Projects</h3>
-      <a href="#game">Cube 2 Game</a>
-      <a href="#converter">Miles Converter</a>
-      <a href="#crazycattle">Crazy Cattle 3D</a>
-      <a href="#googlesnake">Google Snake</a>
-      <a href="#unblockedbrowser">Unblocked Browser</a>
-    </nav>
-
-    <main>
-      <!-- Game Project -->
-      <div class="game-container" id="game">
-        <h2>Play Cube 2</h2>
-        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-          (This game may not be compatible on mobile devices)
-        </p>
-        <button onclick="goFullscreen()">Fullscreen Game</button>
-        <iframe
-          id="scratchGame"
-          src="https://scratch.mit.edu/projects/787460465/embed"
-          allowfullscreen
-        ></iframe>
-      </div>
-
-      <!-- Conversion Project -->
-      <div class="converter-container" id="converter">
-        <h2>Convert Miles into Miles</h2>
-        <div class="converter-inputs">
-          <label>
-            Miles Roberts:
-            <input type="number" id="roberts" oninput="convertFromRoberts()" />
-          </label>
-          <label>
-            Miles:
-            <input type="number" id="miles" oninput="convertFromMiles()" />
-          </label>
-        </div>
-      </div>
-
-      <!-- Crazy Cattle 3D Game -->
-      <div class="game-container" id="crazycattle">
-        <h2>Play Crazy Cattle 3D</h2>
-        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-          (This game may not be compatible on mobile devices)
-        </p>
-        <button onclick="goFullscreenCattle()">Fullscreen Game</button>
-        <iframe
-          id="cattleGame"
-          src="https://1games.io/game/crazy-cattle-3d/"
-          allowfullscreen
-        ></iframe>
-      </div>
-      
-      <!-- Google Snake Game -->
-      <div class="game-container" id="googlesnake">
-        <h2>Play Modded Google Snake</h2>
-        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-          (This game may not be compatible on mobile devices)
-        </p>
-        <button onclick="goFullscreenSnake()">Fullscreen Game</button>
-        <iframe
-          id="snakeGame"
-          src="https://googlesnakemods.com/v/current/"
-          allowfullscreen
-        ></iframe>
-      </div>
-      
-      <!-- Unblocked Browser -->
-      <div class="game-container" id="unblockedbrowser">
-        <h2>Unblocked Browser</h2>
-        <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-          (This browser may not be compatible on mobile devices)
-        </p>
-        <button onclick="goFullscreenBrowser()">Fullscreen Browser</button>
-        <iframe
-          id="browserFrame"
-          src="https://pluralsight.gq/"
-          allowfullscreen
-        ></iframe>
-      </div>
-
-
-    </main>
-
-    <footer>
-      <p>© 2025 Eli's Website | <a href="https://guns.lol/hx9">Socials</a> | <a href="https://github.com/Hamptonix">Github</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
-    </footer>
-
-    <script>
-      function goFullscreen() {
-        const iframe = document.getElementById("scratchGame");
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-          iframe.msRequestFullscreen();
-        }
-      }
-
-      function goFullscreenCattle() {
-        const iframe = document.getElementById("cattleGame");
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-          iframe.msRequestFullscreen();
-        }
-      }
-
-      const ratio = 905.142857143;
-
-      function convertFromRoberts() {
-        const roberts = parseFloat(document.getElementById("roberts").value);
-        if (!isNaN(roberts)) {
-          document.getElementById("miles").value = (roberts / ratio).toFixed(5);
-        }
-      }
-
-      function convertFromMiles() {
-        const miles = parseFloat(document.getElementById("miles").value);
-        if (!isNaN(miles)) {
-          document.getElementById("roberts").value = (miles * ratio).toFixed(5);
-        }
-      }
-
-      // Load theme from localStorage
-      window.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
-          document.documentElement.classList.toggle("dark");
-          document.querySelector(".mode-toggle").textContent = "Light Mode";
-        }
-      });
-
-      function toggleMode() {
-        const body = document.body;
-        const toggleBtn = document.querySelector(".mode-toggle");
-        body.classList.toggle("dark");
-        const mode = body.classList.contains("dark") ? "dark" : "light";
-        toggleBtn.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
-        localStorage.setItem("theme", mode);
-      }
-      
-      // Back to Top button behavior
-      window.addEventListener("scroll", () => {
-        const btn = document.getElementById("backToTop");
-        if (window.scrollY > 200) {
-          btn.classList.add("show");
-        } else {
-          btn.classList.remove("show");
-        }
-      });
-      
-      function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      
-      function goFullscreenSnake() {
-      const iframe = document.getElementById("snakeGame");
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
-      }
-      
-      function goFullscreenBrowser() {
-      const iframe = document.getElementById("browserFrame");
-      if (iframe.requestFullscreen) {
-       iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-       iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
-      }
-    }
-    
-
-    </script>
-    
-    <button id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
-    
-  </body>
-</html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Hamptonix | Eli</title>
+     <link
+       rel="icon"
+       type="image/png"
+       href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"
+     />
+     <style>
+       :root {
+         --bg-color: #f4f7fc;
+         --text-color: #333;
+         --card-bg: #fff;
+         --accent: #6c63ff;
+         --accent-hover: #5a50e6;
+         --shadow: rgba(0, 0, 0, 0.1);
+       }
+ 
+       body.dark {
+         --bg-color: #121212;
+         --text-color: #e0e0e0;
+         --card-bg: #1e1e1e;
+         --accent: #8a7fff;
+         --accent-hover: #a298ff;
+         --shadow: rgba(255, 255, 255, 0.1);
+       }
+ 
+       body {
+         font-family: 'Arial', sans-serif;
+         background-color: var(--bg-color);
+         color: var(--text-color);
+         line-height: 1.6;
+         padding: 20px;
+         transition: background-color 0.3s, color 0.3s;
+       }
+ 
+       header {
+         background-color: var(--accent);
+         color: #fff;
+         padding: 20px 0;
+         text-align: center;
+         border-radius: 8px;
+         box-shadow: 0 4px 6px var(--shadow);
+       }
+ 
+       h1 {
+         font-size: 2.5rem;
+         margin-bottom: 10px;
+       }
+ 
+       .toggle-wrapper {
+         text-align: center;
+         margin: 20px auto;
+       }
+ 
+       .mode-toggle {
+         background-color: #fff;
+         color: var(--accent);
+         border: 2px solid var(--accent);
+         border-radius: 20px;
+         padding: 8px 18px;
+         font-size: 1rem;
+         cursor: pointer;
+         transition: background-color 0.3s, color 0.3s;
+       }
+ 
+       .mode-toggle:hover {
+         background-color: var(--accent);
+         color: #fff;
+       }
+ 
+       .nav {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         background-color: var(--card-bg);
+         padding: 15px;
+         border-radius: 10px;
+         margin: 20px auto;
+         max-width: 800px;
+         box-shadow: 0 4px 10px var(--shadow);
+       }
+ 
+       .nav h3 {
+         margin-bottom: 10px;
+         color: var(--accent);
+         font-size: 1.2rem;
+       }
+ 
+       .nav a {
+         color: var(--accent);
+         text-decoration: none;
+         font-weight: bold;
+         margin: 5px;
+         padding: 8px 16px;
+         border: 2px solid var(--accent);
+         border-radius: 20px;
+         transition: all 0.3s ease;
+       }
+ 
+       .nav a:hover {
+         background-color: var(--accent);
+         color: white;
+       }
+ 
+       main {
+         margin-top: 20px;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+       }
+ 
+       .card,
+       .game-container,
+       .converter-container {
+         background-color: var(--card-bg);
+         padding: 30px;
+         border-radius: 10px;
+         box-shadow: 0 4px 10px var(--shadow);
+         width: 90%;
+         max-width: 600px;
+         text-align: center;
+         margin-bottom: 20px;
+         transition: background-color 0.3s, color 0.3s;
+       }
+ 
+       .card:hover,
+       .game-container:hover,
+       .converter-container:hover {
+         transform: translateY(-10px);
+         box-shadow: 0 6px 15px var(--shadow);
+       }
+ 
+       h2 {
+         color: var(--text-color);
+         font-size: 1.8rem;
+         margin-bottom: 15px;
+       }
+ 
+       iframe {
+         width: 100%;
+         height: 480px;
+         border: none;
+         margin-top: 10px;
+       }
+ 
+       button {
+         background-color: var(--card-bg);
+         color: var(--accent);
+         border: 2px solid var(--accent);
+         padding: 10px 20px;
+         border-radius: 30px;
+         font-size: 1rem;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         margin-top: 10px;
+       }
+ 
+       button:hover {
+         background-color: var(--accent);
+         color: #fff;
+       }
+ 
+       .converter-inputs {
+         display: flex;
+         justify-content: space-between;
+         gap: 10px;
+         margin-top: 15px;
+       }
+ 
+       .converter-inputs label {
+         flex: 1;
+       }
+ 
+       input[type="number"] {
+         width: 100%;
+         padding: 10px;
+         border: 1px solid #ccc;
+         border-radius: 8px;
+         font-size: 1rem;
+       }
+ 
+       footer {
+         text-align: center;
+         margin-top: 50px;
+         font-size: 0.9rem;
+         color: #aaa;
+       }
+ 
+       footer a {
+         text-decoration: none;
+         color: var(--accent);
+       }
+ 
+       footer a:hover {
+         text-decoration: underline;
+       }
+ 
+       @media (max-width: 768px) {
+         h1 {
+           font-size: 2rem;
+         }
+ 
+         .card,
+         .game-container,
+         .converter-container {
+           width: 90%;
+         }
+ 
+         iframe {
+           height: 300px;
+         }
+ 
+         .converter-inputs {
+           flex-direction: column;
+         }
+ 
+         .nav {
+           flex-direction: column;
+           align-items: center;
+         }
+ 
+         #backToTop {
+           position: fixed;
+           bottom: 20px;
+           right: 20px;
+           background-color: var(--accent);
+           color: white;
+           border: none;
+           padding: 12px 16px;
+           border-radius: 50%;
+           font-size: 1.5rem;
+           cursor: pointer;
+           box-shadow: 0 4px 10px var(--shadow);
+           display: none;
+           z-index: 1000;
+           transition: opacity 0.3s ease;
+         }
+ 
+         #backToTop.show {
+           display: block;
+         }
+       }
+     </style>
+   </head>
+   <body>
+     <header>
+       <h1>Welcome to my Website</h1>
+       <p>I have all my cool projects and games on here</p>
+     </header>
+ 
+     <!-- Theme toggle button -->
+     <div class="toggle-wrapper">
+       <button class="mode-toggle" onclick="toggleMode()">Dark Mode</button>
+     </div>
+ 
+     <!-- Navigation index -->
+     <nav class="nav">
+       <h3>Jump to Projects</h3>
+       <a href="#game">Cube 2 Game</a>
+       <a href="#converter">Miles Converter</a>
+       <a href="#crazycattle">Crazy Cattle 3D</a>
+       <a href="#googlesnake">Google Snake</a>
+     </nav>
+ 
+     <main>
+       <!-- Game Project -->
+       <div class="game-container" id="game">
+         <h2>Play Cube 2</h2>
+         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+           (This game may not be compatible on mobile devices)
+         </p>
+         <button onclick="goFullscreen()">Fullscreen Game</button>
+         <iframe
+           id="scratchGame"
+           src="https://scratch.mit.edu/projects/787460465/embed"
+           allowfullscreen
+         ></iframe>
+       </div>
+ 
+       <!-- Conversion Project -->
+       <div class="converter-container" id="converter">
+         <h2>Convert Miles into Miles</h2>
+         <div class="converter-inputs">
+           <label>
+             Miles Roberts:
+             <input type="number" id="roberts" oninput="convertFromRoberts()" />
+           </label>
+           <label>
+             Miles:
+             <input type="number" id="miles" oninput="convertFromMiles()" />
+           </label>
+         </div>
+       </div>
+ 
+       <!-- Crazy Cattle 3D Game -->
+       <div class="game-container" id="crazycattle">
+         <h2>Play Crazy Cattle 3D</h2>
+         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+           (This game may not be compatible on mobile devices)
+         </p>
+         <button onclick="goFullscreenCattle()">Fullscreen Game</button>
+         <iframe
+           id="cattleGame"
+           src="https://1games.io/game/crazy-cattle-3d/"
+           allowfullscreen
+         ></iframe>
+       </div>
+ 
+       <!-- Google Snake Game -->
+       <div class="game-container" id="googlesnake">
+         <h2>Play Google Snake</h2>
+         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
+           (This game may not be compatible on mobile devices)
+         </p>
+         <button onclick="goFullscreenSnake()">Fullscreen Game</button>
+         <iframe
+           id="snakeGame"
+           src="https://googlesnakemods.com/v/current/"
+           allowfullscreen
+         ></iframe>
+       </div>
+ 
+     </main>
+ 
+     <footer>
+       <p>© 2025 Eli's Website | <a href="https://guns.lol/hx9">Socials</a> | <a href="https://github.com/Hamptonix">Github</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
+     </footer>
+ 
+     <script>
+       function goFullscreen() {
+         const iframe = document.getElementById("scratchGame");
+         if (iframe.requestFullscreen) {
+           iframe.requestFullscreen();
+         } else if (iframe.webkitRequestFullscreen) {
+           iframe.webkitRequestFullscreen();
+         } else if (iframe.msRequestFullscreen) {
+           iframe.msRequestFullscreen();
+         }
+       }
+ 
+       function goFullscreenCattle() {
+         const iframe = document.getElementById("cattleGame");
+         if (iframe.requestFullscreen) {
+           iframe.requestFullscreen();
+         } else if (iframe.webkitRequestFullscreen) {
+           iframe.webkitRequestFullscreen();
+         } else if (iframe.msRequestFullscreen) {
+           iframe.msRequestFullscreen();
+         }
+       }
+ 
+       const ratio = 905.142857143;
+ 
+       function convertFromRoberts() {
+         const roberts = parseFloat(document.getElementById("roberts").value);
+         if (!isNaN(roberts)) {
+           document.getElementById("miles").value = (roberts / ratio).toFixed(5);
+         }
+       }
+ 
+       function convertFromMiles() {
+         const miles = parseFloat(document.getElementById("miles").value);
+         if (!isNaN(miles)) {
+           document.getElementById("roberts").value = (miles * ratio).toFixed(5);
+         }
+       }
+ 
+       // Load theme from localStorage
+       window.addEventListener("DOMContentLoaded", () => {
+         const savedTheme = localStorage.getItem("theme");
+         if (savedTheme === "dark") {
+           document.body.classList.add("dark");
+           document.querySelector(".mode-toggle").textContent = "Light Mode";
+         }
+       });
+ 
+       function toggleMode() {
+         const body = document.body;
+         const toggleBtn = document.querySelector(".mode-toggle");
+         body.classList.toggle("dark");
+         const mode = body.classList.contains("dark") ? "dark" : "light";
+         toggleBtn.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
+         localStorage.setItem("theme", mode);
+       }
+ 
+       // Back to Top button behavior
+       window.addEventListener("scroll", () => {
+         const btn = document.getElementById("backToTop");
+         if (window.scrollY > 200) {
+           btn.classList.add("show");
+         } else {
+           btn.classList.remove("show");
+         }
+       });
+ 
+       function scrollToTop() {
+         window.scrollTo({ top: 0, behavior: "smooth" });
+       }
+ 
+       function goFullscreenSnake() {
+       const iframe = document.getElementById("snakeGame");
+       if (iframe.requestFullscreen) {
+         iframe.requestFullscreen();
+       } else if (iframe.webkitRequestFullscreen) {
+         iframe.webkitRequestFullscreen();
+       } else if (iframe.msRequestFullscreen) {
+         iframe.msRequestFullscreen();
+       }
+     }
+ 
+     </script>
+ 
+     <button id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
+ 
+   </body>
+ </html>
