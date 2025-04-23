@@ -19,7 +19,7 @@
         --shadow: rgba(0, 0, 0, 0.1);
       }
 
-      body.dark {
+      :root.dark {
         --bg-color: #121212;
         --text-color: #e0e0e0;
         --card-bg: #1e1e1e;
@@ -27,6 +27,7 @@
         --accent-hover: #a298ff;
         --shadow: rgba(255, 255, 255, 0.1);
       }
+
 
       body {
         font-family: 'Arial', sans-serif;
@@ -389,7 +390,7 @@
       window.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme === "dark") {
-          document.body.classList.add("dark");
+          document.documentElement.classList.toggle("dark");
           document.querySelector(".mode-toggle").textContent = "Light Mode";
         }
       });
