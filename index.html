@@ -1,445 +1,315 @@
 <!DOCTYPE html>
- <html lang="en">
-   <head>
-     <meta charset="UTF-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <title>Hamptonix | Eli</title>
-     <link
-       rel="icon"
-       type="image/png"
-       href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"
-     />
-     <style>
-       :root {
-         --bg-color: #f4f7fc;
-         --text-color: #333;
-         --card-bg: #fff;
-         --accent: #6c63ff;
-         --accent-hover: #5a50e6;
-         --shadow: rgba(0, 0, 0, 0.1);
-       }
- 
-       body.dark {
-         --bg-color: #121212;
-         --text-color: #e0e0e0;
-         --card-bg: #1e1e1e;
-         --accent: #8a7fff;
-         --accent-hover: #a298ff;
-         --shadow: rgba(255, 255, 255, 0.1);
-       }
- 
-       body {
-         font-family: 'Arial', sans-serif;
-         background-color: var(--bg-color);
-         color: var(--text-color);
-         line-height: 1.6;
-         padding: 20px;
-         transition: background-color 0.3s, color 0.3s;
-       }
- 
-       header {
-         background-color: var(--accent);
-         color: #fff;
-         padding: 20px 0;
-         text-align: center;
-         border-radius: 8px;
-         box-shadow: 0 4px 6px var(--shadow);
-       }
- 
-       h1 {
-         font-size: 2.5rem;
-         margin-bottom: 10px;
-       }
- 
-       .toggle-wrapper {
-         text-align: center;
-         margin: 20px auto;
-       }
- 
-       .mode-toggle {
-         background-color: #fff;
-         color: var(--accent);
-         border: 2px solid var(--accent);
-         border-radius: 20px;
-         padding: 8px 18px;
-         font-size: 1rem;
-         cursor: pointer;
-         transition: background-color 0.3s, color 0.3s;
-       }
- 
-       .mode-toggle:hover {
-         background-color: var(--accent);
-         color: #fff;
-       }
- 
-       .nav {
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         background-color: var(--card-bg);
-         padding: 15px;
-         border-radius: 10px;
-         margin: 20px auto;
-         max-width: 800px;
-         box-shadow: 0 4px 10px var(--shadow);
-       }
- 
-       .nav h3 {
-         margin-bottom: 10px;
-         color: var(--accent);
-         font-size: 1.2rem;
-       }
- 
-       .nav a {
-         color: var(--accent);
-         text-decoration: none;
-         font-weight: bold;
-         margin: 5px;
-         padding: 8px 16px;
-         border: 2px solid var(--accent);
-         border-radius: 20px;
-         transition: all 0.3s ease;
-       }
- 
-       .nav a:hover {
-         background-color: var(--accent);
-         color: white;
-       }
- 
-       main {
-         margin-top: 20px;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-       }
- 
-       .card,
-       .game-container,
-       .converter-container {
-         background-color: var(--card-bg);
-         padding: 30px;
-         border-radius: 10px;
-         box-shadow: 0 4px 10px var(--shadow);
-         width: 90%;
-         max-width: 600px;
-         text-align: center;
-         margin-bottom: 20px;
-         transition: background-color 0.3s, color 0.3s;
-       }
- 
-       .card:hover,
-       .game-container:hover,
-       .converter-container:hover {
-         transform: translateY(-10px);
-         box-shadow: 0 6px 15px var(--shadow);
-       }
- 
-       h2 {
-         color: var(--text-color);
-         font-size: 1.8rem;
-         margin-bottom: 15px;
-       }
- 
-       iframe {
-         width: 100%;
-         height: 480px;
-         border: none;
-         margin-top: 10px;
-       }
- 
-       button {
-         background-color: var(--card-bg);
-         color: var(--accent);
-         border: 2px solid var(--accent);
-         padding: 10px 20px;
-         border-radius: 30px;
-         font-size: 1rem;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         margin-top: 10px;
-       }
- 
-       button:hover {
-         background-color: var(--accent);
-         color: #fff;
-       }
- 
-       .converter-inputs {
-         display: flex;
-         justify-content: space-between;
-         gap: 10px;
-         margin-top: 15px;
-       }
- 
-       .converter-inputs label {
-         flex: 1;
-       }
- 
-       input[type="number"] {
-         width: 100%;
-         padding: 10px;
-         border: 1px solid #ccc;
-         border-radius: 8px;
-         font-size: 1rem;
-       }
- 
-       footer {
-         text-align: center;
-         margin-top: 50px;
-         font-size: 0.9rem;
-         color: #aaa;
-       }
- 
-       footer a {
-         text-decoration: none;
-         color: var(--accent);
-       }
- 
-       footer a:hover {
-         text-decoration: underline;
-       }
- 
-       @media (max-width: 768px) {
-         h1 {
-           font-size: 2rem;
-         }
- 
-         .card,
-         .game-container,
-         .converter-container {
-           width: 90%;
-         }
- 
-         iframe {
-           height: 300px;
-         }
- 
-         .converter-inputs {
-           flex-direction: column;
-         }
- 
-         .nav {
-           flex-direction: column;
-           align-items: center;
-         }
- 
-         #backToTop {
-           position: fixed;
-           bottom: 20px;
-           right: 20px;
-           background-color: var(--accent);
-           color: white;
-           border: none;
-           padding: 12px 16px;
-           border-radius: 50%;
-           font-size: 1.5rem;
-           cursor: pointer;
-           box-shadow: 0 4px 10px var(--shadow);
-           display: none;
-           z-index: 1000;
-           transition: opacity 0.3s ease;
-         }
- 
-         #backToTop.show {
-           display: block;
-         }
-       }
-     </style>
-   </head>
-   <body>
-     <header>
-       <h1>Welcome to my Website</h1>
-       <p>I have all my cool projects and games on here</p>
-     </header>
- 
-     <!-- Theme toggle button -->
-     <div class="toggle-wrapper">
-       <button class="mode-toggle" onclick="toggleMode()">Dark Mode</button>
-     </div>
- 
-     <!-- Navigation index -->
-     <nav class="nav">
-       <h3>Jump to Projects</h3>
-       <a href="#game">Cube 2 Game</a>
-       <a href="#converter">Miles Converter</a>
-       <a href="#crazycattle">Crazy Cattle 3D</a>
-       <a href="#googlesnake">Google Snake</a>
-     </nav>
- 
-     <main>
-       <!-- Game Project -->
-       <div class="game-container" id="game">
-         <h2>Play Cube 2</h2>
-         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-           (This game may not be compatible on mobile devices)
-         </p>
-         <button onclick="goFullscreen()">Fullscreen Game</button>
-         <iframe
-           id="scratchGame"
-           src="https://scratch.mit.edu/projects/787460465/embed"
-           allowfullscreen
-         ></iframe>
-       </div>
- 
-       <!-- Conversion Project -->
-       <div class="converter-container" id="converter">
-         <h2>Convert Miles into Miles</h2>
-         <div class="converter-inputs">
-           <label>
-             Miles Roberts:
-             <input type="number" id="roberts" oninput="convertFromRoberts()" />
-           </label>
-           <label>
-             Miles:
-             <input type="number" id="miles" oninput="convertFromMiles()" />
-           </label>
-         </div>
-       </div>
- 
-       <!-- Crazy Cattle 3D Game -->
-       <div class="game-container" id="crazycattle">
-         <h2>Play Crazy Cattle 3D</h2>
-         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-           (This game may not be compatible on mobile devices)
-         </p>
-         <button onclick="goFullscreenCattle()">Fullscreen Game</button>
-         <iframe
-           id="cattleGame"
-           src="https://1games.io/game/crazy-cattle-3d/"
-           allowfullscreen
-         ></iframe>
-       </div>
- 
-       <!-- Google Snake Game -->
-       <div class="game-container" id="googlesnake">
-         <h2>Play Google Snake</h2>
-         <p style="color: gray; font-size: 0.95rem; margin-top: -10px; margin-bottom: 10px;">
-           (This game may not be compatible on mobile devices)
-         </p>
-         <button onclick="goFullscreenSnake()">Fullscreen Game</button>
-         <iframe
-           id="snakeGame"
-           src="https://googlesnakemods.com/v/current/"
-           allowfullscreen
-         ></iframe>
-       </div>
- 
-     </main>
- 
-     <footer>
-       <p>© 2025 Eli's Website | <a href="https://guns.lol/hx9">Socials</a> | <a href="https://github.com/Hamptonix">Github</a> | <a href="mailto:cheezit3418@gmail.com">Contact</a></p>
-     </footer>
- 
-     <script>
-       function goFullscreen() {
-         const iframe = document.getElementById("scratchGame");
-         if (iframe.requestFullscreen) {
-           iframe.requestFullscreen();
-         } else if (iframe.webkitRequestFullscreen) {
-           iframe.webkitRequestFullscreen();
-         } else if (iframe.msRequestFullscreen) {
-           iframe.msRequestFullscreen();
-         }
-       }
- 
-       function goFullscreenCattle() {
-         const iframe = document.getElementById("cattleGame");
-         if (iframe.requestFullscreen) {
-           iframe.requestFullscreen();
-         } else if (iframe.webkitRequestFullscreen) {
-           iframe.webkitRequestFullscreen();
-         } else if (iframe.msRequestFullscreen) {
-           iframe.msRequestFullscreen();
-         }
-       }
- 
-       const ratio = 905.142857143;
- 
-       function convertFromRoberts() {
-         const roberts = parseFloat(document.getElementById("roberts").value);
-         if (!isNaN(roberts)) {
-           document.getElementById("miles").value = (roberts / ratio).toFixed(5);
-         }
-       }
- 
-       function convertFromMiles() {
-         const miles = parseFloat(document.getElementById("miles").value);
-         if (!isNaN(miles)) {
-           document.getElementById("roberts").value = (miles * ratio).toFixed(5);
-         }
-       }
- 
-       // Load theme from localStorage
-       window.addEventListener("DOMContentLoaded", () => {
-         const savedTheme = localStorage.getItem("theme");
-         if (savedTheme === "dark") {
-           document.body.classList.add("dark");
-           document.querySelector(".mode-toggle").textContent = "Light Mode";
-         }
-       });
- 
-       function toggleMode() {
-         const body = document.body;
-         const toggleBtn = document.querySelector(".mode-toggle");
-         body.classList.toggle("dark");
-         const mode = body.classList.contains("dark") ? "dark" : "light";
-         toggleBtn.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
-         localStorage.setItem("theme", mode);
-       }
- 
-       // Back to Top button behavior
-       window.addEventListener("scroll", () => {
-         const btn = document.getElementById("backToTop");
-         if (window.scrollY > 200) {
-           btn.classList.add("show");
-         } else {
-           btn.classList.remove("show");
-         }
-       });
- 
-       function scrollToTop() {
-         window.scrollTo({ top: 0, behavior: "smooth" });
-       }
- 
-       function goFullscreenSnake() {
-       const iframe = document.getElementById("snakeGame");
-       if (iframe.requestFullscreen) {
-         iframe.requestFullscreen();
-       } else if (iframe.webkitRequestFullscreen) {
-         iframe.webkitRequestFullscreen();
-       } else if (iframe.msRequestFullscreen) {
-         iframe.msRequestFullscreen();
-       }
-     }
- 
-     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5285107729082317"
-     crossorigin="anonymous"></script>
- 
-     <button id="backToTop" onclick="scrollToTop()" title="Back to Top">↑</button>
-   <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mine Tycoon | Hamptonix</title>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #2c3e50, #34495e);
+      color: #ecf0f1;
+      overflow-x: hidden;
+    }
 
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyDQelHet8momAG8YtU7qRiZcaEVROtvrJs",
-      authDomain: "elis-site-78531.firebaseapp.com",
-      projectId: "elis-site-78531",
-      storageBucket: "elis-site-78531.firebasestorage.app",
-      messagingSenderId: "683772418293",
-      appId: "1:683772418293:web:584dd2871744525c4acdbc",
-      measurementId: "G-C1HL2H5EVH"
-     };
+    #gameContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 0;
+    }
 
-     // Initialize Firebase
-     const app = initializeApp(firebaseConfig);
-     const analytics = getAnalytics(app);
-    </script>
- 
-   </body>
- </html>
+    #clickBtn {
+      width: 150px;
+      height: 150px;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s') no-repeat center;
+      background-size: contain;
+      border: none;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+      transition: transform 0.1s;
+    }
+
+    #clickBtn:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    #upgradeBtn {
+      margin-top: 10px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #coinDisplay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.2rem;
+    }
+
+    #shopBtn, #inventoryBtn {
+      position: absolute;
+      top: 10px;
+      background: #2980b9;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #shopBtn { right: 10px; }
+    #inventoryBtn { right: 100px; }
+
+    #shopMenu, #inventoryMenu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      background: #3b4a5a;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    #shopMenu { right: 10px; }
+    #inventoryMenu { left: 10px; }
+
+    .miner-item {
+      background: #2d3a4b;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+
+    #oreContainer {
+      text-align: center;
+    }
+
+    #sellBtn {
+      margin-bottom: 10px;
+      background: #c0392b;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #bottomStone {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 120px;
+      background: url('https://www.transparenttextures.com/patterns/stone-wall.png');
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .float-text {
+      position: absolute;
+      animation: fall 1.5s linear forwards;
+      pointer-events: none;
+      font-weight: bold;
+    }
+
+    @keyframes fall {
+      0% { opacity: 1; top: 50%; }
+      100% { opacity: 0; top: 100%; }
+    }
+
+    .ore-line {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div id="coinDisplay">Coins: 0</div>
+  <button id="shopBtn" onclick="toggleShop()">Shop</button>
+  <button id="inventoryBtn" onclick="toggleInventory()">Inventory</button>
+
+  <div id="gameContainer">
+    <button id="clickBtn"></button>
+    <button id="upgradeBtn" onclick="upgradePickaxe()">Upgrade Pickaxe (Level 1) - Cost: 50 Coins</button>
+  </div>
+
+  <div id="shopMenu">
+    <h3>Miner Shop</h3>
+    <div id="minerShop"></div>
+  </div>
+
+  <div id="inventoryMenu">
+    <button id="sellBtn" onclick="sellOres()">Sell All Ores</button>
+    <div id="oreInventory"></div>
+  </div>
+
+  <div id="bottomStone"></div>
+
+  <script>
+    let coins = 0;
+    let pickaxeLevel = 1;
+    let pickaxeCost = 50;
+    let oreInventory = {};
+    const minersOwned = [];
+
+    const ores = [
+      { name: "Stone", value: 1, chance: 15, color: "lightgray", size: "12px" },
+      { name: "Coal", value: 3, chance: 15, color: "#111", size: "12px" },
+      { name: "Copper", value: 5, chance: 15, color: "darkorange", size: "13px" },
+      { name: "Iron", value: 10, chance: 10, color: "#ffcc99", size: "13px" },
+      { name: "Gold", value: 25, chance: 10, color: "gold", size: "14px" },
+      { name: "Platinum", value: 50, chance: 10, color: "linear-gradient(to right, #ccc, silver)", size: "14px" },
+      { name: "Emerald", value: 100, chance: 5, color: "linear-gradient(to right, green, lightgreen)", size: "15px" },
+      { name: "Diamond", value: 250, chance: 5, color: "linear-gradient(to right, lightblue, blue)", size: "15px" },
+      { name: "Ruby", value: 750, chance: 5, color: "linear-gradient(to right, darkred, red)", size: "16px" },
+      { name: "Titanium", value: 1500, chance: 5, color: "linear-gradient(to right, gray, darkgray)", size: "16px" },
+      { name: "Tungsten", value: 5000, chance: 3.5, color: "linear-gradient(to right, #888, #ccc)", size: "17px" },
+      { name: "Hamptonite", value: 25000, chance: 1.5, color: "linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)", size: "18px" }
+    ];
+
+    const pickaxeOres = ores.filter(o => ["Stone", "Coal", "Copper", "Iron", "Gold"].includes(o.name));
+
+    const minerTypes = [
+      { name: "Basic Miner", rate: 1, cost: 50, chances: [40,30,20,8,2,0,0,0,0,0,0,0] },
+      { name: "Decent Miner", rate: 2, cost: 500, chances: [25,25,20,15,10,4,1,0,0,0,0,0] },
+      { name: "Good Miner", rate: 3, cost: 2500, chances: [5,10,15,30,20,15,10,4,1,0,0,0] },
+      { name: "Advanced Miner", rate: 4, cost: 10000, chances: [5,10,15,25,20,15,6,3,1,0,0,0] },
+      { name: "Superior Miner", rate: 5, cost: 150000, chances: [5,10,15,25,20,15,10,4,1,0,0,0] },
+      { name: "Hamptonite Miner", rate: 6, cost: 2500000, chances: [0,0,0,0,0,0,0,0,0,10,15,25] }
+    ];
+
+    function updateDisplay() {
+      document.getElementById("coinDisplay").textContent = `Coins: ${Math.floor(coins)}`;
+      const oreList = ores.map(ore => {
+        const amount = oreInventory[ore.name] || 0;
+        const nameColor = ore.color.includes("gradient") ? `background: ${ore.color}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;` : `color: ${ore.color}`;
+        return `<div class="ore-line"><span style="${nameColor}">${ore.name}</span><span style="color:${ore.color}; font-size:${ore.size}">${amount}</span></div>`;
+      }).join('');
+      document.getElementById("oreInventory").innerHTML = oreList;
+      document.getElementById("upgradeBtn").textContent = `Upgrade Pickaxe (Level ${pickaxeLevel}) - Cost: ${pickaxeCost} Coins`;
+    }
+
+    function getRandomOre(chances = pickaxeOres.map(o => o.chance)) {
+      let total = chances.reduce((a,b) => a + b, 0);
+      let r = Math.random() * total;
+      for (let i = 0; i < chances.length; i++) {
+        if (r < chances[i]) return pickaxeOres[i];
+        r -= chances[i];
+      }
+    }
+
+    function mineOre() {
+      for (let i = 0; i < pickaxeLevel; i++) {
+        const ore = getRandomOre();
+        oreInventory[ore.name] = (oreInventory[ore.name] || 0) + 1;
+        showFloatingText(ore);
+      }
+      updateDisplay();
+    }
+
+    function showFloatingText(ore) {
+      const text = document.createElement("div");
+      text.className = "float-text";
+      text.style.left = Math.random() * 80 + 10 + "%";
+      if (ore.color.includes("gradient")) {
+        text.style.background = ore.color;
+        text.style.webkitBackgroundClip = "text";
+        text.style.webkitTextFillColor = "transparent";
+      } else {
+        text.style.color = ore.color;
+      }
+      text.style.fontSize = ore.size;
+      text.textContent = "+1 " + ore.name;
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 1500);
+    }
+
+    function upgradePickaxe() {
+      if (coins >= pickaxeCost) {
+        coins -= pickaxeCost;
+        pickaxeLevel++;
+        pickaxeCost *= 5;
+        updateDisplay();
+      }
+    }
+
+    function sellOres() {
+      for (const [oreName, qty] of Object.entries(oreInventory)) {
+        const ore = ores.find(o => o.name === oreName);
+        coins += qty * ore.value;
+      }
+      oreInventory = {};
+      updateDisplay();
+    }
+
+    function toggleShop() {
+      const menu = document.getElementById("shopMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleInventory() {
+      const menu = document.getElementById("inventoryMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function buyMiner(index) {
+      const miner = minerTypes[index];
+      if (coins >= miner.cost) {
+        coins -= miner.cost;
+        minersOwned.push(miner);
+        const minerDiv = document.createElement("div");
+        minerDiv.textContent = miner.name;
+        document.getElementById("bottomStone").appendChild(minerDiv);
+      }
+    }
+
+    function renderShop() {
+      const shop = document.getElementById("minerShop");
+      shop.innerHTML = "";
+      minerTypes.forEach((m, i) => {
+        const item = document.createElement("div");
+        item.className = "miner-item";
+        item.innerHTML = `<strong>${m.name}</strong> - ${m.rate} Ore/Sec<br><button onclick="buyMiner(${i})">Buy for ${m.cost} Coins</button>`;
+        shop.appendChild(item);
+      });
+    }
+
+    setInterval(() => {
+      minersOwned.forEach(miner => {
+        for (let i = 0; i < miner.rate; i++) {
+          const ore = getRandomOre(miner.chances);
+          oreInventory[ore.name] = (oreInventory[ore.name] || 0) + 1;
+          showFloatingText(ore);
+        }
+      });
+      updateDisplay();
+    }, 1000);
+
+    document.getElementById("clickBtn").addEventListener("click", mineOre);
+
+    renderShop();
+    updateDisplay();
+  </script>
+</body>
+</html>
