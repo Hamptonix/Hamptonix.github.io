@@ -186,10 +186,13 @@
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
-<p>Miner Tycoon v1.2.2</p>
+<p>Mining Tycoon v1.3 [Optomization Update]</p>
 
 
   <script>
+    
+    let floatTextEnabled = {}; // Controls which ores show float text
+
     let coins = 0;
     let pickaxeLevel = 1;
     let pickaxeCost = 50;
@@ -233,13 +236,34 @@
     function updateDisplay() {
       document.getElementById("coinDisplay").textContent = `Coins: ${formatCoins(coins)}`;
       const oreList = ores.map(ore => {
-        const amount = oreInventory[ore.name] || 0;
-        const nameColor = ore.color.includes("gradient") ? `background: ${ore.color}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;` : `color: ${ore.color}`;
-        return `<div class="ore-line"><span style="${nameColor}">${ore.name}</span><span style="color:${ore.color}; font-size:${ore.size}">${amount}</span></div>`;
-      }).join('');
+  const amount = oreInventory[ore.name] || 0;
+  const enabled = floatTextEnabled[ore.name] !== false; // default to true
+  const nameColor = ore.color.includes("gradient")
+    ? `background: ${ore.color}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;`
+    : `color: ${ore.color}`;
+  
+  return `
+    <div class="ore-line">
+      <span style="${nameColor}">${ore.name}</span>
+      <span style="color:${ore.color}; font-size:${ore.size}">${amount}</span>
+      <button onclick="toggleFloatText('${ore.name}', event)" style="margin-left: 5px; font-size: 0.75rem;">
+  ${enabled ? 'Hide' : 'Show'}
+</button>
+
+    </div>`;
+}).join('');
+
       document.getElementById("oreInventory").innerHTML = oreList;
       document.getElementById("upgradeBtn").textContent = `Upgrade Pickaxe (Level ${pickaxeLevel}) - Cost: ${formatCoins(pickaxeCost)} Coins`;
     }
+    
+    function toggleFloatText(oreName, event) {
+  event.stopPropagation(); // prevents click from bubbling to parent elements
+  floatTextEnabled[oreName] = !floatTextEnabled[oreName];
+  updateDisplay();
+}
+
+
 
     function getRandomOre(chances = pickaxeOres.map(o => o.chance)) {
       let total = chances.reduce((a,b) => a + b, 0);
@@ -260,21 +284,26 @@
     }
 
     function showFloatingText(ore) {
-      const text = document.createElement("div");
-      text.className = "float-text";
-      text.style.left = Math.random() * 80 + 10 + "%";
-      if (ore.color.includes("gradient")) {
-        text.style.background = ore.color;
-        text.style.webkitBackgroundClip = "text";
-        text.style.webkitTextFillColor = "transparent";
-      } else {
-        text.style.color = ore.color;
-      }
-      text.style.fontSize = ore.size;
-      text.textContent = "+1 " + ore.name;
-      document.body.appendChild(text);
-      setTimeout(() => text.remove(), 1500);
-    }
+  if (floatTextEnabled[ore.name] === false) return; // skip if disabled
+
+  const text = document.createElement("div");
+  text.className = "float-text";
+  text.style.left = Math.random() * 80 + 10 + "%";
+
+  if (ore.color.includes("gradient")) {
+    text.style.background = ore.color;
+    text.style.webkitBackgroundClip = "text";
+    text.style.webkitTextFillColor = "transparent";
+  } else {
+    text.style.color = ore.color;
+  }
+
+  text.style.fontSize = ore.size;
+  text.textContent = "+1 " + ore.name;
+  document.body.appendChild(text);
+  setTimeout(() => text.remove(), 1500);
+}
+
 
     function upgradePickaxe() {
       if (coins >= pickaxeCost) {
