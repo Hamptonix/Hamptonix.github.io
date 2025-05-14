@@ -183,10 +183,12 @@
     <button id="sellBtn" onclick="sellOres()">Sell All Ores</button>
     <div id="oreInventory"></div>
   </div>
+  <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button>
+  <p>Mining Tycoon v1.4 [Progress Saving Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
-<p>Mining Tycoon v1.3 [Optomization Update]</p>
+
 
 
   <script>
@@ -364,6 +366,46 @@ function adjustMinerSizes() {
   }
 }
 
+function saveGame() {
+  const gameData = {
+    coins,
+    pickaxeLevel,
+    pickaxeCost,
+    oreInventory,
+    minersOwned: minersOwned.map(m => m.name),
+    floatTextEnabled
+  };
+  localStorage.setItem("mineTycoonSave", JSON.stringify(gameData));
+}
+
+function loadGame() {
+  const saved = localStorage.getItem("mineTycoonSave");
+  if (!saved) return;
+
+  const data = JSON.parse(saved);
+  coins = data.coins || 0;
+  pickaxeLevel = data.pickaxeLevel || 1;
+  pickaxeCost = data.pickaxeCost || 50;
+  oreInventory = data.oreInventory || {};
+  floatTextEnabled = data.floatTextEnabled || {};
+
+  minersOwned.length = 0;
+  (data.minersOwned || []).forEach(name => {
+    const miner = minerTypes.find(m => m.name === name);
+    if (miner) {
+      minersOwned.push(miner);
+      const minerImg = document.createElement("img");
+      minerImg.src = miner.image;
+      minerImg.alt = miner.name;
+      document.querySelector(".miner-container").appendChild(minerImg);
+    }
+  });
+
+  adjustMinerSizes();
+  updateDisplay();
+}
+
+
 
     function renderShop() {
       const shop = document.getElementById("minerShop");
@@ -393,6 +435,9 @@ function adjustMinerSizes() {
     renderShop();
     updateDisplay();
     
+    setInterval(saveGame, 5000); // auto-save every 5 seconds
+
+    
   // Add hotkey support
 document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
@@ -411,7 +456,8 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-  
+  loadGame();
+
   </script>
 </body>
 </html>
