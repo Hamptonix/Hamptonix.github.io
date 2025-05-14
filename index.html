@@ -189,6 +189,19 @@
     <div class="miner-container"></div>
   </div>
 
+<div id="adminPanel" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+ background:#2c3e50; color:white; padding:20px; border-radius:10px; z-index:999; box-shadow:0 0 20px rgba(0,0,0,0.7);">
+  <h3>Admin Panel</h3>
+  <label>Set Coins: <input id="adminCoins" type="number" /></label><br/><br/>
+  <label>Set Pickaxe Level: <input id="adminPickaxe" type="number" /></label><br/><br/>
+  <label>Add Miner: 
+    <select id="adminMinerType"></select> 
+    Amount: <input id="adminMinerAmount" type="number" min="1" value="1" />
+  </label><br/><br/>
+  <button onclick="applyAdminChanges()">Apply</button>
+  <button onclick="document.getElementById('adminPanel').style.display='none'">Close</button>
+</div>
+
 
 
   <script>
@@ -228,6 +241,9 @@
     ];
     
     function formatCoins(value) {
+      if (value >= 1_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000).toFixed(2) + "Qa";
+      if (value >= 1_000_000_000_000_000) return (value / 1_000_000_000_000_000).toFixed(2) + "qa";
+      if (value >= 1_000_000_000_000) return (value / 1_000_000_000_000).toFixed(2) + "T";
       if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(2) + "B";
       if (value >= 1_000_000) return (value / 1_000_000).toFixed(2) + "M";
       if (value >= 1_000) return (value / 1_000).toFixed(2) + "K";
@@ -457,6 +473,63 @@ document.addEventListener('keydown', (event) => {
 });
 
   loadGame();
+  
+  let adminTriggerActive = false;
+let adminInput = "";
+
+document.addEventListener("keydown", (e) => {
+  if (e.shiftKey && e.key.toLowerCase() === "m") {
+    adminTriggerActive = true;
+    adminInput = "";
+    console.log("Enter admin code:");
+  } else if (adminTriggerActive && /^[a-zA-Z0-9]$/.test(e.key)) {
+    adminInput += e.key;
+    if (adminInput === "admin") {
+      showAdminPanel();
+      adminTriggerActive = false;
+    } else if (!"admin".startsWith(adminInput)) {
+      adminTriggerActive = false;
+    }
+  }
+});
+
+function showAdminPanel() {
+  const panel = document.getElementById("adminPanel");
+  document.getElementById("adminCoins").value = coins;
+  document.getElementById("adminPickaxe").value = pickaxeLevel;
+
+  const select = document.getElementById("adminMinerType");
+  select.innerHTML = "";
+  minerTypes.forEach((m, i) => {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = m.name;
+    select.appendChild(option);
+  });
+
+  panel.style.display = "block";
+}
+
+function applyAdminChanges() {
+  coins = parseInt(document.getElementById("adminCoins").value) || coins;
+  pickaxeLevel = parseInt(document.getElementById("adminPickaxe").value) || pickaxeLevel;
+
+  const typeIndex = parseInt(document.getElementById("adminMinerType").value);
+  const amount = parseInt(document.getElementById("adminMinerAmount").value) || 0;
+
+  for (let i = 0; i < amount; i++) {
+    minersOwned.push(minerTypes[typeIndex]);
+    const minerImg = document.createElement("img");
+    minerImg.src = minerTypes[typeIndex].image;
+    minerImg.alt = minerTypes[typeIndex].name;
+    document.querySelector(".miner-container").appendChild(minerImg);
+  }
+
+  adjustMinerSizes();
+  updateDisplay();
+  document.getElementById("adminPanel").style.display = "none";
+}
+
 
   </script>
 </body>
