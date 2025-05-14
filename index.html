@@ -168,9 +168,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
-<script>firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();</script>
 </head>
 <body>
   <div id="coinDisplay">Coins: 0</div>
@@ -216,15 +213,20 @@ const db = firebase.firestore();</script>
 
   <script>
     
-    const firebaseConfig = {
+  const firebaseConfig = {
     apiKey: "AIzaSyA1Vxp22EH8Gl1lz-Q2hgaI-uo7Wo4P4j0",
     authDomain: "mining-game-6c2ab.firebaseapp.com",
     projectId: "mining-game-6c2ab",
-    storageBucket: "mining-game-6c2ab.firebasestorage.app",
+    storageBucket: "mining-game-6c2ab.appspot.com",
     messagingSenderId: "97267062067",
     appId: "1:97267062067:web:2cdff842fe1dd20b265a46",
     measurementId: "G-3G8F3P3N03"
-    };
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
     
     let floatTextEnabled = {}; // Controls which ores show float text
 
