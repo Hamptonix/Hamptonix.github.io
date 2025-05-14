@@ -184,7 +184,7 @@
     <div id="oreInventory"></div>
   </div>
   <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button>
-  <p>Mining Tycoon v1.4.2 [Progress Saving Update]</p>
+  <p>Mining Tycoon v1.4.21 [Progress Saving Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
@@ -241,6 +241,9 @@
     ];
     
     function formatCoins(value) {
+      if (value >= 1_000_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000_000).toFixed(2) + "Oc";
+      if (value >= 1_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000).toFixed(2) + "Sp";
+      if (value >= 1_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000).toFixed(2) + "Sx";
       if (value >= 1_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000).toFixed(2) + "Qa";
       if (value >= 1_000_000_000_000_000) return (value / 1_000_000_000_000_000).toFixed(2) + "qa";
       if (value >= 1_000_000_000_000) return (value / 1_000_000_000_000).toFixed(2) + "T";
