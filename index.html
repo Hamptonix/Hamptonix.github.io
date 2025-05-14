@@ -199,16 +199,24 @@
       { name: "Superior Miner", rate: 5, cost: 150000, chances: [5,10,15,25,20,15,10,4,1,0,0,0] },
       { name: "Hamptonite Miner", rate: 6, cost: 2500000, chances: [0,0,0,0,0,0,0,0,0,10,15,25] }
     ];
+    
+    function formatCoins(value) {
+      if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(2) + "B";
+      if (value >= 1_000_000) return (value / 1_000_000).toFixed(2) + "M";
+      if (value >= 1_000) return (value / 1_000).toFixed(2) + "K";
+      return Math.floor(value);
+    }
+
 
     function updateDisplay() {
-      document.getElementById("coinDisplay").textContent = `Coins: ${Math.floor(coins)}`;
+      document.getElementById("coinDisplay").textContent = `Coins: ${formatCoins(coins)}`;
       const oreList = ores.map(ore => {
         const amount = oreInventory[ore.name] || 0;
         const nameColor = ore.color.includes("gradient") ? `background: ${ore.color}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;` : `color: ${ore.color}`;
         return `<div class="ore-line"><span style="${nameColor}">${ore.name}</span><span style="color:${ore.color}; font-size:${ore.size}">${amount}</span></div>`;
       }).join('');
       document.getElementById("oreInventory").innerHTML = oreList;
-      document.getElementById("upgradeBtn").textContent = `Upgrade Pickaxe (Level ${pickaxeLevel}) - Cost: ${pickaxeCost} Coins`;
+      document.getElementById("upgradeBtn").textContent = `Upgrade Pickaxe (Level ${pickaxeLevel}) - Cost: ${formatCoins(pickaxeCost)} Coins`;
     }
 
     function getRandomOre(chances = pickaxeOres.map(o => o.chance)) {
@@ -291,7 +299,7 @@
       minerTypes.forEach((m, i) => {
         const item = document.createElement("div");
         item.className = "miner-item";
-        item.innerHTML = `<strong>${m.name}</strong> - ${m.rate} Ore/Sec<br><button onclick="buyMiner(${i})">Buy for ${m.cost} Coins</button>`;
+        item.innerHTML = `<strong>${m.name}</strong> - ${m.rate} Ore/Sec<br><button onclick="buyMiner(${i})">Buy for ${formatCoins(m.cost)} Coins</button>`;
         shop.appendChild(item);
       });
     }
