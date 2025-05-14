@@ -186,7 +186,7 @@
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
-<p>Miner Tycoon v1.2.1</p>
+<p>Miner Tycoon v1.2.2</p>
 
 
   <script>
@@ -363,6 +363,26 @@ function adjustMinerSizes() {
 
     renderShop();
     updateDisplay();
+    
+  // Add hotkey support
+document.addEventListener('keydown', (event) => {
+  const key = event.key.toLowerCase();
+
+  switch (key) {
+    case 's':
+      toggleShop();
+      break;
+    case 'i':
+      toggleInventory();
+      break;
+    case ' ':
+      event.preventDefault(); // Prevent spacebar from scrolling the page
+      sellOres();
+      break;
+  }
+});
+
+  
   </script>
 </body>
 </html>
