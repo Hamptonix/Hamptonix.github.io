@@ -114,18 +114,37 @@
       cursor: pointer;
     }
 
-    #bottomStone {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      height: 120px;
-      background: url('https://www.transparenttextures.com/patterns/stone-wall.png');
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px;
-    }
+    #bottomStone .miner-container {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping and keep miners in a single row */
+  justify-content: flex-start;
+  gap: 5px; /* Optional: Space between images */
+  width: 100%; /* Full width of the parent container */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical overflow */
+  padding: 10px; /* Optional: Add padding if needed */
+  box-sizing: border-box; /* Include padding in the container's width */
+}
+
+#bottomStone .miner-container img {
+  width: 40px; /* Default size of miner images */
+  height: 40px;
+  margin: 5px;
+}
+
+
+#bottomStone .miner-container img {
+  width: 40px; /* Default image size */
+  height: 40px;
+  margin: 5px;
+  transition: width 0.3s, height 0.3s; /* Smooth resizing transition */
+}
+
+#bottomStone .miner-container img.resize {
+  width: 30px; /* Reduced size when there are too many images */
+  height: 30px;
+}
+
 
     .float-text {
       position: absolute;
@@ -164,8 +183,11 @@
     <button id="sellBtn" onclick="sellOres()">Sell All Ores</button>
     <div id="oreInventory"></div>
   </div>
-  <div id="bottomStone"></div>
-<p>Miner Tycoon v1.1</p>
+  <div id="bottomStone">
+    <div class="miner-container"></div>
+  </div>
+<p>Miner Tycoon v1.2.1</p>
+
 
   <script>
     let coins = 0;
@@ -197,7 +219,7 @@
       { name: "Good Miner", rate: 3, cost: 2500, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8h19Hv0DGq1XeJKdiNwT8fqa3Zih2xismmQ&s", chances: [5,10,15,30,20,15,10,4,1,0,0,0] },
       { name: "Advanced Miner", rate: 4, cost: 10000, image: "https://geoprobe.com/sites/default/files/styles/large/public/articles/Kelly.jpg?itok=kJZluNio", chances: [5,10,15,25,20,15,6,3,1,0,0,0] },
       { name: "Superior Miner", rate: 5, cost: 150000, image: "https://img.amiami.com/images/product/main/124/TOY-RBT-2935.jpg", chances: [5,10,15,25,20,15,10,4,1,0,0,0] },
-      { name: "Hamptonite Miner", rate: 6, cost: 2500000, image: "https://i.postimg.cc/s2MTPscQ/image0.jpg", chances: [0,0,0,0,0,0,0,0,0,10,15,25] }
+      { name: "Hamptonite Miner", rate: 6, cost: 2500000, image: "https://i.postimg.cc/s2MTPscQ/image0.jpg", chances: [0,0,0,0,0,0,0,0,0,50,25,25] }
     ];
     
     function formatCoins(value) {
@@ -283,21 +305,36 @@
     }
 
     function buyMiner(index) {
-      const miner = minerTypes[index];
-      if (coins >= miner.cost) {
-        coins -= miner.cost;
-        minersOwned.push(miner);
-        const minerDiv = document.createElement("div");
-        const minerImg = document.createElement("img");
-minerImg.src = miner.image;
-minerImg.alt = miner.name;
-minerImg.style.width = "40px";
-minerImg.style.height = "40px";
-minerDiv.appendChild(minerImg);
+  const miner = minerTypes[index];
+  if (coins >= miner.cost) {
+    coins -= miner.cost;
+    minersOwned.push(miner);
+    const minerDiv = document.createElement("div");
+    const minerImg = document.createElement("img");
+    minerImg.src = miner.image;
+    minerImg.alt = miner.name;
+    
+    // Append the miner image to the container
+    const minerContainer = document.getElementById("bottomStone").querySelector(".miner-container");
+    minerContainer.appendChild(minerImg);
 
-        document.getElementById("bottomStone").appendChild(minerDiv);
-      }
-    }
+    // Resize miners if there are too many
+    adjustMinerSizes();
+  }
+}
+
+function adjustMinerSizes() {
+  const minerContainer = document.getElementById("bottomStone").querySelector(".miner-container");
+  const miners = minerContainer.querySelectorAll("img");
+
+  // Check if there are too many miners
+  if (miners.length > 8) {
+    miners.forEach(miner => miner.classList.add("resize"));
+  } else {
+    miners.forEach(miner => miner.classList.remove("resize"));
+  }
+}
+
 
     function renderShop() {
       const shop = document.getElementById("minerShop");
