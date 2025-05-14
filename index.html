@@ -163,6 +163,14 @@
       justify-content: space-between;
     }
   </style>
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+<script>firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();</script>
 </head>
 <body>
   <div id="coinDisplay">Coins: 0</div>
@@ -172,6 +180,7 @@
   <div id="gameContainer">
     <button id="clickBtn"></button>
     <button id="upgradeBtn" onclick="upgradePickaxe()">Upgrade Pickaxe (Level 1) - Cost: 50 Coins</button>
+    <button id="signInBtn">Sign in with Google</button>
   </div>
 
   <div id="shopMenu">
@@ -184,7 +193,8 @@
     <div id="oreInventory"></div>
   </div>
   <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button>
-  <p>Mining Tycoon v1.4.21 [Progress Saving Update]</p>
+
+  <p>Mining Tycoon v1.5 [Progress Saving Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
@@ -205,6 +215,16 @@
 
 
   <script>
+    
+    const firebaseConfig = {
+    apiKey: "AIzaSyA1Vxp22EH8Gl1lz-Q2hgaI-uo7Wo4P4j0",
+    authDomain: "mining-game-6c2ab.firebaseapp.com",
+    projectId: "mining-game-6c2ab",
+    storageBucket: "mining-game-6c2ab.firebasestorage.app",
+    messagingSenderId: "97267062067",
+    appId: "1:97267062067:web:2cdff842fe1dd20b265a46",
+    measurementId: "G-3G8F3P3N03"
+    };
     
     let floatTextEnabled = {}; // Controls which ores show float text
 
@@ -282,6 +302,64 @@
   event.stopPropagation(); // prevents click from bubbling to parent elements
   floatTextEnabled[oreName] = !floatTextEnabled[oreName];
   updateDisplay();
+}
+
+document.getElementById("signInBtn").addEventListener("click", () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then(result => {
+      console.log("Signed in:", result.user);
+      loadCloudSave(result.user.uid);
+    })
+    .catch(error => console.error(error));
+});
+
+function saveCloudGame(uid) {
+  const gameData = {
+    coins,
+    pickaxeLevel,
+    pickaxeCost,
+    oreInventory,
+    minersOwned: minersOwned.map(m => m.name)
+  };
+
+  db.collection("users").doc(uid).set(gameData)
+    .then(() => console.log("Game saved to cloud"))
+    .catch(console.error);
+}
+
+function loadCloudSave(uid) {
+  db.collection("users").doc(uid).get()
+    .then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        coins = data.coins;
+        pickaxeLevel = data.pickaxeLevel;
+        pickaxeCost = data.pickaxeCost;
+        oreInventory = data.oreInventory;
+        minersOwned = [];
+
+        if (Array.isArray(data.minersOwned)) {
+          const minerContainer = document.querySelector("#bottomStone .miner-container");
+          minerContainer.innerHTML = "";
+          data.minersOwned.forEach(name => {
+            const miner = minerTypes.find(m => m.name === name);
+            if (miner) {
+              minersOwned.push(miner);
+              const img = document.createElement("img");
+              img.src = miner.image;
+              img.alt = miner.name;
+              minerContainer.appendChild(img);
+            }
+          });
+          adjustMinerSizes();
+        }
+
+        updateDisplay();
+        console.log("Loaded save from cloud");
+      }
+    })
+    .catch(console.error);
 }
 
 
@@ -455,6 +533,13 @@ function loadGame() {
     updateDisplay();
     
     setInterval(saveGame, 5000); // auto-save every 5 seconds
+    
+    setInterval(() => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    saveCloudGame(user.uid);
+  }
+}, 5000);
 
     
   // Add hotkey support
@@ -532,6 +617,19 @@ function applyAdminChanges() {
   updateDisplay();
   document.getElementById("adminPanel").style.display = "none";
 }
+
+function confirmReset() {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const userInput = prompt(`Type the following code to confirm reset:\n\n${code}`);
+  
+  if (userInput === code) {
+    localStorage.removeItem('mineTycoonSave');
+    location.reload();
+  } else if (userInput !== null) {
+    alert("Incorrect code. Game reset canceled.");
+  }
+}
+
 
 
   </script>
