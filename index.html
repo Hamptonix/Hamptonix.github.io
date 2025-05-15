@@ -177,8 +177,12 @@
   <div id="gameContainer">
     <button id="clickBtn"></button>
     <button id="upgradeBtn" onclick="upgradePickaxe()">Upgrade Pickaxe (Level 1) - Cost: 50 Coins</button>
-    <button id="signInBtn">Sign in with Google</button>
   </div>
+  <div style="margin: 20px; text-align: center;">
+  <button onclick="saveGameToFile()">Export Save (JSON)</button>
+  <input type="file" id="importFile" accept=".json" style="display:none;" onchange="loadGameFromFile(event)" />
+  <button onclick="document.getElementById('importFile').click()">Import Save (JSON)</button>
+</div>
 
   <div id="shopMenu">
     <h3>Miner Shop</h3>
@@ -189,12 +193,15 @@
     <button id="sellBtn" onclick="sellOres()">Sell All Ores</button>
     <div id="oreInventory"></div>
   </div>
-  <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button>
-
-  <p>Mining Tycoon v1.5 [Progress Saving Update]</p>
+  <div style="text-align: center;">
+  <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button></div>
+<p style="text-align: center;">Mining Tycoon v1.5 [Progress Saving Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
+  <!-- Save and Load Buttons -->
+
+
 
 <div id="adminPanel" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
  background:#2c3e50; color:white; padding:20px; border-radius:10px; z-index:999; box-shadow:0 0 20px rgba(0,0,0,0.7);">
@@ -212,20 +219,6 @@
 
 
   <script>
-    
-  const firebaseConfig = {
-  apiKey: "AIzaSyA1Vxp22EH8Gl1lz-Q2hgaI-uo7Wo4P4j0",
-  authDomain: "mining-game-6c2ab.firebaseapp.com",
-  projectId: "mining-game-6c2ab",
-  storageBucket: "mining-game-6c2ab.firebasestorage.app",
-  messagingSenderId: "97267062067",
-  appId: "1:97267062067:web:2cdff842fe1dd20b265a46",
-  measurementId: "G-3G8F3P3N03"
-};
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
 
     
     let floatTextEnabled = {}; // Controls which ores show float text
@@ -306,63 +299,6 @@
   updateDisplay();
 }
 
-document.getElementById("signInBtn").addEventListener("click", () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then(result => {
-      console.log("Signed in:", result.user);
-      loadCloudSave(result.user.uid);
-    })
-    .catch(error => console.error(error));
-});
-
-function saveCloudGame(uid) {
-  const gameData = {
-    coins,
-    pickaxeLevel,
-    pickaxeCost,
-    oreInventory,
-    minersOwned: minersOwned.map(m => m.name)
-  };
-
-  db.collection("users").doc(uid).set(gameData)
-    .then(() => console.log("Game saved to cloud"))
-    .catch(console.error);
-}
-
-function loadCloudSave(uid) {
-  db.collection("users").doc(uid).get()
-    .then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        coins = data.coins;
-        pickaxeLevel = data.pickaxeLevel;
-        pickaxeCost = data.pickaxeCost;
-        oreInventory = data.oreInventory;
-        minersOwned = [];
-
-        if (Array.isArray(data.minersOwned)) {
-          const minerContainer = document.querySelector("#bottomStone .miner-container");
-          minerContainer.innerHTML = "";
-          data.minersOwned.forEach(name => {
-            const miner = minerTypes.find(m => m.name === name);
-            if (miner) {
-              minersOwned.push(miner);
-              const img = document.createElement("img");
-              img.src = miner.image;
-              img.alt = miner.name;
-              minerContainer.appendChild(img);
-            }
-          });
-          adjustMinerSizes();
-        }
-
-        updateDisplay();
-        console.log("Loaded save from cloud");
-      }
-    })
-    .catch(console.error);
-}
 
 
 
@@ -464,6 +400,68 @@ function adjustMinerSizes() {
     miners.forEach(miner => miner.classList.remove("resize"));
   }
 }
+
+function getGameState() {
+  return {
+    coins,
+    pickaxeLevel,
+    pickaxeCost,
+    oreInventory,
+    minersOwned,
+    floatTextEnabled
+  };
+}
+
+function setGameState(state) {
+  coins = state.coins ?? 0;
+  pickaxeLevel = state.pickaxeLevel ?? 1;
+  pickaxeCost = state.pickaxeCost ?? 50;
+  oreInventory = state.oreInventory ?? {};
+  floatTextEnabled = state.floatTextEnabled ?? {};
+  // Only assign minersOwned if it exists
+  if (Array.isArray(state.minersOwned)) {
+    minersOwned.length = 0;
+    minersOwned.push(...state.minersOwned);
+  }
+  updateDisplay();
+}
+
+// Export save as JSON file
+
+
+function saveGameToFile() {
+  const data = getGameState();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mine_tycoon_save.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+
+
+// Import save from JSON file
+function loadGameFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      setGameState(data);
+      alert("Game loaded successfully!");
+    } catch (err) {
+      alert("Failed to load game: Invalid file.");
+    }
+  };
+  reader.readAsText(file);
+}
+
 
 function saveGame() {
   const gameData = {
