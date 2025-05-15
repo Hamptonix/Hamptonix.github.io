@@ -224,7 +224,7 @@
 
   <div style="text-align: center;">
   <button style="margin-top: 10px; background: #f00a19; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button></div>
-<p style="text-align: center; margin-top:20px ">Mining Tycoon v1.6 [Gambling Update]</p>
+<p style="text-align: center; margin-top:20px ">Mining Tycoon v1.6.1 [Gambling Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
@@ -285,6 +285,9 @@
     ];
     
     function formatCoins(value) {
+      if (value >= 1_000_000_000_000_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "Ude";
+      if (value >= 1_000_000_000_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "De";
+      if (value >= 1_000_000_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "No";
       if (value >= 1_000_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000_000).toFixed(2) + "Oc";
       if (value >= 1_000_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000_000).toFixed(2) + "Sp";
       if (value >= 1_000_000_000_000_000_000_000) return (value / 1_000_000_000_000_000_000_000).toFixed(2) + "Sx";
