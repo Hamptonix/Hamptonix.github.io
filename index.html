@@ -76,7 +76,7 @@
     }
 
     #shopBtn { right: 10px; }
-    #inventoryBtn { right: 100px; }
+    #inventoryBtn { right: 10px; top: 50px;}
 
     #shopMenu, #inventoryMenu {
       display: none;
@@ -162,6 +162,19 @@
       display: flex;
       justify-content: space-between;
     }
+    
+    #gamblingBtn {
+  position: absolute;
+  top: 90px;
+  right: 10px;
+  background: #8e44ad;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
   </style>
   <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -173,15 +186,17 @@
   <div id="coinDisplay">Coins: 0</div>
   <button id="shopBtn" onclick="toggleShop()">Shop</button>
   <button id="inventoryBtn" onclick="toggleInventory()">Inventory</button>
+  <button id="gamblingBtn" onclick="toggleGambling()">Gambling</button>
+
 
   <div id="gameContainer">
     <button id="clickBtn"></button>
     <button id="upgradeBtn" onclick="upgradePickaxe()">Upgrade Pickaxe (Level 1) - Cost: 50 Coins</button>
   </div>
   <div style="margin: 20px; text-align: center;">
-  <button onclick="saveGameToFile()">Export Save (JSON)</button>
+  <button style="margin-top: 10px; background: #3864c2; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="saveGameToFile()">Export Save (JSON)</button>
   <input type="file" id="importFile" accept=".json" style="display:none;" onchange="loadGameFromFile(event)" />
-  <button onclick="document.getElementById('importFile').click()">Import Save (JSON)</button>
+  <button style="margin-top: 10px; background: #3864c2; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;"onclick="document.getElementById('importFile').click()">Import Save (JSON)</button>
 </div>
 
   <div id="shopMenu">
@@ -193,9 +208,23 @@
     <button id="sellBtn" onclick="sellOres()">Sell All Ores</button>
     <div id="oreInventory"></div>
   </div>
+  <div id="gamblingMenu" style="display:none; position:absolute; top:60px; right:200px; background:#3b4a5a; border-radius:10px; padding:1rem; width:300px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:10;">
+  <h3>Coin Flip</h3>
+  <input type="number" id="coinFlipBet" placeholder="Enter bet amount" style="width: 90%; padding: 8px; margin-bottom: 10px; border: 1px solid #555; border-radius: 5px; background-color: #444; color: #eee;" />
+  <button style="margin-top: 10px; background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="flipCoin()">Flip Coin</button>
+  <p id="coinFlipResult"></p>
+  <hr>
+  <h3>Dice Roll</h3>
+  <input type="number" id="diceBet" placeholder="Enter bet amount" style="width: 90%; padding: 8px; margin-bottom: 5px; border: 1px solid #555; border-radius: 5px; background-color: #444; color: #eee;" />
+  <input type="number" id="diceSide" placeholder="Pick a number (1–6)" min="1" max="6" style="width: 90%; padding: 8px; margin-top: 5px; border: 1px solid #555; border-radius: 5px; background-color: #444; color: #eee;" />
+  <button style="margin-top: 10px; background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="rollDice()">Roll Dice</button>
+  <p id="diceResult"></p>
+</div>
+</div>
+
   <div style="text-align: center;">
-  <button onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button></div>
-<p style="text-align: center;">Mining Tycoon v1.5 [Progress Saving Update]</p>
+  <button style="margin-top: 10px; background: #f00a19; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="localStorage.removeItem('mineTycoonSave'); location.reload();">Reset Game</button></div>
+<p style="text-align: center; margin-top:20px ">Mining Tycoon v1.6 [Gambling Update]</p>
   <div id="bottomStone">
     <div class="miner-container"></div>
   </div>
@@ -282,7 +311,7 @@
     <div class="ore-line">
       <span style="${nameColor}">${ore.name}</span>
       <span style="color:${ore.color}; font-size:${ore.size}">${amount}</span>
-      <button onclick="toggleFloatText('${ore.name}', event)" style="margin-left: 5px; font-size: 0.75rem;">
+      <button onclick="toggleFloatText('${ore.name}', event)" style="margin-left: 5px; font-size: 0.75rem; margin-top: 1px; background: #27ae60; color: white; border: none; padding: 4px 4px; border-radius: 8px; cursor: pointer;">
   ${enabled ? 'Hide' : 'Show'}
 </button>
 
@@ -426,6 +455,48 @@ function setGameState(state) {
   updateDisplay();
 }
 
+function toggleGambling() {
+  const menu = document.getElementById("gamblingMenu");
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
+function flipCoin() {
+  const bet = parseFloat(document.getElementById("coinFlipBet").value);
+  if (isNaN(bet) || bet <= 0 || bet > coins) {
+    document.getElementById("coinFlipResult").textContent = "Invalid bet.";
+    return;
+  }
+  const win = Math.random() < 0.5;
+  if (win) {
+    coins += bet;
+    document.getElementById("coinFlipResult").textContent = `You won! You earned ${formatCoins(bet)} coins.`;
+  } else {
+    coins -= bet;
+    document.getElementById("coinFlipResult").textContent = `You lost ${formatCoins(bet)} coins.`;
+  }
+  updateDisplay();
+}
+
+function rollDice() {
+  const bet = parseFloat(document.getElementById("diceBet").value);
+  const guess = parseInt(document.getElementById("diceSide").value);
+  if (isNaN(bet) || isNaN(guess) || bet <= 0 || bet > coins || guess < 1 || guess > 6) {
+    document.getElementById("diceResult").textContent = "Invalid bet or number.";
+    return;
+  }
+  const roll = Math.floor(Math.random() * 6) + 1;
+  if (roll === guess) {
+    const winnings = bet * 10;
+    coins += winnings;
+    document.getElementById("diceResult").textContent = `You rolled ${roll} and won ${formatCoins(winnings)} coins!`;
+  } else {
+    coins -= bet;
+    document.getElementById("diceResult").textContent = `You rolled ${roll}. You lost ${formatCoins(bet)} coins.`;
+  }
+  updateDisplay();
+}
+
+
 // Export save as JSON file
 
 
@@ -510,7 +581,7 @@ function loadGame() {
       minerTypes.forEach((m, i) => {
         const item = document.createElement("div");
         item.className = "miner-item";
-        item.innerHTML = `<strong>${m.name}</strong> - ${m.rate} Ore/Sec<br><button onclick="buyMiner(${i})">Buy for ${formatCoins(m.cost)} Coins</button>`;
+        item.innerHTML = `<strong>${m.name}</strong> - ${m.rate} Ore/Sec<br><button style="margin-top: 10px; background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="buyMiner(${i})">Buy for ${formatCoins(m.cost)} Coins</button>`;
         shop.appendChild(item);
       });
     }
@@ -547,6 +618,9 @@ document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
 
   switch (key) {
+    case 'g':
+      toggleGambling();
+      break;
     case 's':
       toggleShop();
       break;
