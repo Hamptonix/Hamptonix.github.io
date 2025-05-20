@@ -649,7 +649,7 @@ document.addEventListener("keydown", (e) => {
     console.log("Enter admin code:");
   } else if (adminTriggerActive && /^[a-zA-Z0-9]$/.test(e.key)) {
     adminInput += e.key;
-    if (adminInput === "adminmenu404") {
+    if (adminInput === "admin") {
       showAdminPanel();
       adminTriggerActive = false;
     } else if (!"admin".startsWith(adminInput)) {
