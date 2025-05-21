@@ -1,75 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | Hamptonix</title>
-    <link
-        rel="icon"
-        type="image/png"
-        href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; background-color: #e9ecef; }
-        h1 { color: #343a40; margin-bottom: 40px; }
-        .game-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-        .game-card {
-            background-color: white;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            padding: 20px;
-            width: 280px; /* Adjust as needed */
-            text-align: center;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-        .game-card h2 { color: #007bff; margin-top: 0; }
-        .game-card p { color: #6c757d; font-size: 0.9em; }
-        .play-button {
-            display: block;
-            width: calc(100% - 40px); /* Account for padding */
-            padding: 10px 20px;
-            margin-top: 15px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-        }
-        .play-button:hover { background-color: #218838; }
-        footer { margin-top: 50px; color: #6c757d; font-size: 0.8em; }
-    </style>
-</head>
-<body>
-    <h1>Welcome to Hamptonix Games!</h1>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home | Hamptonix</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
+  <style>
+  
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    <div class="game-container">
-        <div class="game-card">
-            <h2>Game 1: Space Blaster!</h2>
-            <p>Blast through asteroids and alien invaders in this classic arcade shooter!</p>
-            <a href="/mininggame/" class="play-button">Play Game 1</a>
-        </div>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0b0b2b, #1b2735 70%, #090a0f);
+  overflow: hidden;
+}
 
-        <div class="game-card">
-            <h2>Game 2: Puzzle Master</h2>
-            <p>Test your brain with challenging logic puzzles and connect the dots!</p>
-            <a href="/game2/" class="play-button">Play Game 2</a>
-        </div>
+.stars {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  background: white;
+  box-shadow: 2vw 5vh 2px white, 10vw 8vh 2px white, 15vw 15vh 1px white,
+    22vw 22vh 1px white, 28vw 12vh 2px white, 32vw 32vh 1px white,
+    38vw 18vh 2px white, 42vw 35vh 1px white, 48vw 25vh 2px white,
+    53vw 42vh 1px white, 58vw 15vh 2px white, 63vw 38vh 1px white,
+    68vw 28vh 2px white, 73vw 45vh 1px white, 78vw 32vh 2px white,
+    83vw 48vh 1px white, 88vw 20vh 2px white, 93vw 52vh 1px white,
+    98vw 35vh 2px white, 5vw 60vh 1px white, 12vw 65vh 2px white,
+    18vw 72vh 1px white, 25vw 78vh 2px white, 30vw 85vh 1px white,
+    35vw 68vh 2px white, 40vw 82vh 1px white, 45vw 92vh 2px white,
+    50vw 75vh 1px white, 55vw 88vh 2px white, 60vw 95vh 1px white,
+    65vw 72vh 2px white, 70vw 85vh 1px white, 75vw 78vh 2px white,
+    80vw 92vh 1px white, 85vw 82vh 2px white, 90vw 88vh 1px white,
+    95vw 75vh 2px white;
+  animation: twinkle 8s infinite linear;
+}
 
-        <div class="game-card">
-            <h2>Game 3: Adventure Quest</h2>
-            <p>Embark on an epic journey, collect treasures, and defeat monsters!</p>
-            <a href="/game3/" class="play-button">Play Game 3</a>
-        </div>
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
 
-        </div>
 
-    <footer>
-        <p>&copy; 2025 Hamptonix. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+/* Additional twinkling stars with different animation timing */
+.stars::after {
+  content: "";
+  position: relative;
+  z-index: 1;
+  width: 1px;
+  height: 1px;
+  background: white;
+  box-shadow: 8vw 12vh 2px white, 16vw 18vh 1px white, 24vw 25vh 2px white,
+    33vw 15vh 1px white, 41vw 28vh 2px white, 49vw 35vh 1px white,
+    57vw 22vh 2px white, 65vw 42vh 1px white, 73vw 28vh 2px white,
+    81vw 48vh 1px white, 89vw 32vh 2px white, 97vw 45vh 1px white,
+    3vw 68vh 2px white, 11vw 75vh 1px white, 19vw 82vh 2px white,
+    27vw 88vh 1px white, 35vw 72vh 2px white, 43vw 85vh 1px white,
+    51vw 92vh 2px white, 59vw 78vh 1px white;
+  animation: twinkle 6s infinite linear reverse;
+}
+
+    
+h1 {
+  margin: 40px;
+  margin-bottom: 100px;
+  color: white;
+  }
+  
+.game-thumb {
+  z-index: 2;
+  margin: 5px;
+  width: 200px;             /* Controls width */
+  height: 200px;            /* Controls height */
+  object-fit: cover;        /* Ensures image fills the box without stretching */
+  border-radius: 20px;      /* Rounds the corners */
+  transition: transform 0.3s ease;
+}
+
+.game-thumb:hover {
+  transform: scale(1.05);   /* Optional hover zoom effect */
+}
+
+footer {
+      margin-top: 50px;
+      font-size: 0.8em;
+      color: #6c757d;
+    }
+
+  </style>
+  <body>
+      <h1>Hampton Games</h1>
+      <div class="stars"></div>
+
+
+<a href="/mininggame/" class="game-link">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Mining Game" class="game-thumb">
+</a>
+
+<a href="/crazycaddle/" class="game-link">
+  <img src="https://img.itch.zone/aW1hZ2UvMzQ2NTA1NC8yMDY2ODk0MC5wbmc=/original/neGXnH.png" alt="Crazy Caddle" class="game-thumb">
+</a>
+<br>
+<footer>
+  <p>&copy; 2025 Hamptonix. All rights reserved.</p>
+</footer>
+  </body>
