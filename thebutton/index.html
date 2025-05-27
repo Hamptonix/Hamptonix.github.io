@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyInstants Style Button</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Global Counter Button</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,7 +26,7 @@
     #button {
       width: 250px;
       height: 250px;
-      background-color: #ff4d4d;  /* Bright red like MyInstants */
+      background-color: #ff4d4d;
       color: white;
       border: none;
       border-radius: 50%;
@@ -55,71 +55,59 @@
     }
 
     @keyframes bounceEffect {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
   <div id="counter">0</div>
   <button id="button">Press Me</button>
-  
+
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <script>
+    // Replace with your own Firebase config
+   const firebaseConfig = {
+  apiKey: "AIzaSyCmUQ0nbeUqCEqJtfw4IcZiV5brltBpij0",
+  authDomain: "thebutton-d0fbe.firebaseapp.com",
+  databaseURL: "https://thebutton-d0fbe-default-rtdb.firebaseio.com",
+  projectId: "thebutton-d0fbe",
+  storageBucket: "thebutton-d0fbe.firebasestorage.app",
+  messagingSenderId: "611797508454",
+  appId: "1:611797508454:web:0d72c166aff9c918db68a7",
+  measurementId: "G-6G6GP7GJ3C"
+};
 
-    const firebaseConfig = {
-    apiKey: "AIzaSyCmUQ0nbeUqCEqJtfw4IcZiV5brltBpij0",
-    authDomain: "thebutton-d0fbe.firebaseapp.com",
-    databaseURL: "https://thebutton-d0fbe-default-rtdb.firebaseio.com",
-    projectId: "thebutton-d0fbe",
-    storageBucket: "thebutton-d0fbe.firebasestorage.app",
-    messagingSenderId: "611797508454",
-    appId: "1:611797508454:web:0d72c166aff9c918db68a7",
-    measurementId: "G-6G6GP7GJ3C"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    let counter = 0;
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const counterRef = db.ref('globalCounter');
 
     const counterElement = document.getElementById('counter');
-  const buttonElement = document.getElementById('button');
-  const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');
+    const buttonElement = document.getElementById('button');
+    const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');
 
-  // Initialize Firebase here (paste config and init code from above)
-
-  const counterRef = db.ref('globalCounter');
-
-  // Sync the counter in real-time
-  counterRef.on('value', (snapshot) => {
-    const value = snapshot.val() || 0;
-    counterElement.textContent = value;
-  });
-
-  buttonElement.addEventListener('click', () => {
-    clickSound.play();
-
-    // Add bounce effect
-    buttonElement.classList.add('bounce');
-    setTimeout(() => {
-      buttonElement.classList.remove('bounce');
-    }, 200);
-
-    // Read-modify-write (get current value and increment it)
-    counterRef.transaction((currentValue) => {
-      return (currentValue || 0) + 1;
+    // Listen for counter updates
+    counterRef.on('value', (snapshot) => {
+      const value = snapshot.val() || 0;
+      counterElement.textContent = value;
     });
-  });
+
+    buttonElement.addEventListener('click', () => {
+      clickSound.play();
+
+      // Add bounce
+      buttonElement.classList.add('bounce');
+      setTimeout(() => buttonElement.classList.remove('bounce'), 200);
+
+      // Increase counter transactionally
+      counterRef.transaction((currentValue) => {
+        return (currentValue || 0) + 1;
+      });
+    });
   </script>
 </body>
 </html>
