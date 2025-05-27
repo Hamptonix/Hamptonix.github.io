@@ -93,25 +93,33 @@
     let counter = 0;
 
     const counterElement = document.getElementById('counter');
-    const buttonElement = document.getElementById('button');
+  const buttonElement = document.getElementById('button');
+  const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');
 
-    // Add sound when the button is pressed
-    const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');  // Example sound link
-    clickSound.preload = 'auto';
+  // Initialize Firebase here (paste config and init code from above)
 
-    buttonElement.addEventListener('click', () => {
-      counter++;  // Increase the counter by 1
-      counterElement.textContent = counter;
+  const counterRef = db.ref('globalCounter');
 
-      // Add the bounce effect when the button is clicked
-      buttonElement.classList.add('bounce');
-      setTimeout(() => {
-        buttonElement.classList.remove('bounce');
-      }, 200);  // Remove the bounce class after it's done (200ms)
+  // Sync the counter in real-time
+  counterRef.on('value', (snapshot) => {
+    const value = snapshot.val() || 0;
+    counterElement.textContent = value;
+  });
 
-      // Play sound effect
-      clickSound.play();
+  buttonElement.addEventListener('click', () => {
+    clickSound.play();
+
+    // Add bounce effect
+    buttonElement.classList.add('bounce');
+    setTimeout(() => {
+      buttonElement.classList.remove('bounce');
+    }, 200);
+
+    // Read-modify-write (get current value and increment it)
+    counterRef.transaction((currentValue) => {
+      return (currentValue || 0) + 1;
     });
+  });
   </script>
 </body>
 </html>
