@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyInstants Style Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      background-color: #f7f7f7;
+    }
+
+    #counter {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #button {
+      width: 250px;
+      height: 250px;
+      background-color: #ff4d4d;  /* Bright red like MyInstants */
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #button:active {
+      transform: scale(0.95);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    #button:hover {
+      background-color: #e60000;
+    }
+
+    .bounce {
+      animation: bounceEffect 0.2s ease-in-out;
+    }
+
+    @keyframes bounceEffect {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="counter">0</div>
+  <button id="button">Press Me</button>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <script>
+    let counter = 0;
+
+    const counterElement = document.getElementById('counter');
+    const buttonElement = document.getElementById('button');
+
+    // Add sound when the button is pressed
+    const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');  // Example sound link
+    clickSound.preload = 'auto';
+
+    buttonElement.addEventListener('click', () => {
+      counter++;  // Increase the counter by 1
+      counterElement.textContent = counter;
+
+      // Add the bounce effect when the button is clicked
+      buttonElement.classList.add('bounce');
+      setTimeout(() => {
+        buttonElement.classList.remove('bounce');
+      }, 200);  // Remove the bounce class after it's done (200ms)
+
+      // Play sound effect
+      clickSound.play();
+    });
+  </script>
+</body>
+</html>
