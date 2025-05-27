@@ -8,11 +8,11 @@
     body {
       font-family: Arial, sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      flex-direction: column;
       background-color: #f7f7f7;
     }
 
@@ -23,11 +23,14 @@
       color: #333;
     }
 
-    #button {
+    .button-container {
+      display: flex;
+      gap: 40px;
+    }
+
+    .circle-button {
       width: 250px;
       height: 250px;
-      background-color: #ff4d4d;
-      color: white;
       border: none;
       border-radius: 50%;
       font-size: 24px;
@@ -39,15 +42,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      color: white;
     }
 
-    #button:active {
+    #addButton {
+      background-color: #ff4d4d;
+    }
+
+    #addButton:hover {
+      background-color: #e60000;
+    }
+
+    #subtractButton {
+      background-color: #4d79ff;
+    }
+
+    #subtractButton:hover {
+      background-color: #1a53ff;
+    }
+
+    .circle-button:active {
       transform: scale(0.95);
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    #button:hover {
-      background-color: #e60000;
     }
 
     .bounce {
@@ -63,31 +79,34 @@
 </head>
 <body>
   <div id="counter">0</div>
-  <button id="button">Press Me</button>
+  <div class="button-container">
+    <button id="addButton" class="circle-button">Add</button>
+    <button id="subtractButton" class="circle-button">Subtract</button>
+  </div>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <script>
-    // Replace with your own Firebase config
-   const firebaseConfig = {
-  apiKey: "AIzaSyCmUQ0nbeUqCEqJtfw4IcZiV5brltBpij0",
-  authDomain: "thebutton-d0fbe.firebaseapp.com",
-  databaseURL: "https://thebutton-d0fbe-default-rtdb.firebaseio.com",
-  projectId: "thebutton-d0fbe",
-  storageBucket: "thebutton-d0fbe.firebasestorage.app",
-  messagingSenderId: "611797508454",
-  appId: "1:611797508454:web:0d72c166aff9c918db68a7",
-  measurementId: "G-6G6GP7GJ3C"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCmUQ0nbeUqCEqJtfw4IcZiV5brltBpij0",
+      authDomain: "thebutton-d0fbe.firebaseapp.com",
+      databaseURL: "https://thebutton-d0fbe-default-rtdb.firebaseio.com",
+      projectId: "thebutton-d0fbe",
+      storageBucket: "thebutton-d0fbe.firebasestorage.app",
+      messagingSenderId: "611797508454",
+      appId: "1:611797508454:web:0d72c166aff9c918db68a7",
+      measurementId: "G-6G6GP7GJ3C"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const counterRef = db.ref('globalCounter');
 
     const counterElement = document.getElementById('counter');
-    const buttonElement = document.getElementById('button');
+    const addButton = document.getElementById('addButton');
+    const subtractButton = document.getElementById('subtractButton');
     const clickSound = new Audio('https://www.myinstants.com/media/sounds/button_click.mp3');
 
     // Listen for counter updates
@@ -96,18 +115,24 @@
       counterElement.textContent = value;
     });
 
-    buttonElement.addEventListener('click', () => {
+    // Add Button
+    addButton.addEventListener('click', () => {
       clickSound.play();
-
-      // Add bounce
-      buttonElement.classList.add('bounce');
-      setTimeout(() => buttonElement.classList.remove('bounce'), 200);
-
-      // Increase counter transactionally
-      counterRef.transaction((currentValue) => {
-        return (currentValue || 0) + 1;
-      });
+      animate(addButton);
+      counterRef.transaction((currentValue) => (currentValue || 0) + 1);
     });
+
+    // Subtract Button
+    subtractButton.addEventListener('click', () => {
+      clickSound.play();
+      animate(subtractButton);
+      counterRef.transaction((currentValue) => (currentValue || 0) - 1);
+    });
+
+    function animate(button) {
+      button.classList.add('bounce');
+      setTimeout(() => button.classList.remove('bounce'), 200);
+    }
   </script>
 </body>
 </html>
