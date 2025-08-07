@@ -145,7 +145,37 @@ footer {
   alert(`Sign-in failed: ${error.message}`);
 });
   });
+
+document.getElementById('googleSignInBtn').addEventListener('click', () => {
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      const user = result.user;
+      console.log("User signed in:", user.displayName);
+      alert(`Welcome, ${user.displayName}!`);
+      
+      // Show the user name on the page
+      document.getElementById('userEmail').textContent = `Welcome, ${user.displayName}!`;
+    })
+    .catch((error) => {
+      console.error("Error during sign-in:", error);
+      alert(`Sign-in failed: ${error.message}`);
+    });
+});
+
+// Also update onAuthStateChanged:
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    // Show user name if signed in
+    document.getElementById('userEmail').textContent = `Welcome, ${user.displayName}!`;
+  } else {
+    document.getElementById('userEmail').textContent = '';
+  }
+});
+
 </script>
+
+<p id="userEmail" style="color: white; margin-top: 20px;"></p>
+
 
 <footer>
   <p style="margin-top: 50px; font-size: 0.8em; color: #6c757d;">&copy; 2025 Hamptonix. All rights reserved.</p>
