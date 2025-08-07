@@ -166,7 +166,7 @@ document.getElementById('googleSignInBtn').addEventListener('click', () => {
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // Show user name if signed in
-    document.getElementById('userEmail').textContent = `Welcome, ${user.displayName}!`;
+    document.getElementById('userEmail').textContent = `Signed in as ${user.displayName}!`;
   } else {
     document.getElementById('userEmail').textContent = '';
   }
