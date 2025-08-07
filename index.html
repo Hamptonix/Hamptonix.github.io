@@ -103,9 +103,65 @@ footer {
   </style>
   <body>
       <h1>Im updating my site rn so give me like a week</h1>
+      
+      
       <div class="stars"></div>
 
 <br>
+
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<!-- Firebase Authentication -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+
+<script>
+
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+  authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+  projectId: "hamptonixwebsite-dea39",
+  storageBucket: "hamptonixwebsite-dea39.firebasestorage.app",
+  messagingSenderId: "847673046697",
+  appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+  measurementId: "G-CBL1NL69PH"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+  authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+  // other config
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const provider = new firebase.auth.GoogleAuthProvider();
+
+firebase.auth().signInWithPopup(provider)
+  .then((result) => {
+    // User signed in
+    const user = result.user;
+    console.log("User email:", user.email);
+    // You can save user data to Firebase Firestore here or just use user info on frontend
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
+
+</script>
 <footer>
   <p style="margin-top: 50px; font-size: 0.8em; color: #6c757d;">&copy; 2025 Hamptonix. All rights reserved.</p>
   <p style="margin-top: 10px; font-size: 0.8em; color: #6c757d;"id="currentTime"></p>
