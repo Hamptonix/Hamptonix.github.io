@@ -103,6 +103,19 @@ footer {
   </style>
   <body>
       <h1>Im updating my site rn so give me like a week</h1>
+
+      <h2>Sign Up</h2>
+<input type="email" id="signupEmail" placeholder="Email">
+<input type="password" id="signupPassword" placeholder="Password">
+<button onclick="signUp()">Sign Up</button>
+
+<h2>Login</h2>
+<input type="email" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPassword" placeholder="Password">
+<button onclick="logIn()">Log In</button>
+
+<p id="message"></p>
+
       
       
       <div class="stars"></div>
@@ -130,47 +143,39 @@ footer {
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 
-  const provider = new firebase.auth.GoogleAuthProvider();
+  const auth = firebase.auth();
 
-  document.getElementById('googleSignInBtn').addEventListener('click', () => {
-    firebase.auth().signInWithPopup(provider)
-      .then((result) => {
-        const user = result.user;
-        console.log("User signed in:", user.email);
-        alert(`Welcome, ${user.displayName}!`);
-        // You can do more with the user info here, like saving it to Firestore
+  function signUp() {
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        document.getElementById("message").innerText = "Sign up successful!";
+        console.log("User signed up:", userCredential.user);
       })
       .catch((error) => {
-  console.error("Error during sign-in:", error);
-  alert(`Sign-in failed: ${error.message}`);
-});
-  });
-
-document.getElementById('googleSignInBtn').addEventListener('click', () => {
-  firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      console.log("User signed in:", user.displayName);
-      alert(`Welcome, ${user.displayName}!`);
-      
-      // Show the user name on the page
-      document.getElementById('userEmail').textContent = `Welcome, ${user.displayName}!`;
-    })
-    .catch((error) => {
-      console.error("Error during sign-in:", error);
-      alert(`Sign-in failed: ${error.message}`);
-    });
-});
-
-// Also update onAuthStateChanged:
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    // Show user name if signed in
-    document.getElementById('userEmail').textContent = `Signed in as ${user.displayName}!`;
-  } else {
-    document.getElementById('userEmail').textContent = '';
+        document.getElementById("message").innerText = error.message;
+        console.error("Error signing up:", error);
+      });
   }
-});
+
+  function logIn() {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        document.getElementById("message").innerText = "Login successful!";
+        console.log("User logged in:", userCredential.user);
+      })
+      .catch((error) => {
+        document.getElementById("message").innerText = error.message;
+        console.error("Error logging in:", error);
+      });
+  }
+
+  
 
 </script>
 
