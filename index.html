@@ -141,9 +141,9 @@ footer {
         // You can do more with the user info here, like saving it to Firestore
       })
       .catch((error) => {
-        console.error("Error during sign-in:", error);
-        alert("Sign-in failed");
-      });
+  console.error("Error during sign-in:", error);
+  alert(`Sign-in failed: ${error.message}`);
+});
   });
 </script>
 
