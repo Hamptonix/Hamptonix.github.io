@@ -126,6 +126,15 @@
 
 </script>
 
+<script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    });
+</script>
+
+
 <p id="userEmail" style="color: white; margin-top: 20px;"></p>
 
   <script src="script.js"></script>

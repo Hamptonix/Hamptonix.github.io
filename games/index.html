@@ -61,6 +61,15 @@
   <p>Welcome to the Games section!</p>
 
   <script src="script.js"></script>
+
+  <script>
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    });
+</script>
+
 </body>
 </html>
 <!DOCTYPE html>
