@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
-  <title>Hamptonix</title>
+  <title>Hamptonix | Games/title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -36,23 +36,25 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    fetch('/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar-container').innerHTML = html;
+    // Load the navbar and display user status
+  fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
 
-        // Wait a bit to ensure navbar is in DOM
-        setTimeout(() => {
-          auth.onAuthStateChanged(user => {
-            const statusEl = document.getElementById("userStatus");
-            if (user && user.email) {
-              statusEl.textContent = user.email;
-            } else {
-              statusEl.textContent = "Logged Out";
-            }
-          });
-        }, 50);
+      firebase.auth().onAuthStateChanged(user => {
+        const statusEl = document.getElementById("userStatus");
+        const loginBtn = document.getElementById("loginBtn");
+
+        if (user && user.email) {
+          statusEl.textContent = user.email;
+          loginBtn.style.display = 'none'; // Hide Log In button
+        } else {
+          statusEl.textContent = "Logged Out";
+          loginBtn.style.display = 'inline-block'; // Show Log In button
+        }
       });
+    });
   </script>
 </body>
 
