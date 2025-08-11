@@ -1,7 +1,5 @@
-function showTime() {
-	document.getElementById('currentTime').innerHTML = new Date().toUTCString();
-}
-showTime();
-setInterval(function () {
-	showTime();
-}, 1000);
+fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+    });
