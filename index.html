@@ -122,6 +122,23 @@
       });
   }
 
+  // Load the navbar
+  fetch('/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar-container').innerHTML = data;
+
+      // Once navbar is loaded, then attach auth listener
+      firebase.auth().onAuthStateChanged(function(user) {
+        const statusEl = document.getElementById("userStatus");
+        if (user && user.email) {
+          statusEl.textContent = user.email;
+        } else {
+          statusEl.textContent = "Logged Out";
+        }
+      });
+    });
+
   
 
 </script>
