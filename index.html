@@ -122,21 +122,33 @@
       });
   }
 
-  // Load the navbar
+  // Load navbar first
   fetch('/navbar.html')
     .then(response => response.text())
     .then(data => {
       document.getElementById('navbar-container').innerHTML = data;
 
-      // Once navbar is loaded, then attach auth listener
-      firebase.auth().onAuthStateChanged(function(user) {
+      // Wait a moment to ensure navbar is rendered
+      setTimeout(() => {
         const statusEl = document.getElementById("userStatus");
-        if (user && user.email) {
-          statusEl.textContent = user.email;
-        } else {
-          statusEl.textContent = "Logged Out";
+
+        if (!statusEl) {
+          console.warn("userStatus not found in DOM.");
+          return;
         }
-      });
+
+        // Attach auth state listener after navbar is loaded
+        auth.onAuthStateChanged(function(user) {
+          if (user && user.email) {
+            statusEl.textContent = user.email;
+          } else {
+            statusEl.textContent = "Logged Out";
+          }
+        });
+      }, 50); // Small delay to ensure DOM updates
+    })
+    .catch(err => {
+      console.error("Failed to load navbar:", err);
     });
 
   
