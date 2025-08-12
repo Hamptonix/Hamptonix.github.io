@@ -15,82 +15,93 @@
 
   <style>
   body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #f7f7f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    flex-direction: column;
-  }
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
 
-  #navbar-container {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+#navbar-container {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
 
-  .auth-container {
+.auth-container {
   background: white;
-  border-radius: 12px;
-  padding: 30px 25px; /* more side padding */
-  width: 320px; /* slightly wider */
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  padding: 35px 30px;
+  width: 340px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
   margin-top: 80px; /* space for navbar */
   text-align: center;
 }
 
-  .auth-form h2 {
-    margin-bottom: 20px;
-    font-weight: 500;
-    color: #000;
-  }
-
-  .auth-form input {
-  width: calc(100% - 4px); /* leave small gap inside container */
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease;
-  background: #fff;
-  color: #000;
+.auth-container h2 {
+  margin-bottom: 18px;
+  font-weight: 600;
+  color: #111;
 }
 
-  .auth-form input:focus {
-    border-color: #000;
-  }
+.auth-form input,
+.auth-container input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  background: #fafafa;
+  color: #000;
+  transition: all 0.25s ease;
+}
 
-  .auth-form button {
-    width: 100%;
-    padding: 10px;
-    background: #000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
+.auth-form input:focus,
+.auth-container input:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+  background: #fff;
+}
 
-  .auth-form button:hover {
-    background: #333;
-  }
+.auth-form button,
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
 
-  .auth-form p {
-    font-size: 12px;
-    color: #555;
-  }
+.auth-form button:hover,
+.auth-container button:hover {
+  background: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
 
-  .auth-form a {
-    color: #000;
-    text-decoration: underline;
-    cursor: pointer;
-  }
+.auth-container p {
+  font-size: 12px;
+  color: #555;
+  margin-top: 5px;
+}
+
+.auth-container a {
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 </style>
 
   <div id="navbar-container"></div>
