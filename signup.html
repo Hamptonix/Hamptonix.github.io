@@ -180,7 +180,7 @@
           document.getElementById('message').innerText = 'Sign up successful!';
           console.log('User signed up:', userCredential.user);
 
-          return db.collection('users').doc(userCredential.user.uid).set({ credits: 0 });
+          return db.collection('users').doc(userCredential.user.uid).set({ credits: 100 });
         })
         .catch((error) => {
           document.getElementById('message').innerText = error.message;
