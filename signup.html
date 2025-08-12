@@ -33,13 +33,12 @@
 }
 
 .auth-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
   background: white;
-  border-radius: 16px;
-  padding: 35px 30px;
-  width: 340px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-  margin-top: 80px; /* space for navbar */
-  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .auth-container h2 {
@@ -51,15 +50,11 @@
 .auth-form input,
 .auth-container input {
   width: 100%;
-  padding: 12px 14px;
+  box-sizing: border-box; /* ensures padding doesn't break layout */
+  padding: 10px;
   margin-bottom: 15px;
-  border-radius: 10px;
   border: 1px solid #ddd;
-  font-size: 14px;
-  outline: none;
-  background: #fafafa;
-  color: #000;
-  transition: all 0.25s ease;
+  border-radius: 5px;
 }
 
 .auth-form input:focus,
