@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<style>
+  <style>
   body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -93,38 +93,27 @@
   }
 </style>
 
-
   <div id="navbar-container"></div>
 
   <div class="auth-container">
-    <!-- Sign Up Form -->
-    <div id="signupForm" class="auth-form">
-      <h2>Sign Up</h2>
-      <input type="email" id="signupEmail" placeholder="Email" required />
-      <input type="password" id="signupPassword" placeholder="Password" required />
-      <button onclick="signUp()">Sign Up</button>
-      <p id="signupMessage"></p>
-      <p>Already have an account? <a href="javascript:void(0)" onclick="toggleForm()">Log In</a></p>
-    </div>
+    <h2>Sign Up</h2>
+    <input type="email" id="signupEmail" placeholder="Email" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button onclick="signUp()">Sign Up</button>
 
-    <!-- Log In Form -->
-    <div id="loginForm" class="auth-form" style="display: none;">
-      <h2>Log In</h2>
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-      <button onclick="logIn()">Log In</button>
-      <p id="loginMessage"></p>
-      <p>Don't have an account? <a href="javascript:void(0)" onclick="toggleForm()">Sign Up</a></p>
-    </div>
+    <h2>Log In</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="logIn()">Log In</button>
+
+    <p id="message"></p>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-
   <script>
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
       authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
@@ -132,106 +121,81 @@
       storageBucket: "hamptonixwebsite-dea39.appspot.com",
       messagingSenderId: "847673046697",
       appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH"
+      measurementId: "G-CBL1NL69PH",
     };
 
     firebase.initializeApp(firebaseConfig);
+
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-   const db = firebase.firestore();
-
-function signUp() {
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      // Create Firestore doc for this user with starting credits
-      return db.collection("users").doc(user.uid).set({
-        email: user.email,
-        credits: 100 // starting credits
-      });
-    })
-    .then(() => {
-      document.getElementById("signupMessage").innerText = "Sign up successful! Credits added.";
-    })
-    .catch((error) => {
-      document.getElementById("signupMessage").innerText = error.message;
-    });
-}
-
-
-    function logIn() {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      return db.collection("users").doc(user.uid).get();
-    })
-    .then((doc) => {
-      if (doc.exists) {
-        const userData = doc.data();
-        document.getElementById("loginMessage").innerText =
-          `Log in successful! You have ${userData.credits} credits.`;
-      } else {
-        document.getElementById("loginMessage").innerText = "Log in successful! No credits found for this account.";
-      }
-    })
-    .catch((error) => {
-      document.getElementById("loginMessage").innerText = error.message;
-    });
-}
-
-
-    // Toggle between Sign Up and Log In forms
-    function toggleForm() {
-      const signupForm = document.getElementById("signupForm");
-      const loginForm = document.getElementById("loginForm");
-
-      // Show Sign Up form if Log In is currently shown, and vice versa
-      signupForm.style.display = signupForm.style.display === "none" ? "block" : "none";
-      loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
-    }
-
-    // Check the user's sign-in state on page load
-    firebase.auth().onAuthStateChanged(user => {
-      const statusEl = document.getElementById("userStatus");
-      const loginBtn = document.getElementById("loginBtn");
-
-      if (user && user.email) {
-        statusEl.textContent = user.email;
-        loginBtn.style.display = 'none';  // Hide Log In button
-      } else {
-        statusEl.textContent = "Logged Out";
-        loginBtn.style.display = 'inline-block';  // Show Log In button
-      }
-    });
-
-    // Navbar handling with login state
     fetch('/navbar.html')
-      .then(res => res.text())
-      .then(html => {
+      .then((res) => res.text())
+      .then((html) => {
         document.getElementById('navbar-container').innerHTML = html;
 
-        firebase.auth().onAuthStateChanged(user => {
-          const statusEl = document.getElementById("userStatus");
-          const loginBtn = document.getElementById("loginBtn");
+        const userStatus = document.getElementById('userStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const creditsBox = document.getElementById('creditsBox');
+        const creditsAmount = document.getElementById('creditsAmount');
 
-          if (user && user.email) {
-            statusEl.textContent = user.email;
-            loginBtn.style.display = 'none';  // Hide Log In button
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            userStatus.textContent = user.email || 'User';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (creditsBox) creditsBox.style.display = 'inline-flex';
+
+            db.collection('users')
+              .doc(user.uid)
+              .onSnapshot((doc) => {
+                if (doc.exists) {
+                  creditsAmount.textContent = doc.data().credits ?? 0;
+                } else {
+                  creditsAmount.textContent = '0';
+                }
+              });
           } else {
-            statusEl.textContent = "Logged Out";
-            loginBtn.style.display = 'inline-block';  // Show Log In button
+            userStatus.textContent = 'Logged Out';
+            if (loginBtn) loginBtn.style.display = 'inline-block';
+            if (creditsBox) creditsBox.style.display = 'none';
           }
         });
-      });
-  </script>
+      })
+      .catch((err) => console.error('Failed to load navbar:', err));
 
+    function signUp() {
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById('message').innerText = 'Sign up successful!';
+          console.log('User signed up:', userCredential.user);
+
+          return db.collection('users').doc(userCredential.user.uid).set({ credits: 0 });
+        })
+        .catch((error) => {
+          document.getElementById('message').innerText = error.message;
+          console.error('Error signing up:', error);
+        });
+    }
+
+    function logIn() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      auth
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById('message').innerText = 'Login successful!';
+          console.log('User logged in:', userCredential.user);
+        })
+        .catch((error) => {
+          document.getElementById('message').innerText = error.message;
+          console.error('Error logging in:', error);
+        });
+    }
+  </script>
 </body>
 </html>

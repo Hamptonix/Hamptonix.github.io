@@ -1,165 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
   <title>Hamptonix</title>
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/style.css">
-
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
-
 <body>
   <!-- Navigation Bar -->
   <div id="navbar-container"></div>
 
   <p>Welcome to the home section!</p>
 
+  <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<!-- Firebase Authentication -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-<h2>Sign Up</h2>
-<input type="email" id="signupEmail" placeholder="Email">
-<input type="password" id="signupPassword" placeholder="Password">
-<button onclick="signUp()">Sign Up</button>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+      projectId: "hamptonixwebsite-dea39",
+      storageBucket: "hamptonixwebsite-dea39.appspot.com",
+      messagingSenderId: "847673046697",
+      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+      measurementId: "G-CBL1NL69PH",
+    };
 
-<h2>Login</h2>
-<input type="email" id="loginEmail" placeholder="Email">
-<input type="password" id="loginPassword" placeholder="Password">
-<button onclick="logIn()">Log In</button>
+    firebase.initializeApp(firebaseConfig);
 
-<p id="message"></p>
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-    authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-    projectId: "hamptonixwebsite-dea39",
-    storageBucket: "hamptonixwebsite-dea39.appspot.com",
-    messagingSenderId: "847673046697",
-    appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-    measurementId: "G-CBL1NL69PH"
-  };
+    fetch('/navbar.html')
+      .then((res) => res.text())
+      .then((html) => {
+        document.getElementById('navbar-container').innerHTML = html;
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+        const userStatus = document.getElementById('userStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const creditsBox = document.getElementById('creditsBox');
+        const creditsAmount = document.getElementById('creditsAmount');
 
-  const auth = firebase.auth();
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            userStatus.textContent = user.email || 'User';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (creditsBox) creditsBox.style.display = 'inline-flex';
 
-  function signUp() {
-    const email = document.getElementById("signupEmail").value;
-    const password = document.getElementById("signupPassword").value;
-
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        document.getElementById("message").innerText = "Sign up successful!";
-        console.log("User signed up:", userCredential.user);
-      })
-      .catch((error) => {
-        document.getElementById("message").innerText = error.message;
-        console.error("Error signing up:", error);
-      });
-  }
-
-  function logIn() {
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        document.getElementById("message").innerText = "Login successful!";
-        console.log("User logged in:", userCredential.user);
-      })
-      .catch((error) => {
-        document.getElementById("message").innerText = error.message;
-        console.error("Error logging in:", error);
-      });
-  }
-
-  // Load the navbar and check if the user is logged in
-fetch('/navbar.html')  // Load navbar.html
-  .then(res => res.text())  // Convert it to text
-  .then(html => {
-    // Add the loaded navbar HTML to the page
-    document.getElementById('navbar-container').innerHTML = html;
-
-    // Now check if the user is logged in
-    firebase.auth().onAuthStateChanged(user => {
-      const loginBtn = document.getElementById("loginBtn");  // Get the login button element
-      const statusEl = document.getElementById("userStatus");  // Optional: Show user status (logged in or logged out)
-
-      if (user) {
-        // User is logged in
-        statusEl.textContent = `${user.email}`;  // Optional: Show the user's email in a status area
-        loginBtn.style.display = 'none';  // Hide the login button
-      } else {
-        // User is not logged in
-        statusEl.textContent = "Logged Out";  // Optional: Display that the user is logged out
-        loginBtn.style.display = 'inline-block';  // Show the login button
-      }
-    });
-  });
-
-  const db = firebase.firestore();
-
-fetch('/navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbar-container').innerHTML = html;
-
-    firebase.auth().onAuthStateChanged(user => {
-      const statusEl = document.getElementById("userStatus");
-      const loginBtn = document.getElementById("loginBtn");
-      const creditsBox = document.getElementById("creditsBox");
-      const creditsAmount = document.getElementById("creditsAmount");
-
-      if (user && user.email) {
-        statusEl.textContent = user.email;
-        loginBtn.style.display = 'none';
-
-        // Show credits
-        creditsBox.style.display = 'block';
-
-        // Get credits from Firestore
-        db.collection("users").doc(user.uid).onSnapshot(doc => {
-          if (doc.exists) {
-            const data = doc.data();
-            creditsAmount.textContent = data.credits ?? 0;
+            db.collection('users')
+              .doc(user.uid)
+              .onSnapshot((doc) => {
+                if (doc.exists) {
+                  creditsAmount.textContent = doc.data().credits ?? 0;
+                } else {
+                  creditsAmount.textContent = '0';
+                }
+              });
+          } else {
+            userStatus.textContent = 'Logged Out';
+            if (loginBtn) loginBtn.style.display = 'inline-block';
+            if (creditsBox) creditsBox.style.display = 'none';
           }
         });
-
-      } else {
-        statusEl.textContent = "Logged Out";
-        loginBtn.style.display = 'inline-block';
-        creditsBox.style.display = 'none';
-      }
-    });
-  });
-
-
-  
-
-</script>
-
-<script>
-  fetch('/navbar.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('navbar-container').innerHTML = data;
-    });
-</script>
-
-
-<p id="userEmail" style="color: white; margin-top: 20px;"></p>
-
-  <script src="script.js"></script>
+      })
+      .catch((err) => console.error('Failed to load navbar:', err));
+  </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
