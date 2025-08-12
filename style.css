@@ -6,6 +6,30 @@ body {
   padding: 0;
 }
 
+.welcome .button {
+  margin-right: 20px;
+  background: transparent;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 10px;
+  padding: 5px 10px;
+  color: #ffffff;
+}
+
+.welcome img {
+  height: 200px;
+  margin-right: 40px;
+}
+
+.welcome h {
+  margin-right: 150px;
+}
+
+.welcome p {
+  margin-right: 40;
+}
+
 .navbar {
   display: flex;
   align-items: center;
