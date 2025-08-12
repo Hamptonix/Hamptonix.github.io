@@ -106,6 +106,42 @@ fetch('/navbar.html')  // Load navbar.html
     });
   });
 
+  const db = firebase.firestore();
+
+fetch('/navbar.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('navbar-container').innerHTML = html;
+
+    firebase.auth().onAuthStateChanged(user => {
+      const statusEl = document.getElementById("userStatus");
+      const loginBtn = document.getElementById("loginBtn");
+      const creditsBox = document.getElementById("creditsBox");
+      const creditsAmount = document.getElementById("creditsAmount");
+
+      if (user && user.email) {
+        statusEl.textContent = user.email;
+        loginBtn.style.display = 'none';
+
+        // Show credits
+        creditsBox.style.display = 'block';
+
+        // Get credits from Firestore
+        db.collection("users").doc(user.uid).onSnapshot(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            creditsAmount.textContent = data.credits ?? 0;
+          }
+        });
+
+      } else {
+        statusEl.textContent = "Logged Out";
+        loginBtn.style.display = 'inline-block';
+        creditsBox.style.display = 'none';
+      }
+    });
+  });
+
 
   
 

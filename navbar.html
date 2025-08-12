@@ -3,10 +3,19 @@
   <span class="brand-name">Hamptonix</span>
   <button class="button" onclick="location.href='/index.html'">Home</button>
   <button class="button" onclick="location.href='/games/index.html'">Games</button>
-  <button class ="button" id="loginBtn" onclick="location.href=`/signup.html`">Log In</button>
 
-  
-  <!-- Status placeholder (goes to far right) -->
-  <span id="userStatus" style="margin-left: auto; font-size: 1rem; color: #ccc;"></span>
-  <button id="loginBtn" class="button" style="display: none;" onclick="location.href='/signup.html'">Log In</button>
+  <!-- Login button before user is logged in -->
+  <button class="button" id="loginBtn" onclick="location.href='/signup.html'">Log In</button>
+
+  <!-- Status placeholder (moves to far right) -->
+  <div style="margin-left: auto; text-align: right;">
+    <span id="userStatus" style="font-size: 1rem; color: #ccc;"></span>
+
+    <!-- Credits box -->
+    <div id="creditsBox" style="display:none; margin-top:5px; background:white; padding:5px 10px; border-radius:8px; display:inline-flex; align-items:center; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+      <img src="https://static.wikia.nocookie.net/pico-tanks-multiplayer-mayhem/images/6/66/Icon-currency-coin-256.png/revision/latest?cb=20210724084237"
+           alt="Credits" style="width:20px; height:20px;">
+      <span id="creditsAmount" style="font-weight:bold; margin-left:5px; color:black;">0</span>
+    </div>
+  </div>
 </div>
