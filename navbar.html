@@ -8,27 +8,50 @@
 </style>
 
 <div class="navbar">
-  <img src="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" alt="Hamptonix Logo" class="logo">
+  <img src="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" alt="Hamptonix Logo">
   <span class="brand-name">Hamptonix</span>
   <button class="button" onclick="location.href='/index.html'">Home</button>
   <button class="button" onclick="location.href='/games/index.html'">Games</button>
-
-  <!-- only one login button and it has a unique id -->
-  <button class="button" id="navLoginBtn" onclick="location.href='/signup.html'">Log In</button>
-
-  <!-- Right-side status/credits stack -->
-  <div style="margin-left:auto; text-align:right;">
-    <span id="userStatus" style="display:block; font-size:1rem; color:#ccc;">Logged Out</span>
-
-    <div id="creditsBox" style="display:none; margin-top:6px; 
-         background:#fff; padding:6px 10px; border-radius:10px; 
-         display:inline-flex; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-      <img src="https://static.wikia.nocookie.net/pico-tanks-multiplayer-mayhem/images/6/66/Icon-currency-coin-256.png/revision/latest?cb=20210724084237"
-           alt="Credits" style="width:18px; height:18px; margin-right:8px;">
-      <span id="creditsAmount" style="font-weight:600; color:#000;">0</span>
-    </div>
+  
+  <!-- Status + Credits (goes to far right) -->
+  <span id="userStatus" style="margin-left: auto; font-size: 1rem; color: #ccc;"></span>
+  
+  <div id="creditsBox" style="display: flex; align-items: center; margin-left: 20px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 8px;">
+    <img src="https://static.wikia.nocookie.net/pico-tanks-multiplayer-mayhem/images/6/66/Icon-currency-coin-256.png/revision/latest?cb=20210724084237"
+         alt="Credits" style="width: 20px; height: 20px; margin-right: 5px;">
+    <span id="creditsValue" style="color: white; font-size: 1rem;">0</span>
   </div>
 </div>
+
+<script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { app } from "./firebaseConfig.js"; // make sure this points to your Firebase config file
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    const userStatusEl = document.getElementById("userStatus");
+    const creditsValueEl = document.getElementById("creditsValue");
+
+    if (user) {
+      userStatusEl.textContent = user.email;
+
+      // Get credits from Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        creditsValueEl.textContent = userDoc.data().credits || 0;
+      } else {
+        creditsValueEl.textContent = 0;
+      }
+    } else {
+      userStatusEl.textContent = "Not logged in";
+      creditsValueEl.textContent = 0;
+    }
+  });
+</script>
 
 <span id="userStatus" style="color:#ccc; font-weight:600;"></span>
 
