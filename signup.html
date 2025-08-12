@@ -120,6 +120,8 @@
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 
   <script>
     // Firebase configuration
@@ -136,37 +138,55 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Sign Up function
-    function signUp() {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+   const db = firebase.firestore();
 
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          document.getElementById("signupMessage").innerText = "Sign up successful!";
-          console.log("User signed up:", userCredential.user);
-        })
-        .catch((error) => {
-          document.getElementById("signupMessage").innerText = error.message;
-          console.error("Error signing up:", error);
-        });
-    }
+function signUp() {
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
 
-    // Log In function
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Create Firestore doc for this user with starting credits
+      return db.collection("users").doc(user.uid).set({
+        email: user.email,
+        credits: 100 // starting credits
+      });
+    })
+    .then(() => {
+      document.getElementById("signupMessage").innerText = "Sign up successful! Credits added.";
+    })
+    .catch((error) => {
+      document.getElementById("signupMessage").innerText = error.message;
+    });
+}
+
+
     function logIn() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          document.getElementById("loginMessage").innerText = "Log in successful!";
-          console.log("User logged in:", userCredential.user);
-        })
-        .catch((error) => {
-          document.getElementById("loginMessage").innerText = error.message;
-          console.error("Error logging in:", error);
-        });
-    }
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      return db.collection("users").doc(user.uid).get();
+    })
+    .then((doc) => {
+      if (doc.exists) {
+        const userData = doc.data();
+        document.getElementById("loginMessage").innerText =
+          `Log in successful! You have ${userData.credits} credits.`;
+      } else {
+        document.getElementById("loginMessage").innerText = "Log in successful! No credits found for this account.";
+      }
+    })
+    .catch((error) => {
+      document.getElementById("loginMessage").innerText = error.message;
+    });
+}
+
 
     // Toggle between Sign Up and Log In forms
     function toggleForm() {
