@@ -11,40 +11,68 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
-    /* Scoped homepage styles */
     .homepage {
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      padding: 40px 20px;
-    }
-    .homepage .logo {
-      width: 150px;
-      margin-bottom: 20px;
-    }
-    .homepage h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      color: white;
-    }
-    .homepage p {
-      max-width: 600px;
-      margin: 0 auto 30px auto;
-      font-size: 1.2rem;
-      color: #ccc;
-    }
-    .homepage .btn {
-      background-color: #ff6600;
-      color: white;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .homepage .btn:hover {
-      background-color: #e65c00;
-    }
+  font-family: 'Poppins', sans-serif;
+  background-color: #121212;
+  color: white;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+.homepage .welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 30px;
+}
+
+.homepage .container {
+  max-width: 600px;
+  background: rgba(30, 30, 30, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.homepage .logo {
+  width: 150px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.homepage h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #f0f0f0;
+}
+
+.homepage p {
+  font-size: 1.1rem;
+  color: #cccccc;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.homepage .btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: linear-gradient(90deg, #ff4e50, #f9d423);
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.homepage .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(249, 212, 35, 0.7);
+}
+
   </style>
 </head>
 <body>
