@@ -9,67 +9,41 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
-
+  <link rel="stylesheet" href="/style.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #121212;
-      color: white;
+    /* Scoped homepage styles */
+    .homepage {
       text-align: center;
+      font-family: 'Poppins', sans-serif;
+      padding: 40px 20px;
     }
-
-    .welcome {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      padding: 30px;
-    }
-
-    .container {
-      max-width: 600px;
-      background: rgba(30, 30, 30, 0.85);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .logo {
+    .homepage .logo {
       width: 150px;
-      height: auto;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
-
-    h1 {
+    .homepage h1 {
       font-size: 2.5rem;
       margin-bottom: 10px;
-      color: #f0f0f0;
+      color: white;
     }
-
-    p {
-      font-size: 1.1rem;
-      color: #cccccc;
-      margin-bottom: 25px;
-      line-height: 1.5;
+    .homepage p {
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      font-size: 1.2rem;
+      color: #ccc;
     }
-
-    .btn {
-      display: inline-block;
+    .homepage .btn {
+      background-color: #ff6600;
+      color: white;
       padding: 12px 25px;
-      background: linear-gradient(90deg, #ff4e50, #f9d423);
-      color: black;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 30px;
+      border: none;
+      border-radius: 8px;
       font-size: 1.1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
     }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(249, 212, 35, 0.7);
+    .homepage .btn:hover {
+      background-color: #e65c00;
     }
   </style>
 </head>
@@ -77,17 +51,12 @@
   <!-- Navigation Bar -->
   <div id="navbar-container"></div>
 
-  <!-- Main Content -->
-  <div class="welcome">
-    <div class="container">
-      <img src="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" alt="Hamptonix Logo" class="logo">
-      <h1>Hamptonix</h1>
-      <p>
-        Welcome to Hamptonix! I create fun projects, games, and tools for the web.  
-        Check out my work, explore my creations, and connect with me online!
-      </p>
-      <a href="https://guns.lol/hamptonix" class="btn">Visit My Profile</a>
-    </div>
+  <!-- Homepage Content -->
+  <div class="homepage">
+    <img src="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" alt="Hamptonix Logo" class="logo">
+    <h1>Welcome to Hamptonix!</h1>
+    <p>Hamptonix is a hub for games, projects, and creativity. Here you’ll find fun experiences, cool tools, and everything that makes Hamptonix awesome.</p>
+    <button class="btn" onclick="window.location.href='https://guns.lol/hamptonix'">Visit My Guns.lol</button>
   </div>
 
   <!-- Firebase scripts -->
@@ -130,7 +99,11 @@
             db.collection('users')
               .doc(user.uid)
               .onSnapshot((doc) => {
-                creditsAmount.textContent = doc.exists ? (doc.data().credits ?? 0) : '0';
+                if (doc.exists) {
+                  creditsAmount.textContent = doc.data().credits ?? 0;
+                } else {
+                  creditsAmount.textContent = '0';
+                }
               });
           } else {
             userStatus.textContent = 'Logged Out';
