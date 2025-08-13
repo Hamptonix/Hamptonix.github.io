@@ -10,74 +10,75 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
+  
   <style>
   .homepage {
-  font-family: 'Poppins', sans-serif;
-  background-color: #0a0a0a; /* darker background */
-  color: white;
-  text-align: center;
-  padding: 50px 0; /* space above/below */
-}
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a0a0a; /* darker background */
+    color: white;
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center;     /* center vertically */
+    height: calc(100vh - 60px); /* account for navbar height */
+    padding: 20px;
+  }
 
-.homepage .container {
-  max-width: 600px;
-  background: rgba(20, 20, 20, 0.9); /* darker container background */
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
-  margin: 0 auto; /* center horizontally */
-}
+  .homepage .container {
+    width: 100%;
+    max-width: 500px; /* controls rectangle width */
+    background: rgba(20, 20, 20, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+    text-align: center;
+  }
 
-.homepage .logo {
-  width: 150px;
-  height: auto;
-  margin-bottom: 15px;
-}
+  .homepage .logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 15px;
+  }
 
-.homepage h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  color: #f0f0f0;
-}
+  .homepage h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #f0f0f0;
+  }
 
-.homepage p {
-  font-size: 1.1rem;
-  color: #cccccc;
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
+  .homepage p {
+    font-size: 1.1rem;
+    color: #cccccc;
+    margin-bottom: 25px;
+    line-height: 1.5;
+  }
 
-.homepage .btn {
-  display: inline-block;
-  padding: 12px 25px;
-  background: linear-gradient(90deg, #ff4e50, #f9d423);
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 30px;
-  font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+  .homepage .btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(90deg, #ff4e50, #f9d423);
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
 
-.homepage .btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(249, 212, 35, 0.7);
-}
+  .homepage .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(249, 212, 35, 0.7);
+  }
+</style>
 
-
-  </style>
-</head>
-<body>
-  <!-- Navigation Bar -->
-  <div id="navbar-container"></div>
-
-  <!-- Homepage Content -->
-  <div class="homepage">
+<div class="homepage">
+  <div class="container">
     <img src="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" alt="Hamptonix Logo" class="logo">
     <h1>Welcome to Hamptonix!</h1>
     <p>Hamptonix is a hub for games, projects, and creativity. Here you’ll find fun experiences, cool tools, and everything that makes Hamptonix awesome.</p>
     <button class="btn" onclick="window.location.href='https://guns.lol/hamptonix'">Visit My Guns.lol</button>
   </div>
+</div>
+
 
   <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
