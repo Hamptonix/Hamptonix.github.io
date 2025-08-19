@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
+<title>Hamptonix | Secret Cipher</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 2em auto;
+    padding: 1em;
+    background: #f4f4f4;
+    border-radius: 8px;
+  }
+  textarea, input[type="text"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    box-sizing: border-box;
+  }
+  button {
+    padding: 0.5em 1.5em;
+    font-size: 1rem;
+    margin-right: 1em;
+    cursor: pointer;
+  }
+  #output {
+    margin-top: 1em;
+    white-space: pre-wrap;
+    background: #fff;
+    padding: 1em;
+    border-radius: 5px;
+    min-height: 3em;
+  }
+</style>
+</head>
+<body>
+
+<label for="inputText">Enter text</label>
+<textarea id="inputText" rows="4" placeholder="Type your message here..."></textarea>
+
+<button id="encryptBtn">Encrypt</button>
+<button id="decryptBtn">Decrypt</button>
+
+<h3>Output:</h3>
+<div id="output"></div>
+
+<script>
+  const alphabet = "abcdefghijklmnopqrstuvwxyz1234567890";
+  const key = "hampkey";
+
+  // Function to repeat the key as needed for the text length
+  function generateKey(text, key) {
+    let repeatedKey = "";
+    let keyIndex = 0;
+    for (let i = 0; i < text.length; i++) {
+      // Only increase key index for valid alphabet chars
+      if (alphabet.includes(text[i])) {
+        repeatedKey += key[keyIndex % key.length];
+        keyIndex++;
+      } else {
+        repeatedKey += text[i]; // keep non-alphabet chars as-is in key too (will be ignored)
+      }
+    }
+    return repeatedKey;
+  }
+
+  // Encrypt function
+  function vigenereEncrypt(plainText, key) {
+    plainText = plainText.toLowerCase();
+    let repeatedKey = generateKey(plainText, key);
+    let cipherText = "";
+
+    for (let i = 0; i < plainText.length; i++) {
+      let pChar = plainText[i];
+      if (!alphabet.includes(pChar)) {
+        cipherText += pChar; // keep non-alphabet chars as-is
+        continue;
+      }
+      let pIndex = alphabet.indexOf(pChar);
+      let kIndex = alphabet.indexOf(repeatedKey[i]);
+      let cIndex = (pIndex + kIndex) % alphabet.length;
+      cipherText += alphabet[cIndex];
+    }
+    return cipherText;
+  }
+
+  // Decrypt function
+  function vigenereDecrypt(cipherText, key) {
+    cipherText = cipherText.toLowerCase();
+    let repeatedKey = generateKey(cipherText, key);
+    let plainText = "";
+
+    for (let i = 0; i < cipherText.length; i++) {
+      let cChar = cipherText[i];
+      if (!alphabet.includes(cChar)) {
+        plainText += cChar; // keep non-alphabet chars as-is
+        continue;
+      }
+      let cIndex = alphabet.indexOf(cChar);
+      let kIndex = alphabet.indexOf(repeatedKey[i]);
+      // Use modulo to handle negative values
+      let pIndex = (cIndex - kIndex + alphabet.length) % alphabet.length;
+      plainText += alphabet[pIndex];
+    }
+    return plainText;
+  }
+
+  // DOM elements
+  const inputText = document.getElementById("inputText");
+  const encryptBtn = document.getElementById("encryptBtn");
+  const decryptBtn = document.getElementById("decryptBtn");
+  const output = document.getElementById("output");
+
+  encryptBtn.addEventListener("click", () => {
+    const text = inputText.value;
+    if (!text) {
+      output.textContent = "Please enter some text to encrypt.";
+      return;
+    }
+    const encrypted = vigenereEncrypt(text, key);
+    output.textContent = encrypted;
+  });
+
+  decryptBtn.addEventListener("click", () => {
+    const text = inputText.value;
+    if (!text) {
+      output.textContent = "Please enter some text to decrypt.";
+      return;
+    }
+    const decrypted = vigenereDecrypt(text, key);
+    output.textContent = decrypted;
+  });
+</script>
+
+</body>
+</html>
