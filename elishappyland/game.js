@@ -27,19 +27,62 @@ window.addEventListener('DOMContentLoaded', () => {
   let x = 100, y = 100;
 
   const playerRef = ref(db, 'players/' + playerId);
-
-  // Remove player data automatically on disconnect
   onDisconnect(playerRef).remove();
 
-  // Set initial position
   setPlayerPosition(playerId, x, y);
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') x += 5;
-    if (e.key === 'ArrowLeft') x -= 5;
-    if (e.key === 'ArrowUp') y -= 5;
-    if (e.key === 'ArrowDown') y += 5;
+  const moveDistance = 5;
+  const keysPressed = {};
+  const keyTimers = {};
+  const initialDelay = 500; // ms delay before repeat starts
+  const repeatInterval = 50; // ms between repeated moves
+
+  function movePlayer(dx, dy) {
+    x += dx;
+    y += dy;
     setPlayerPosition(playerId, x, y);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      if (!keysPressed[e.key]) {
+        keysPressed[e.key] = true;
+
+        // Immediate move on first keydown
+        switch (e.key) {
+          case 'ArrowRight': movePlayer(moveDistance, 0); break;
+          case 'ArrowLeft': movePlayer(-moveDistance, 0); break;
+          case 'ArrowUp': movePlayer(0, -moveDistance); break;
+          case 'ArrowDown': movePlayer(0, moveDistance); break;
+        }
+
+        // After delay, start continuous movement
+        keyTimers[e.key] = setTimeout(() => {
+          keyTimers[e.key] = setInterval(() => {
+            switch (e.key) {
+              case 'ArrowRight': movePlayer(moveDistance, 0); break;
+              case 'ArrowLeft': movePlayer(-moveDistance, 0); break;
+              case 'ArrowUp': movePlayer(0, -moveDistance); break;
+              case 'ArrowDown': movePlayer(0, repeatInterval); break;
+            }
+          }, repeatInterval);
+        }, initialDelay);
+      }
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (keysPressed[e.key]) {
+      keysPressed[e.key] = false;
+
+      if (keyTimers[e.key]) {
+        clearTimeout(keyTimers[e.key]);
+        clearInterval(keyTimers[e.key]);
+        keyTimers[e.key] = null;
+      }
+      e.preventDefault();
+    }
   });
 
   const canvas = document.getElementById('gameCanvas');
