@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+import { getDatabase, ref, onValue, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   const firebaseConfig = {
@@ -26,7 +26,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const playerId = Math.random().toString(36).substr(2, 9);
   let x = 100, y = 100;
 
-  setPlayerPosition(playerId, x, y); // Set initial position
+  const playerRef = ref(db, 'players/' + playerId);
+
+  // Remove player data automatically on disconnect
+  onDisconnect(playerRef).remove();
+
+  // Set initial position
+  setPlayerPosition(playerId, x, y);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') x += 5;
@@ -42,7 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
   listenToPlayers((players) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!players) return; // No players yet
+    if (!players) return;
 
     for (let id in players) {
       const p = players[id];
