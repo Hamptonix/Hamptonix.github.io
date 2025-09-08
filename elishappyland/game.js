@@ -60,10 +60,10 @@ window.addEventListener('DOMContentLoaded', () => {
         keyTimers[e.key] = setTimeout(() => {
           keyTimers[e.key] = setInterval(() => {
             switch (e.key) {
-              case 'ArrowRight': movePlayer(moveDistance, 0); break;
+              case 'ArrowRight' : movePlayer(moveDistance, 0); break;
               case 'ArrowLeft': movePlayer(-moveDistance, 0); break;
               case 'ArrowUp': movePlayer(0, -moveDistance); break;
-              case 'ArrowDown': movePlayer(0, repeatInterval); break;
+              case 'ArrowDown': movePlayer(0, moveDistance); break;
             }
           }, repeatInterval);
         }, initialDelay);
