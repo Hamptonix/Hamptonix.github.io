@@ -3,10 +3,10 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.24.0/firebas
 import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.24.0/firebase-database.js';
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyDSJNYIQbex4Ce0J2l2O3kVaC_QEuC5brk",
+  authDomain: "elishappyland.firebaseapp.com",
+  databaseURL: "https://elishappyland-default-rtdb.firebaseio.com",
+  projectId: "elishappyland"
 };
 
 const app = initializeApp(firebaseConfig);
