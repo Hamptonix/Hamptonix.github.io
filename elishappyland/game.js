@@ -89,14 +89,26 @@ window.addEventListener('DOMContentLoaded', () => {
   const ctx = canvas.getContext('2d');
 
   listenToPlayers((players) => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!players) return;
+  if (!players) return;
 
-    for (let id in players) {
-      const p = players[id];
-      ctx.fillStyle = (id === playerId) ? 'blue' : 'red';
+  for (let id in players) {
+    const p = players[id];
+    if (id === playerId) {
+      // Local player: draw blue filled rect + rim outline
+      const size = 20;
+      const rimSize = 2;
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(p.x, p.y, size, size);
+
+      ctx.lineWidth = rimSize;
+      ctx.strokeStyle = 'yellow'; // rim color, can customize
+      ctx.strokeRect(p.x - rimSize / 2, p.y - rimSize / 2, size + rimSize, size + rimSize);
+    } else {
+      // Other players: gray filled rect
+      ctx.fillStyle = 'gray';
       ctx.fillRect(p.x, p.y, 20, 20);
     }
-  });
+  }
 });
