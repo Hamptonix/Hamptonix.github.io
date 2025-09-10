@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>EHL TEST INDEV 0.2</title>
+  <title>Multiplayer 2D Game</title>
   <style>
     body { display: flex; font-family: sans-serif; }
     #gameCanvas { border: 2px solid black; margin-right: 10px; }
     #ui { display: flex; flex-direction: column; }
     #colorPicker, #nameInput { margin-bottom: 10px; }
-    #printCanvas { border: 1px solid black; width: 200px; height: 200px; }
+    #printCanvas { border: 1px solid black; width: 200px; height: 600px; }
   </style>
 </head>
 <body>
@@ -15,8 +15,8 @@
   <div id="ui">
     <input type="text" id="nameInput" placeholder="Enter your name" />
     <input type="color" id="colorPicker" value="#0000ff" />
-    <p>Press SPACE to print color:</p>
-    <canvas id="printCanvas" width="200" height="200"></canvas>
+    <p>Press SPACE to print your square:</p>
+    <canvas id="printCanvas" width="200" height="600"></canvas>
   </div>
 
   <script type="module" src="game.js"></script>
