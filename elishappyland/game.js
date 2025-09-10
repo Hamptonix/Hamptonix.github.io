@@ -63,7 +63,6 @@ window.addEventListener('DOMContentLoaded', () => {
         keysPressed[e.key] = true;
 
         if (e.key === ' ') {
-          // Add a print at the current player position
           const newPrintRef = push(printsRef);
           set(newPrintRef, {
             x, y,
@@ -102,7 +101,6 @@ window.addEventListener('DOMContentLoaded', () => {
       case 'ArrowRight': x += moveDistance; break;
     }
 
-    // Keep player inside the canvas
     x = Math.max(0, Math.min(boxWidth - playerSize, x));
     y = Math.max(0, Math.min(boxHeight - playerSize, y));
 
@@ -112,13 +110,11 @@ window.addEventListener('DOMContentLoaded', () => {
   let players = {};
   let prints = {};
 
-  // Listen to players
   onValue(playersRef, (snapshot) => {
     players = snapshot.val() || {};
     draw();
   });
 
-  // Listen to prints
   onValue(printsRef, (snapshot) => {
     prints = snapshot.val() || {};
     draw();
@@ -127,28 +123,24 @@ window.addEventListener('DOMContentLoaded', () => {
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw all prints first
     for (let id in prints) {
       const p = prints[id];
       ctx.fillStyle = p.color;
       ctx.fillRect(p.x, p.y, playerSize, playerSize);
     }
 
-    // Draw all other players
     for (let id in players) {
-      if (id === playerId) continue; // draw local player last
+      if (id === playerId) continue;
       const p = players[id];
       ctx.fillStyle = 'gray';
       ctx.fillRect(p.x, p.y, playerSize, playerSize);
 
-      // Player name (centered above square)
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
       const textWidth = ctx.measureText(p.name || 'Player').width;
       ctx.fillText(p.name || 'Player', p.x + playerSize/2 - textWidth/2, p.y - 2);
     }
 
-    // Draw local player on top
     const me = players[playerId];
     if (me) {
       ctx.fillStyle = playerColor;
@@ -164,4 +156,59 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.fillText(me.name || 'Player', me.x + playerSize/2 - textWidth/2, me.y - 2);
     }
   }
+
+  // --- Canvas Reset Countdown and Logic ---
+  const resetCountdownEl = document.getElementById('resetCountdown');
+
+  function getNextResetTimestamp() {
+    const now = new Date();
+    const next = new Date(now);
+    next.setMinutes(0);
+    next.setSeconds(0);
+    next.setMilliseconds(0);
+    next.setHours(now.getHours() + 1);
+    return next.getTime();
+  }
+
+  let lastResetKey = null;
+
+  setInterval(() => {
+    const now = Date.now();
+    const nextReset = getNextResetTimestamp();
+    const timeLeft = nextReset - now;
+
+    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+    resetCountdownEl.textContent =
+      `Resetting in: ${String(hours).padStart(2, '0')}:` +
+      `${String(minutes).padStart(2, '0')}:` +
+      `${String(seconds).padStart(2, '0')}`;
+  }, 1000);
+
+  setInterval(() => {
+    const now = new Date();
+    const isTopOfHour = now.getMinutes() === 0 && now.getSeconds() < 5;
+
+    if (isTopOfHour) {
+      const currentResetKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
+
+      if (lastResetKey !== currentResetKey) {
+        lastResetKey = currentResetKey;
+
+        set(printsRef, null)
+          .then(() => {
+            console.log(`[RESET] Canvas reset at ${now.toLocaleTimeString()}`);
+            const msgBox = document.getElementById('messageBox');
+            if (msgBox) {
+              msgBox.value = `[${now.toLocaleTimeString()}] Canvas was reset.`;
+            }
+          })
+          .catch((err) => {
+            console.error('Error resetting canvas:', err);
+          });
+      }
+    }
+  }, 1000);
 });
