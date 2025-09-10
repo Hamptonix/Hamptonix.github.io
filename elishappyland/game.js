@@ -57,19 +57,54 @@ window.addEventListener('DOMContentLoaded', () => {
     update(playerRef, { color: playerColor });
   });
 
+  function movePlayer(key) {
+    switch (key.toLowerCase()) {
+      case 'arrowup':
+      case 'w':
+        y -= moveDistance;
+        break;
+      case 'arrowdown':
+      case 's':
+        y += moveDistance;
+        break;
+      case 'arrowleft':
+      case 'a':
+        x -= moveDistance;
+        break;
+      case 'arrowright':
+      case 'd':
+        x += moveDistance;
+        break;
+    }
+
+    x = Math.max(0, Math.min(boxWidth - playerSize, x));
+    y = Math.max(0, Math.min(boxHeight - playerSize, y));
+
+    setPlayerData();
+  }
+
+  function printColor() {
+    const newPrintRef = push(printsRef);
+    set(newPrintRef, {
+      x,
+      y,
+      color: playerColor,
+      playerId,
+      timestamp: Date.now()
+    });
+  }
+
   document.addEventListener('keydown', (e) => {
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+    const key = e.key.toLowerCase();
+    const moveKeys = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'];
+
+    if (moveKeys.includes(key) || key === ' ') {
       if (!keysPressed[e.key]) {
         keysPressed[e.key] = true;
 
-        if (e.key === ' ') {
-          const newPrintRef = push(printsRef);
-          set(newPrintRef, {
-            x, y,
-            color: playerColor,
-            playerId,
-            timestamp: Date.now()
-          });
+        if (key === ' ') {
+          printColor();
+          keyTimers[' '] = setInterval(printColor, 200); // continuous print
         } else {
           movePlayer(e.key);
           keyTimers[e.key] = setTimeout(() => {
@@ -84,28 +119,20 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', (e) => {
     if (keysPressed[e.key]) {
       keysPressed[e.key] = false;
+
       if (keyTimers[e.key]) {
         clearTimeout(keyTimers[e.key]);
         clearInterval(keyTimers[e.key]);
         keyTimers[e.key] = null;
       }
+
+      if (e.key === ' ') {
+        clearInterval(keyTimers[' ']);
+      }
+
       e.preventDefault();
     }
   });
-
-  function movePlayer(key) {
-    switch(key) {
-      case 'ArrowUp': y -= moveDistance; break;
-      case 'ArrowDown': y += moveDistance; break;
-      case 'ArrowLeft': x -= moveDistance; break;
-      case 'ArrowRight': x += moveDistance; break;
-    }
-
-    x = Math.max(0, Math.min(boxWidth - playerSize, x));
-    y = Math.max(0, Math.min(boxHeight - playerSize, y));
-
-    setPlayerData();
-  }
 
   let players = {};
   let prints = {};
@@ -138,7 +165,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
       const textWidth = ctx.measureText(p.name || 'Player').width;
-      ctx.fillText(p.name || 'Player', p.x + playerSize/2 - textWidth/2, p.y - 2);
+      ctx.fillText(p.name || 'Player', p.x + playerSize / 2 - textWidth / 2, p.y - 2);
     }
 
     const me = players[playerId];
@@ -153,7 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
       const textWidth = ctx.measureText(me.name || 'Player').width;
-      ctx.fillText(me.name || 'Player', me.x + playerSize/2 - textWidth/2, me.y - 2);
+      ctx.fillText(me.name || 'Player', me.x + playerSize / 2 - textWidth / 2, me.y - 2);
     }
   }
 
