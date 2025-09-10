@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-import { getDatabase, ref, onValue, set, onDisconnect, update } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+import { getDatabase, ref, onValue, set, onDisconnect, update, push } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   const firebaseConfig = {
@@ -36,6 +36,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const boxHeight = canvas.height;
   const playerSize = 20;
 
+  const playersRef = ref(db, 'players');
+  const printsRef = ref(db, 'prints');
+
   const playerRef = ref(db, 'players/' + playerId);
   onDisconnect(playerRef).remove();
 
@@ -63,9 +66,14 @@ window.addEventListener('DOMContentLoaded', () => {
         keysPressed[e.key] = true;
 
         if (e.key === ' ') {
-          // Draw selected color to printCanvas
-          printCtx.fillStyle = playerColor;
-          printCtx.fillRect(0, 0, printCanvas.width, printCanvas.height);
+          // Create a new print object in the database
+          const newPrintRef = push(printsRef);
+          set(newPrintRef, {
+            x, y,
+            color: playerColor,
+            playerId,
+            timestamp: Date.now()
+          });
         } else {
           movePlayer(e.key);
           keyTimers[e.key] = setTimeout(() => {
@@ -104,15 +112,11 @@ window.addEventListener('DOMContentLoaded', () => {
     setPlayerData();
   }
 
-  function listenToPlayers(callback) {
-    onValue(ref(db, 'players'), (snapshot) => {
-      const data = snapshot.val();
-      callback(data);
-    });
-  }
+  // Listen to all players
+  onValue(playersRef, (snapshot) => {
+    const players = snapshot.val();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  listenToPlayers((players) => {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
     if (!players) return;
 
     for (let id in players) {
@@ -120,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const px = p.x;
       const py = p.y;
 
-      // Draw player
+      // Draw player square
       ctx.fillStyle = (id === playerId) ? playerColor : 'gray';
       ctx.fillRect(px, py, playerSize, playerSize);
 
@@ -130,10 +134,31 @@ window.addEventListener('DOMContentLoaded', () => {
         ctx.strokeRect(px - 1, py - 1, playerSize + 2, playerSize + 2);
       }
 
-      // Draw player name
+      // Draw name centered above player
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
-      ctx.fillText(p.name || 'Player', px, py - 2);
+      const textWidth = ctx.measureText(p.name || 'Player').width;
+      ctx.fillText(p.name || 'Player', px + playerSize / 2 - textWidth / 2, py - 2);
+    }
+  });
+
+  // Listen to prints and display in printCanvas
+  onValue(printsRef, (snapshot) => {
+    const prints = snapshot.val();
+    printCtx.clearRect(0, 0, printCanvas.width, printCanvas.height);
+
+    if (!prints) return;
+
+    // Sort prints so local player prints are on top
+    const printArray = Object.values(prints).sort((a,b) => (a.playerId === playerId ? 1 : 0) - (b.playerId === playerId ? 0 : 1));
+
+    let offsetY = 0;
+    const printSize = 20;
+
+    for (let p of printArray) {
+      printCtx.fillStyle = p.color;
+      printCtx.fillRect(10, offsetY, printSize, printSize);
+      offsetY += printSize + 2; // spacing
     }
   });
 });
