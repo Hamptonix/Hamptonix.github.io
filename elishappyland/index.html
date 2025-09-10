@@ -5,46 +5,53 @@
   <title>Multiplayer 2D Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Poppins font (clean modern look) -->
+  <!-- Poppins font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* Base styling */
+    /* Base page styling */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background-color: #1f1f1f;
       color: #fff;
       display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Main layout wrapper: horizontal flex */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    /* Canvas on the left */
+    #gameCanvas {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Player setup box on the right */
+    .player-setup-container {
+      background: #fff;
+      color: #000;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      padding: 30px 15px;
-    }
-
-    #gameCanvas {
-      border: none;
-      margin-top: 20px;
-      background: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-radius: 10px;
-    }
-
-    /* Container for name/color inputs */
-    .player-setup-container {
-      max-width: 400px;
-      width: 100%;
-      margin-top: 40px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
     }
 
     .player-setup-container h2 {
-      color: #111;
       margin-bottom: 20px;
       font-weight: 600;
     }
@@ -56,49 +63,89 @@
       margin-bottom: 15px;
       border-radius: 8px;
       border: 1px solid #ddd;
-      box-sizing: border-box;
       font-size: 15px;
       transition: all 0.3s ease;
     }
 
-    .player-setup-container input[type="text"]:focus,
-    .player-setup-container input[type="color"]:focus {
+    .player-setup-container input[type="color"] {
+      height: 45px;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .player-setup-container input:focus {
       border-color: #1e90ff;
       outline: none;
       box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
     }
 
-    .player-setup-container input[type="color"] {
-      padding: 4px;
-      height: 45px;
-      width: 100%;
-      cursor: pointer;
-    }
-
     .player-setup-container p {
       font-size: 13px;
       color: #444;
+      text-align: center;
       margin-top: 5px;
     }
 
-    /* Optional: glowing input on hover/focus */
-    .player-setup-container input:hover {
-      box-shadow: 0 0 8px rgba(30, 144, 255, 0.3);
+    /* Below-box text area */
+    .below-box {
+      margin-top: 20px;
+      width: 100%;
     }
 
+    .below-box textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      min-height: 80px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+    }
+
+    .below-box textarea:focus {
+      border-color: #1e90ff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+    }
+
+    /* Responsive for smaller screens */
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #gameCanvas {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .player-setup-container {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Canvas stays white as requested -->
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div class="main-container">
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-  <!-- Auth-style input container -->
-  <div class="player-setup-container">
-    <h2>Player Setup</h2>
-    <input type="text" id="nameInput" placeholder="Enter your name" />
-    <input type="color" id="colorPicker" value="#0000ff" />
-    <p>Use arrow keys to move. Press SPACE to print your color.</p>
+    <!-- Player Setup Box -->
+    <div class="player-setup-container">
+      <h2>Player Setup</h2>
+      <input type="text" id="nameInput" placeholder="Enter your name" />
+      <input type="color" id="colorPicker" value="#0000ff" />
+      <p>Use arrow keys to move. Press SPACE to print your color.</p>
+
+      <!-- Below Box Text Area -->
+      <div class="below-box">
+        <textarea id="messageBox" placeholder="Type a message or see status here..."></textarea>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="game.js"></script>
