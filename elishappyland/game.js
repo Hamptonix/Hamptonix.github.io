@@ -15,9 +15,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  const printCanvas = document.getElementById('printCanvas');
-  const printCtx = printCanvas.getContext('2d');
-
   const nameInput = document.getElementById('nameInput');
   const colorPicker = document.getElementById('colorPicker');
 
@@ -66,7 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
         keysPressed[e.key] = true;
 
         if (e.key === ' ') {
-          // Create a new print object in the database
+          // Add a print at the current player position
           const newPrintRef = push(printsRef);
           set(newPrintRef, {
             x, y,
@@ -112,53 +109,59 @@ window.addEventListener('DOMContentLoaded', () => {
     setPlayerData();
   }
 
-  // Listen to all players
+  let players = {};
+  let prints = {};
+
+  // Listen to players
   onValue(playersRef, (snapshot) => {
-    const players = snapshot.val();
+    players = snapshot.val() || {};
+    draw();
+  });
+
+  // Listen to prints
+  onValue(printsRef, (snapshot) => {
+    prints = snapshot.val() || {};
+    draw();
+  });
+
+  function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!players) return;
+    // Draw all prints first
+    for (let id in prints) {
+      const p = prints[id];
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, playerSize, playerSize);
+    }
 
+    // Draw all other players
     for (let id in players) {
+      if (id === playerId) continue; // draw local player last
       const p = players[id];
-      const px = p.x;
-      const py = p.y;
+      ctx.fillStyle = 'gray';
+      ctx.fillRect(p.x, p.y, playerSize, playerSize);
 
-      // Draw player square
-      ctx.fillStyle = (id === playerId) ? playerColor : 'gray';
-      ctx.fillRect(px, py, playerSize, playerSize);
-
-      if (id === playerId) {
-        ctx.strokeStyle = 'yellow';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(px - 1, py - 1, playerSize + 2, playerSize + 2);
-      }
-
-      // Draw name centered above player
+      // Player name (centered above square)
       ctx.fillStyle = 'black';
       ctx.font = '10px Arial';
       const textWidth = ctx.measureText(p.name || 'Player').width;
-      ctx.fillText(p.name || 'Player', px + playerSize / 2 - textWidth / 2, py - 2);
+      ctx.fillText(p.name || 'Player', p.x + playerSize/2 - textWidth/2, p.y - 2);
     }
-  });
 
-  // Listen to prints and display in printCanvas
-  onValue(printsRef, (snapshot) => {
-    const prints = snapshot.val();
-    printCtx.clearRect(0, 0, printCanvas.width, printCanvas.height);
+    // Draw local player on top
+    const me = players[playerId];
+    if (me) {
+      ctx.fillStyle = playerColor;
+      ctx.fillRect(me.x, me.y, playerSize, playerSize);
 
-    if (!prints) return;
+      ctx.strokeStyle = 'yellow';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(me.x - 1, me.y - 1, playerSize + 2, playerSize + 2);
 
-    // Sort prints so local player prints are on top
-    const printArray = Object.values(prints).sort((a,b) => (a.playerId === playerId ? 1 : 0) - (b.playerId === playerId ? 0 : 1));
-
-    let offsetY = 0;
-    const printSize = 20;
-
-    for (let p of printArray) {
-      printCtx.fillStyle = p.color;
-      printCtx.fillRect(10, offsetY, printSize, printSize);
-      offsetY += printSize + 2; // spacing
+      ctx.fillStyle = 'black';
+      ctx.font = '10px Arial';
+      const textWidth = ctx.measureText(me.name || 'Player').width;
+      ctx.fillText(me.name || 'Player', me.x + playerSize/2 - textWidth/2, me.y - 2);
     }
-  });
+  }
 });
