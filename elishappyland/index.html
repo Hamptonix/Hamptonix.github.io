@@ -3,95 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <title>Multiplayer 2D Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Poppins font (clean modern look) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+
   <style>
+    /* Base styling */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #000;
-      color: #fff;
       margin: 0;
-      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #1f1f1f;
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 30px 15px;
     }
 
     #gameCanvas {
-      border: 2px solid white;
+      border: none;
       margin-top: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
     }
 
-    #controls {
-      margin-top: 20px;
+    /* Container for name/color inputs */
+    .player-setup-container {
+      max-width: 400px;
+      width: 100%;
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
 
-    input[type="text"], input[type="color"] {
-      background-color: #111;
-      border: 2px solid #1e90ff;
-      color: white;
-      padding: 10px 15px;
-      margin: 10px;
-      border-radius: 6px;
-      font-size: 16px;
+    .player-setup-container h2 {
+      color: #111;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .player-setup-container input[type="text"],
+    .player-setup-container input[type="color"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      font-size: 15px;
       transition: all 0.3s ease;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
     }
 
-    input[type="text"]:focus, input[type="color"]:focus {
-      outline: none;
-      box-shadow: 0 0 15px #ffffffcc;
+    .player-setup-container input[type="text"]:focus,
+    .player-setup-container input[type="color"]:focus {
       border-color: #1e90ff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
     }
 
-    input[type="color"] {
+    .player-setup-container input[type="color"] {
       padding: 4px;
-      height: 42px;
-      width: 52px;
+      height: 45px;
+      width: 100%;
       cursor: pointer;
     }
 
-    p {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #ccc;
+    .player-setup-container p {
+      font-size: 13px;
+      color: #444;
+      margin-top: 5px;
     }
 
-    /* Fancy underline glow animation */
-    input[type="text"]::placeholder {
-      color: #aaa;
-    }
-
-    input[type="text"]:hover, input[type="color"]:hover {
-      box-shadow: 0 0 12px #ffffff88, 0 0 20px #1e90ff;
-      transition: all 0.3s ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 10px #ffffff55, 0 0 20px #1e90ff88;
-      }
-      50% {
-        box-shadow: 0 0 20px #ffffff88, 0 0 30px #1e90ffcc;
-      }
-      100% {
-        box-shadow: 0 0 10px #ffffff55, 0 0 20px #1e90ff88;
-      }
-    }
-
-    input[type="text"]:focus, input[type="color"]:focus {
-      animation: pulseGlow 1.5s infinite;
+    /* Optional: glowing input on hover/focus */
+    .player-setup-container input:hover {
+      box-shadow: 0 0 8px rgba(30, 144, 255, 0.3);
     }
 
   </style>
 </head>
 <body>
+
+  <!-- Canvas stays white as requested -->
   <canvas id="gameCanvas" width="800" height="600"></canvas>
-  
-  <div id="controls">
+
+  <!-- Auth-style input container -->
+  <div class="player-setup-container">
+    <h2>Player Setup</h2>
     <input type="text" id="nameInput" placeholder="Enter your name" />
     <input type="color" id="colorPicker" value="#0000ff" />
-    <p>Use arrow keys to move, SPACE to print your color.</p>
+    <p>Use arrow keys to move. Press SPACE to print your color.</p>
   </div>
 
   <script type="module" src="game.js"></script>
