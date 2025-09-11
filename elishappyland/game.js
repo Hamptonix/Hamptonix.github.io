@@ -159,10 +159,12 @@ window.addEventListener('DOMContentLoaded', () => {
   let prints = {};
 
   onValue(playersRef, (snapshot) => {
-    players = snapshot.val() || {};
-    window._latestPlayers = players;
-    draw();
-  });
+  players = snapshot.val() || {};
+  window._latestPlayers = players;
+  updatePlayerCount();
+  draw();
+});
+
 
   onValue(printsRef, (snapshot) => {
     prints = snapshot.val() || {};
@@ -259,6 +261,13 @@ window.addEventListener('DOMContentLoaded', () => {
     mCtx.lineWidth = 2;
     mCtx.strokeRect(offsetX * scaleX, offsetY * scaleY, viewW * scaleX, viewH * scaleY);
   }
+
+  function updatePlayerCount() {
+  const playerCountEl = document.getElementById('playerCount');
+  const total = players ? Object.keys(players).length : 0;
+  playerCountEl.textContent = `Players Online: ${total}`;
+}
+
 
   function getNextResetTimestamp() {
     const now = new Date();
