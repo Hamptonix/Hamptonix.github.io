@@ -193,7 +193,7 @@ window.addEventListener('DOMContentLoaded', () => {
     next.setMinutes(0);
     next.setSeconds(0);
     next.setMilliseconds(0);
-    next.setHours(now.getHours() + 1);
+    next.setHours(now.getHours() + 999999);
     return next.getTime();
   }
 
