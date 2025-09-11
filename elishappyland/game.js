@@ -105,55 +105,65 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keydown', (e) => {
-    const code = e.code;
-    const controlKeys = [
-      'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
-      'KeyW','KeyA','KeyS','KeyD', 'Space', 'Equal', 'Minus', 'KeyT'
-    ];
-    if (!controlKeys.includes(code)) return;
+  const active = document.activeElement;
+  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
 
-    e.preventDefault(); // prevent default action for Space and others
+  const code = e.code;
+  const controlKeys = [
+    'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+    'KeyW','KeyA','KeyS','KeyD', 'Space', 'Equal', 'Minus', 'KeyT'
+  ];
+  if (!controlKeys.includes(code)) return;
 
-    if (!keysPressed[code]) {
-      keysPressed[code] = true;
-      switch (code) {
-        case 'Space':
-          printColor();
-          keyTimers[code] = setInterval(printColor, 200);
-          break;
-        case 'Equal': // '+'
-          zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.2);
-          draw();
-          break;
-        case 'Minus':
-          zoomLevel = Math.max(MIN_ZOOM, zoomLevel / 1.2);
-          draw();
-          break;
-        case 'KeyT':
-          if (window._latestPlayers) teleportToRandomPlayer(window._latestPlayers);
-          break;
-        default:
-          movePlayer(code);
-          keyTimers[code] = setTimeout(() => {
-            keyTimers[code] = setInterval(() => movePlayer(code), repeatInterval);
-          }, initialDelay);
-          break;
-      }
+  e.preventDefault();
+
+  if (!keysPressed[code]) {
+    keysPressed[code] = true;
+
+    switch (code) {
+      case 'Space':
+        printColor();
+        keyTimers[code] = setInterval(printColor, 200);
+        break;
+      case 'Equal':
+        zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.2);
+        draw();
+        break;
+      case 'Minus':
+        zoomLevel = Math.max(MIN_ZOOM, zoomLevel / 1.2);
+        draw();
+        break;
+      case 'KeyT':
+        if (window._latestPlayers) teleportToRandomPlayer(window._latestPlayers);
+        break;
+      default:
+        movePlayer(code);
+        keyTimers[code] = setTimeout(() => {
+          keyTimers[code] = setInterval(() => movePlayer(code), repeatInterval);
+        }, initialDelay);
+        break;
     }
-  });
+  }
+});
 
-  document.addEventListener('keyup', (e) => {
-    const code = e.code;
-    if (!keysPressed[code]) return;
 
-    keysPressed[code] = false;
-    if (keyTimers[code]) {
-      clearInterval(keyTimers[code]);
-      clearTimeout(keyTimers[code]);
-      keyTimers[code] = null;
-    }
-    e.preventDefault();
-  });
+document.addEventListener('keyup', (e) => {
+  const active = document.activeElement;
+  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+
+  const code = e.code;
+  if (!keysPressed[code]) return;
+
+  keysPressed[code] = false;
+  if (keyTimers[code]) {
+    clearInterval(keyTimers[code]);
+    clearTimeout(keyTimers[code]);
+    keyTimers[code] = null;
+  }
+
+  e.preventDefault();
+});
+
 
   let players = {};
   let prints = {};
