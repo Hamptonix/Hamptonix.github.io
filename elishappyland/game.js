@@ -18,6 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const nameInput = document.getElementById('nameInput');
   const colorPicker = document.getElementById('colorPicker');
+  const speedSelect = document.getElementById('speedSelect');
   const resetCountdownEl = document.getElementById('resetCountdown');
 
   const WORLD_WIDTH = 4000;
@@ -31,9 +32,10 @@ window.addEventListener('DOMContentLoaded', () => {
   let y = WORLD_HEIGHT / 2;
   let playerName = '';
   let playerColor = '#0000ff';
+  let speedMultiplier = 1;
   const playerSize = 20;
 
-  const moveDistance = 5;
+  const baseMoveDistance = 5;
   const keysPressed = {};
   const keyTimers = {};
   const initialDelay = 200;
@@ -58,7 +60,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const mCtx = minimap.getContext('2d');
 
   function setPlayerData() {
-    set(playerRef, { x, y, name: playerName, color: playerColor });
+    set(playerRef, { x, y, name: playerName, color: playerColor, speed: speedMultiplier });
   }
 
   nameInput.addEventListener('input', () => {
@@ -71,7 +73,13 @@ window.addEventListener('DOMContentLoaded', () => {
     update(playerRef, { color: playerColor });
   });
 
+  speedSelect.addEventListener('change', () => {
+    speedMultiplier = parseFloat(speedSelect.value);
+    update(playerRef, { speed: speedMultiplier });
+  });
+
   function movePlayer(key) {
+    const moveDistance = baseMoveDistance * speedMultiplier;
     switch (key) {
       case 'ArrowUp':
       case 'KeyW':
@@ -105,76 +113,73 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keydown', (e) => {
-  const active = document.activeElement;
-  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+    const active = document.activeElement;
+    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
 
-  const code = e.code;
-  const controlKeys = [
-    'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
-    'KeyW','KeyA','KeyS','KeyD', 'Space', 'Equal', 'Minus', 'KeyT'
-  ];
-  if (!controlKeys.includes(code)) return;
+    const code = e.code;
+    const controlKeys = [
+      'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+      'KeyW','KeyA','KeyS','KeyD', 'Space', 'Equal', 'Minus', 'KeyT'
+    ];
+    if (!controlKeys.includes(code)) return;
 
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!keysPressed[code]) {
-    keysPressed[code] = true;
+    if (!keysPressed[code]) {
+      keysPressed[code] = true;
 
-    switch (code) {
-      case 'Space':
-        printColor();
-        keyTimers[code] = setInterval(printColor, 200);
-        break;
-      case 'Equal':
-        zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.2);
-        draw();
-        break;
-      case 'Minus':
-        zoomLevel = Math.max(MIN_ZOOM, zoomLevel / 1.2);
-        draw();
-        break;
-      case 'KeyT':
-        if (window._latestPlayers) teleportToRandomPlayer(window._latestPlayers);
-        break;
-      default:
-        movePlayer(code);
-        keyTimers[code] = setTimeout(() => {
-          keyTimers[code] = setInterval(() => movePlayer(code), repeatInterval);
-        }, initialDelay);
-        break;
+      switch (code) {
+        case 'Space':
+          printColor();
+          keyTimers[code] = setInterval(printColor, 200);
+          break;
+        case 'Equal':
+          zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.2);
+          draw();
+          break;
+        case 'Minus':
+          zoomLevel = Math.max(MIN_ZOOM, zoomLevel / 1.2);
+          draw();
+          break;
+        case 'KeyT':
+          if (window._latestPlayers) teleportToRandomPlayer(window._latestPlayers);
+          break;
+        default:
+          movePlayer(code);
+          keyTimers[code] = setTimeout(() => {
+            keyTimers[code] = setInterval(() => movePlayer(code), repeatInterval);
+          }, initialDelay);
+          break;
+      }
     }
-  }
-});
+  });
 
+  document.addEventListener('keyup', (e) => {
+    const active = document.activeElement;
+    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
 
-document.addEventListener('keyup', (e) => {
-  const active = document.activeElement;
-  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+    const code = e.code;
+    if (!keysPressed[code]) return;
 
-  const code = e.code;
-  if (!keysPressed[code]) return;
+    keysPressed[code] = false;
+    if (keyTimers[code]) {
+      clearInterval(keyTimers[code]);
+      clearTimeout(keyTimers[code]);
+      keyTimers[code] = null;
+    }
 
-  keysPressed[code] = false;
-  if (keyTimers[code]) {
-    clearInterval(keyTimers[code]);
-    clearTimeout(keyTimers[code]);
-    keyTimers[code] = null;
-  }
-
-  e.preventDefault();
-});
-
+    e.preventDefault();
+  });
 
   let players = {};
   let prints = {};
 
   onValue(playersRef, (snapshot) => {
-  players = snapshot.val() || {};
-  window._latestPlayers = players;
-  updatePlayerCount();
-  draw();
-});
-
+    players = snapshot.val() || {};
+    window._latestPlayers = players;
+    updatePlayerCount();
+    draw();
+  });
 
   onValue(printsRef, (snapshot) => {
     prints = snapshot.val() || {};
@@ -243,7 +248,7 @@ document.addEventListener('keyup', (e) => {
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    coordDisplay.textContent = `Coordinates: (${Math.round(x)}, ${Math.round(y)})  Zoom: ${zoomLevel.toFixed(2)}×`;
+    coordDisplay.textContent = `Coordinates: (${Math.round(x)}, ${Math.round(y)})  Zoom: ${zoomLevel.toFixed(2)}×  Speed: ${speedMultiplier}x`;
 
     drawMinimap(offsetX, offsetY, viewW, viewH);
   }
@@ -273,47 +278,43 @@ document.addEventListener('keyup', (e) => {
   }
 
   function updatePlayerCount() {
-  const playerCountEl = document.getElementById('playerCount');
-  const total = players ? Object.keys(players).length : 0;
-  playerCountEl.textContent = `Players Online: ${total}`;
-}
+    const playerCountEl = document.getElementById('playerCount');
+    const total = players ? Object.keys(players).length : 0;
+    playerCountEl.textContent = `Players Online: ${total}`;
+  }
 
   let lastResetKey = null;
-    function getNextResetTimestamp() {
+  function getNextResetTimestamp() {
     const MS_IN_TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
-    const startDate = new Date('2024-01-01T00:00:00Z').getTime(); // fixed reset start
+    const startDate = new Date('2024-01-01T00:00:00Z').getTime();
     const now = Date.now();
     const cycles = Math.ceil((now - startDate) / MS_IN_TWO_WEEKS);
     return startDate + cycles * MS_IN_TWO_WEEKS;
   }
 
-  // Countdown timer
   setInterval(() => {
-  const now = Date.now();
-  const next = getNextResetTimestamp();
-  const delta = next - now;
+    const now = Date.now();
+    const next = getNextResetTimestamp();
+    const delta = next - now;
 
-  const hrs = Math.floor(delta / (1000 * 60 * 60));
-  const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
-  const secs = Math.floor((delta % (1000 * 60)) / 1000);
+    const hrs = Math.floor(delta / (1000 * 60 * 60));
+    const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((delta % (1000 * 60)) / 1000);
 
-  if (resetCountdownEl) {
-    resetCountdownEl.textContent =
-      `Resetting in: ${String(hrs).padStart(2, '0')}:` +
-      `${String(mins).padStart(2, '0')}:` +
-      `${String(secs).padStart(2, '0')}`;
-  }
+    if (resetCountdownEl) {
+      resetCountdownEl.textContent =
+        `Resetting in: ${String(hrs).padStart(2, '0')}:` +
+        `${String(mins).padStart(2, '0')}:` +
+        `${String(secs).padStart(2, '0')}`;
+    }
 
-  const resetTimeEl = document.getElementById('resetTime');
-  if (resetTimeEl) {
-    const date = new Date(next);
-    resetTimeEl.textContent = `Next Reset: ${date.toLocaleString()}`;
-  }
-}, 1000);
+    const resetTimeEl = document.getElementById('resetTime');
+    if (resetTimeEl) {
+      const date = new Date(next);
+      resetTimeEl.textContent = `Next Reset: ${date.toLocaleString()}`;
+    }
+  }, 1000);
 
-
-
-  // Reset board every 2 weeks
   setInterval(() => {
     const now = Date.now();
     const nextReset = getNextResetTimestamp();
@@ -333,4 +334,3 @@ document.addEventListener('keyup', (e) => {
 
   setPlayerData();
 });
-
