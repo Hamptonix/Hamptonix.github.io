@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const nameInput = document.getElementById('nameInput');
   const colorPicker = document.getElementById('colorPicker');
   const speedSelect = document.getElementById('speedSelect');
+  const eraserBtn = document.getElementById('eraserBtn');
   const resetCountdownEl = document.getElementById('resetCountdown');
 
   const WORLD_WIDTH = 4000;
@@ -32,7 +33,8 @@ window.addEventListener('DOMContentLoaded', () => {
   let y = WORLD_HEIGHT / 2;
   let playerName = '';
   let playerColor = '#0000ff';
-  let speedMultiplier = 1;
+  let speedMultiplier = parseFloat(speedSelect?.value || 1);
+  let isErasing = false;
   const playerSize = 20;
 
   const baseMoveDistance = 5;
@@ -44,7 +46,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const playersRef = ref(db, 'players');
   const printsRef = ref(db, 'prints');
   const playerRef = ref(db, 'players/' + playerId);
-  onDisconnect(playerRef).remove();
+  // ensure player is removed on disconnect
+  try {
+    onDisconnect(playerRef).remove();
+  } catch (err) {
+    // Some SDK versions behave differently; best-effort
+    console.warn('onDisconnect setup failed (noncritical):', err);
+  }
 
   const coordDisplay = document.createElement('div');
   Object.assign(coordDisplay.style, {
@@ -59,24 +67,44 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.player-setup-container').appendChild(minimap);
   const mCtx = minimap.getContext('2d');
 
+  let players = {};
+  let prints = {};
+
   function setPlayerData() {
+    // write the main player object (including speed) so other clients can see it
     set(playerRef, { x, y, name: playerName, color: playerColor, speed: speedMultiplier });
   }
 
+  // inputs
   nameInput.addEventListener('input', () => {
     playerName = nameInput.value || 'Player';
-    update(playerRef, { name: playerName });
+    update(playerRef, { name: playerName }).catch(() => setPlayerData());
   });
 
   colorPicker.addEventListener('input', () => {
     playerColor = colorPicker.value;
-    update(playerRef, { color: playerColor });
+    update(playerRef, { color: playerColor }).catch(() => setPlayerData());
   });
 
-  speedSelect.addEventListener('change', () => {
-    speedMultiplier = parseFloat(speedSelect.value);
-    update(playerRef, { speed: speedMultiplier });
-  });
+  // speed select handler (sync to firebase)
+  if (speedSelect) {
+    speedMultiplier = parseFloat(speedSelect.value) || 1;
+    speedSelect.addEventListener('change', () => {
+      speedMultiplier = parseFloat(speedSelect.value) || 1;
+      update(playerRef, { speed: speedMultiplier }).catch(() => setPlayerData());
+    });
+  }
+
+  // Eraser toggle button (assumes eraserBtn exists in HTML)
+  if (eraserBtn) {
+    eraserBtn.addEventListener('click', () => {
+      isErasing = !isErasing;
+      eraserBtn.style.borderColor = isErasing ? '#1e90ff' : '#ccc';
+      eraserBtn.style.background = isErasing ? '#e6f0ff' : '#fff';
+      // small ARIA/hint toggle
+      eraserBtn.setAttribute('aria-pressed', String(isErasing));
+    });
+  }
 
   function movePlayer(key) {
     const moveDistance = baseMoveDistance * speedMultiplier;
@@ -104,17 +132,37 @@ window.addEventListener('DOMContentLoaded', () => {
     set(newPrintRef, { x, y, color: playerColor, playerId, timestamp: Date.now() });
   }
 
-  function teleportToRandomPlayer(players) {
-    const others = Object.values(players).filter(p => p && p.playerId !== playerId);
-    if (!others.length) return;
-    const target = others[Math.floor(Math.random() * others.length)];
-    x = target.x; y = target.y;
-    setPlayerData();
+  function eraseAtPosition() {
+    // iterate current prints and delete any that overlap the player's square
+    for (const id in prints) {
+      const p = prints[id];
+      if (!p || typeof p.x !== 'number' || typeof p.y !== 'number') continue;
+      if (
+        x < p.x + playerSize &&
+        x + playerSize > p.x &&
+        y < p.y + playerSize &&
+        y + playerSize > p.y
+      ) {
+        // delete that print from firebase
+        set(ref(db, 'prints/' + id), null).catch(err => console.error('Erase failed:', err));
+      }
+    }
+  }
+
+  function teleportToRandomPlayer(playersObj) {
+    const entries = Object.entries(playersObj || {}).filter(([pid, p]) => pid !== playerId && p);
+    if (!entries.length) return;
+    const [, target] = entries[Math.floor(Math.random() * entries.length)];
+    if (target && typeof target.x === 'number' && typeof target.y === 'number') {
+      x = target.x;
+      y = target.y;
+      setPlayerData();
+    }
   }
 
   document.addEventListener('keydown', (e) => {
     const active = document.activeElement;
-    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
 
     const code = e.code;
     const controlKeys = [
@@ -130,8 +178,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
       switch (code) {
         case 'Space':
-          printColor();
-          keyTimers[code] = setInterval(printColor, 200);
+          if (isErasing) {
+            eraseAtPosition();
+            keyTimers[code] = setInterval(eraseAtPosition, 200);
+          } else {
+            printColor();
+            keyTimers[code] = setInterval(printColor, 200);
+          }
           break;
         case 'Equal':
           zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.2);
@@ -156,7 +209,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keyup', (e) => {
     const active = document.activeElement;
-    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
 
     const code = e.code;
     if (!keysPressed[code]) return;
@@ -171,9 +224,6 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
   });
 
-  let players = {};
-  let prints = {};
-
   onValue(playersRef, (snapshot) => {
     players = snapshot.val() || {};
     window._latestPlayers = players;
@@ -187,6 +237,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   function draw() {
+    // reset transform and clear
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -198,13 +249,16 @@ window.addEventListener('DOMContentLoaded', () => {
     offsetX = Math.max(0, Math.min(WORLD_WIDTH - viewW, offsetX));
     offsetY = Math.max(0, Math.min(WORLD_HEIGHT - viewH, offsetY));
 
+    // world transform
     ctx.scale(zoomLevel, zoomLevel);
     ctx.translate(-offsetX, -offsetY);
 
+    // world border
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 4 / zoomLevel;
     ctx.strokeRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
+    // draws prints
     for (const id in prints) {
       const p = prints[id];
       if (!p) continue;
@@ -218,6 +272,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.fillRect(p.x, p.y, playerSize, playerSize);
     }
 
+    // other players
     for (const pid in players) {
       const p = players[pid];
       if (!p || pid === playerId) continue;
@@ -236,9 +291,10 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.fillText(nm, p.x + playerSize / 2 - w / 2, p.y - 2 / zoomLevel);
     }
 
+    // draw local player
     ctx.fillStyle = playerColor;
     ctx.fillRect(x, y, playerSize, playerSize);
-    ctx.strokeStyle = 'yellow';
+    ctx.strokeStyle = isErasing ? '#ff4d4d' : 'yellow'; // red outline when erasing
     ctx.lineWidth = 2 / zoomLevel;
     ctx.strokeRect(x - 1, y - 1, playerSize + 2, playerSize + 2);
     ctx.fillStyle = 'black';
@@ -246,9 +302,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const wSelf = ctx.measureText(playerName || 'Player').width;
     ctx.fillText(playerName || 'Player', x + playerSize / 2 - wSelf / 2, y - 2 / zoomLevel);
 
+    // reset transform for HUD
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    coordDisplay.textContent = `Coordinates: (${Math.round(x)}, ${Math.round(y)})  Zoom: ${zoomLevel.toFixed(2)}×  Speed: ${speedMultiplier}x`;
+    coordDisplay.textContent =
+      `Coordinates: (${Math.round(x)}, ${Math.round(y)})  Zoom: ${zoomLevel.toFixed(2)}×  Speed: ${speedMultiplier}x ${isErasing ? '  [Eraser ON]' : ''}`;
 
     drawMinimap(offsetX, offsetY, viewW, viewH);
   }
@@ -280,18 +338,19 @@ window.addEventListener('DOMContentLoaded', () => {
   function updatePlayerCount() {
     const playerCountEl = document.getElementById('playerCount');
     const total = players ? Object.keys(players).length : 0;
-    playerCountEl.textContent = `Players Online: ${total}`;
+    if (playerCountEl) playerCountEl.textContent = `Players Online: ${total}`;
   }
 
   let lastResetKey = null;
   function getNextResetTimestamp() {
     const MS_IN_TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
-    const startDate = new Date('2024-01-01T00:00:00Z').getTime();
+    const startDate = new Date('2024-01-01T00:00:00Z').getTime(); // fixed reset start
     const now = Date.now();
     const cycles = Math.ceil((now - startDate) / MS_IN_TWO_WEEKS);
     return startDate + cycles * MS_IN_TWO_WEEKS;
   }
 
+  // Countdown timer
   setInterval(() => {
     const now = Date.now();
     const next = getNextResetTimestamp();
@@ -315,6 +374,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 1000);
 
+  // Reset board every 2 weeks
   setInterval(() => {
     const now = Date.now();
     const nextReset = getNextResetTimestamp();
