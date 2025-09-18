@@ -289,17 +289,29 @@ document.addEventListener('keyup', (e) => {
 
   // Countdown timer
   setInterval(() => {
-    const now = Date.now(), next = getNextResetTimestamp(), delta = next - now;
-    const hrs = Math.floor(delta / (1000 * 60 * 60));
-    const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((delta % (1000 * 60)) / 1000);
-    if (resetCountdownEl) {
-      resetCountdownEl.textContent =
-        `Resetting in: ${String(hrs).padStart(2, '0')}:` +
-        `${String(mins).padStart(2, '0')}:` +
-        `${String(secs).padStart(2, '0')}`;
-    }
-  }, 1000);
+  const now = Date.now();
+  const next = getNextResetTimestamp();
+  const delta = next - now;
+
+  const hrs = Math.floor(delta / (1000 * 60 * 60));
+  const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((delta % (1000 * 60)) / 1000);
+
+  if (resetCountdownEl) {
+    resetCountdownEl.textContent =
+      `Resetting in: ${String(hrs).padStart(2, '0')}:` +
+      `${String(mins).padStart(2, '0')}:` +
+      `${String(secs).padStart(2, '0')}`;
+  }
+
+  const resetTimeEl = document.getElementById('resetTime');
+  if (resetTimeEl) {
+    const date = new Date(next);
+    resetTimeEl.textContent = `Next Reset: ${date.toLocaleString()}`;
+  }
+}, 1000);
+
+
 
   // Reset board every 2 weeks
   setInterval(() => {
