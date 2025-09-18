@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const WORLD_WIDTH = 4000;
   const WORLD_HEIGHT = 4000;
   let zoomLevel = 1;
-  const MIN_ZOOM = 0.1;
+  const MIN_ZOOM = 0.15;
   const MAX_ZOOM = 5;
 
   const playerId = Math.random().toString(36).substr(2, 9);
