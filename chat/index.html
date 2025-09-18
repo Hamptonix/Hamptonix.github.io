@@ -104,9 +104,8 @@
     // 2) Enable Cloud Firestore in the console.
     // 3) Optionally enable a TTL policy on the 'messages' collection for the 'expireAt' field (recommended).
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, where, doc, deleteDoc, setDoc, getDoc, updateDoc
-    } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore.js";
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
