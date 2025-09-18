@@ -1,402 +1,177 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
-  <title>Hamptonix | Chat</title>
-  <style>
-    /* --- ChatGPT-like dark theme basics --- */
-    :root{
-      --bg:#0b0b0b;
-      --panel:#0f1720;
-      --muted:#9aa4b2;
-      --accent:#10a37f;
-      --button-bg:#0ea5a1; /* upgrade-like */
-      --button-text:#001018;
-      --msg-bg: rgba(255,255,255,0.02);
-    }
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-    body{background:linear-gradient(180deg,#020204 0%, #091014 100%); color:#e6eef6; display:flex; align-items:stretch; height:100vh;}
-    /* Container */
-    .app { display:flex; width:100%; max-width:1200px; margin:auto; box-shadow:0 10px 30px rgba(0,0,0,0.6); border-radius:10px; overflow:hidden; }
-    /* Sidebar */
-    .sidebar { width:320px; background:var(--panel); padding:18px; transition:transform .25s ease; box-sizing:border-box; }
-    .sidebar.collapsed { transform:translateX(-100%); }
-    .toggle-btn { position:absolute; left:100%; top:12px; transform:translateX(-12px); background:var(--button-bg); color:var(--button-text); padding:8px 12px; border-radius:999px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.4) }
-    .sidebar h3{margin:6px 0 8px;font-size:14px}
-    label{display:block;font-size:12px;color:var(--muted); margin-top:10px}
-    input[type="text"]{width:100%; padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit}
-    input[type="color"]{width:56px;height:36px;border-radius:6px;border:none;padding:0;margin-left:6px;vertical-align:middle}
-    .small { font-size:12px;color:var(--muted) }
-
-    /* Main chat area */
-    .main { flex:1; display:flex; flex-direction:column; background:var(--bg); min-height:60vh; }
-    .header { padding:16px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.03); }
-    .title { font-weight:700; letter-spacing:0.2px }
-    .online-pill { font-size:13px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,0.04); color:var(--muted) }
-
-    .messages { padding:18px; flex:1; overflow:auto; display:flex; flex-direction:column; gap:12px; }
-    .message { background:var(--msg-bg); padding:10px 12px; border-radius:8px; width:fit-content; max-width:78%; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.01); }
-    .username { font-weight:700; font-size:13px; margin-bottom:4px; }
-    .text { font-size:13px; color:#dce9f2; line-height:1.25; white-space:pre-wrap; }
-    .meta { font-size:11px; color:var(--muted); margin-top:6px; display:flex; gap:8px; align-items:center }
-
-    /* small timer under each message */
-    .timer { font-size:11px;color:var(--muted) }
-
-    /* input area */
-    .composer { border-top:1px solid rgba(255,255,255,0.03); padding:12px; display:flex; gap:10px; align-items:center; }
-    .composer textarea { flex:1; min-height:48px; max-height:120px; resize:none; padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit }
-    .send-btn { padding:10px 14px; border-radius:8px; background:var(--button-bg); color:var(--button-text); border:none; cursor:pointer; font-weight:700; box-shadow:0 6px 20px rgba(14,165,161,0.12) }
-
-    /* left align everything */
-    .messages, .message { align-items:flex-start; text-align:left; }
-
-    /* responsive */
-    @media (max-width:880px){
-      .sidebar{ position:absolute; z-index:10; height:100%; }
-      .toggle-btn{ left:auto; right:12px; transform:none; top:12px; }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Live Chat — Firestore</title>
+<style>
+:root{
+  --bg:#0b0b0b;
+  --panel:#0f1720;
+  --muted:#9aa4b2;
+  --accent:#10a37f;
+  --button-bg:#0ea5a1;
+  --button-text:#001018;
+  --msg-bg: rgba(255,255,255,0.02);
+}
+html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui;}
+body{background:var(--bg); color:#e6eef6; display:flex; align-items:stretch;}
+.app{display:flex;width:100%;max-width:1200px;margin:auto;box-shadow:0 10px 30px rgba(0,0,0,0.6);border-radius:10px;overflow:hidden;}
+.sidebar{width:320px;background:var(--panel);padding:18px;box-sizing:border-box;}
+.sidebar h3{margin:6px 0 8px;font-size:14px;}
+label{display:block;font-size:12px;color:var(--muted);margin-top:10px;}
+input[type="text"]{width:100%; padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit;}
+input[type="color"]{width:56px;height:36px;border-radius:6px;border:none;padding:0;margin-left:6px;vertical-align:middle;}
+.small{font-size:12px;color:var(--muted);}
+.online-pill{font-size:13px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted);}
+.clear-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer;}
+.main{flex:1;display:flex;flex-direction:column;background:var(--bg);min-height:60vh;}
+.header{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.03);}
+.title{font-weight:700;letter-spacing:0.2px;}
+.messages{padding:18px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:12px;}
+.message{background:var(--msg-bg);padding:10px 12px;border-radius:8px;width:fit-content;max-width:78%;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.01);}
+.username{font-weight:700;font-size:13px;margin-bottom:4px;}
+.text{font-size:13px;color:#dce9f2;line-height:1.25;white-space:pre-wrap;}
+.meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;align-items:center;}
+.timer{font-size:11px;color:var(--muted);}
+.composer{border-top:1px solid rgba(255,255,255,0.03);padding:12px;display:flex;gap:10px;align-items:center;}
+.composer textarea{flex:1;min-height:48px;max-height:120px;resize:none;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;}
+.send-btn{padding:10px 14px;border-radius:8px;background:var(--button-bg);color:var(--button-text);border:none;cursor:pointer;font-weight:700;box-shadow:0 6px 20px rgba(14,165,161,0.12);}
+.messages, .message{align-items:flex-start;text-align:left;}
+</style>
 </head>
 <body>
-  <div class="app" role="application">
-    <div id="sidebar" class="sidebar">
-      <button id="collapseToggle" class="toggle-btn">☰</button>
-      <h3>Profile</h3>
-      <label>Username</label>
-      <input id="usernameInput" type="text" maxlength="40" placeholder="Pick a name (default: Guest)" />
-      <label>Username color <span class="small">(default white)</span></label>
-      <div style="display:flex;align-items:center">
-        <input id="colorPicker" type="color" value="#ffffff" />
-        <div style="margin-left:12px" class="small">Preview: <span id="previewName" style="font-weight:700">Guest</span></div>
-      </div>
-
-      <label style="margin-top:16px">Online</label>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
-        <div class="online-pill" id="onlineCount">0 online</div>
-      </div>
-
-      <div style="margin-top:18px">
-        <button id="clearLocal" style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer">Reset username</button>
-      </div>
+<div class="app">
+  <div class="sidebar">
+    <h3>Profile</h3>
+    <label>Username</label>
+    <input id="usernameInput" type="text" maxlength="40" placeholder="Pick a name (default: Guest)" />
+    <label>Username color <span class="small">(default white)</span></label>
+    <div style="display:flex;align-items:center">
+      <input id="colorPicker" type="color" value="#ffffff" />
+      <div style="margin-left:12px" class="small">Preview: <span id="previewName" style="font-weight:700">Guest</span></div>
     </div>
-
-    <div class="main">
-      <div class="header">
-        <div class="title">Live Chat</div>
-        <div class="online-pill" id="onlineTop">0 online</div>
-      </div>
-
-      <div class="messages" id="messages"></div>
-
-      <div class="composer">
-        <textarea id="msgInput" placeholder="Type a message..." maxlength="2000"></textarea>
-        <button id="sendBtn" class="send-btn">Send</button>
-      </div>
+    <label style="margin-top:16px">Online</label>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+      <div class="online-pill" id="onlineCount">0 online</div>
+    </div>
+    <div style="margin-top:18px">
+      <button id="clearLocal" class="clear-btn">Reset username</button>
     </div>
   </div>
+  <div class="main">
+    <div class="header">
+      <div class="title">Live Chat</div>
+      <div class="online-pill" id="onlineTop">0 online</div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="composer">
+      <textarea id="msgInput" placeholder="Type a message..." maxlength="2000"></textarea>
+      <button id="sendBtn" class="send-btn">Send</button>
+    </div>
+  </div>
+</div>
 
-  <!-- Firebase (modular SDK) via CDN - works on GitHub Pages without bundler -->
-  <script type="module">
-    // --------- FIREBASE CONFIG: Replace with your own from Firebase Console ----------
-    // 1) Create a Firebase project and add a Web app. Copy the firebaseConfig object here.
-    // 2) Enable Cloud Firestore in the console.
-    // 3) Optionally enable a TTL policy on the 'messages' collection for the 'expireAt' field (recommended).
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+const firebaseConfig = {
+  /* FIREBASE CONFIG HERE */
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
-  authDomain: "livechat-4b94e.firebaseapp.com",
-  databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
-  projectId: "livechat-4b94e",
-  storageBucket: "livechat-4b94e.firebasestorage.app",
-  messagingSenderId: "951972267887",
-  appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
-  measurementId: "G-5WF1LLM7FH"
-    };
+// --- UI refs ---
+const usernameInput = document.getElementById('usernameInput');
+const colorPicker = document.getElementById('colorPicker');
+const previewName = document.getElementById('previewName');
+const onlineCount = document.getElementById('onlineCount');
+const onlineTop = document.getElementById('onlineTop');
+const messagesDiv = document.getElementById('messages');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const clearLocal = document.getElementById('clearLocal');
 
-    if (!firebaseConfig || !firebaseConfig.projectId) {
-      console.warn("Add your Firebase config to firebaseConfig in the script!");
-    }
+// --- Local username & color ---
+const LOCAL_KEY = 'livechat_user';
+let saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+if (saved.name) usernameInput.value = saved.name;
+if (saved.color) colorPicker.value = saved.color;
+updatePreview();
+function updatePreview(){
+  const name = usernameInput.value || 'Guest';
+  previewName.innerText = name;
+  previewName.style.color = colorPicker.value;
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
+}
+usernameInput.addEventListener('input', updatePreview);
+colorPicker.addEventListener('input', updatePreview);
+clearLocal.addEventListener('click', ()=>{
+  localStorage.removeItem(LOCAL_KEY);
+  usernameInput.value = '';
+  colorPicker.value = '#ffffff';
+  updatePreview();
+});
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+// --- Messaging ---
+const MESSAGES_COL = 'messages';
+const messagesCollection = collection(db, MESSAGES_COL);
+const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
+const msgTimers = new Map();
+function formatRemaining(ms){
+  if (ms <= 0) return '0s';
+  const s = Math.floor(ms/1000);
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
+}
+onSnapshot(messagesQuery, (snapshot)=>{
+  messagesDiv.innerHTML = '';
+  const now = Date.now();
+  snapshot.forEach(docSnap=>{
+    const data = docSnap.data();
+    const id = docSnap.id;
+    const createdAt = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().getTime() : Date.now();
+    const expireAt = data.expireAt && data.expireAt.toDate ? data.expireAt.toDate().getTime() : createdAt + 3600_000;
+    if (Date.now() >= expireAt){ deleteDoc(doc(db,MESSAGES_COL,id)).catch(()=>{}); return; }
 
-    // ---------- UI refs ----------
-    const sidebar = document.getElementById('sidebar');
-    const collapseToggle = document.getElementById('collapseToggle');
-    const usernameInput = document.getElementById('usernameInput');
-    const colorPicker = document.getElementById('colorPicker');
-    const previewName = document.getElementById('previewName');
-    const onlineCount = document.getElementById('onlineCount');
-    const onlineTop = document.getElementById('onlineTop');
-    const messagesDiv = document.getElementById('messages');
-    const msgInput = document.getElementById('msgInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const clearLocal = document.getElementById('clearLocal');
+    const wrap = document.createElement('div'); wrap.className='message';
+    const usernameEl = document.createElement('div'); usernameEl.className='username'; usernameEl.innerText=data.username||'Guest'; usernameEl.style.color=data.usernameColor||'#fff';
+    const textEl = document.createElement('div'); textEl.className='text'; textEl.innerText=data.text||'';
+    const meta = document.createElement('div'); meta.className='meta';
+    const createdRel = document.createElement('div'); createdRel.className='small'; createdRel.innerText = new Date(createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const timer = document.createElement('div'); timer.className='timer'; timer.innerText='Deleting in '+formatRemaining(expireAt-Date.now());
+    meta.appendChild(createdRel); meta.appendChild(timer);
+    wrap.appendChild(usernameEl); wrap.appendChild(textEl); wrap.appendChild(meta);
+    messagesDiv.appendChild(wrap); messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-    // ---------- local identity & presence ----------
-    const LOCAL_KEY = 'livechat_user';
-    let clientId = localStorage.getItem('livechat_clientId');
-    if (!clientId){
-      clientId = 'c-'+Math.random().toString(36).slice(2,10);
-      localStorage.setItem('livechat_clientId', clientId);
-    }
+    if (msgTimers.has(id)) clearInterval(msgTimers.get(id));
+    const interval = setInterval(async()=>{
+      const remaining = expireAt - Date.now();
+      if (remaining <=0){
+        timer.innerText='Deleting…';
+        clearInterval(interval); msgTimers.delete(id);
+        try{ await deleteDoc(doc(db,MESSAGES_COL,id)); }catch{}
+        if(wrap.parentNode) wrap.parentNode.removeChild(wrap);
+        return;
+      } else { timer.innerText='Deleting in '+formatRemaining(remaining); }
+    },1000);
+    msgTimers.set(id,interval);
+  });
+});
 
-    // load saved username + color if present
-    const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
-    if (saved.name) usernameInput.value = saved.name;
-    if (saved.color) colorPicker.value = saved.color;
-    updatePreview();
-
-    clearLocal.addEventListener('click', ()=>{
-      localStorage.removeItem(LOCAL_KEY);
-      usernameInput.value = '';
-      colorPicker.value = '#ffffff';
-      updatePreview();
-      alert('Local username reset.');
-    });
-
-    function updatePreview(){
-      const name = usernameInput.value || 'Guest';
-      previewName.innerText = name;
-      previewName.style.color = colorPicker.value;
-      localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
-    }
-    usernameInput.addEventListener('input', updatePreview);
-    colorPicker.addEventListener('input', updatePreview);
-
-    collapseToggle.addEventListener('click', ()=>{
-      sidebar.classList.toggle('collapsed');
-    });
-
-    // ---------- presence mechanism (simple) ----------
-    // We'll write a doc per client in "presence" collection with lastSeen timestamp.
-    // Count online as presence docs updated within last 30 seconds.
-    import { doc as docRef, setDoc as setDocRef, serverTimestamp as serverTs, collection as collRef, query as qRef, where as whereRef, getDocs, getDoc as getDocRef } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-    const PRESENCE_COL = 'presence';
-    const presenceDocRef = docRef(db, PRESENCE_COL, clientId);
-
-    async function touchPresence(){
-      try {
-        await setDocRef(presenceDocRef, { lastSeen: serverTs() }, { merge: true });
-      } catch(e) { console.error('presence touch failed', e); }
-    }
-
-    // touch once per 15 seconds
-    touchPresence();
-    setInterval(touchPresence, 15000);
-    // also touch on beforeunload to mark leaving (best-effort)
-    window.addEventListener('beforeunload', ()=> {
-      // note: best-effort; might not complete
-      setDocRef(presenceDocRef, { lastSeen: serverTs(), leaving: true }, { merge: true }).catch(()=>{});
-    });
-
-    // update online count by listening to presence collection snapshots
-    // simple approach: poll for presence docs with recent lastSeen
-    async function updateOnlineCount(){
-      try {
-        const now = Date.now();
-        // read all presence docs (small scale)
-        const presCol = collection(db, PRESENCE_COL);
-        const q = query(presCol);
-        const snap = await getDocs(q);
-        let count = 0;
-        snap.forEach(d=>{
-          const data = d.data();
-          if (!data.lastSeen) return;
-          const last = data.lastSeen.toDate ? data.lastSeen.toDate().getTime() : new Date(data.lastSeen).getTime();
-          if (now - last < 30_000) count++;
-        });
-        onlineCount.innerText = `${count} online`;
-        onlineTop.innerText = `${count} online`;
-      } catch(e){ console.error(e); }
-    }
-    // poll presence every 10s
-    updateOnlineCount();
-    setInterval(updateOnlineCount, 10000);
-
-    // ---------- messaging ----------
-    const MESSAGES_COL = 'messages';
-    // show messages ordered by createdAt
-    const messagesCollection = collection(db, MESSAGES_COL);
-    const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
-
-    // store a local map of message timers to clear intervals when removed
-    const msgTimers = new Map();
-
-    // helper to format seconds to mm:ss or hh:mm:ss
-    function formatRemaining(ms){
-      if (ms <= 0) return '0s';
-      const s = Math.floor(ms/1000);
-      if (s < 60) return `${s}s`;
-      if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
-      return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
-    }
-
-    // reactively render messages as Firestore changes
-    onSnapshot(messagesQuery, (snapshot) => {
-      // snapshot may include added/removed/modified
-      // We'll re-render simply for simplicity (small scale). For large scale you can diff.
-      messagesDiv.innerHTML = '';
-      const now = Date.now();
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        const createdAt = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().getTime() : (data.createdAt ? new Date(data.createdAt).getTime() : Date.now());
-        const expireAt = data.expireAt && data.expireAt.toDate ? data.expireAt.toDate().getTime() : (data.expireAt ? new Date(data.expireAt).getTime() : createdAt + 3600_000);
-
-        // if expired already -> best-effort delete from DB (client-side cleanup)
-        if (Date.now() >= expireAt) {
-          // remove immediately
-          deleteDoc(docRef(db, MESSAGES_COL, id)).catch(()=>{});
-          return;
-        }
-
-        // build dom node
-        const wrap = document.createElement('div');
-        wrap.className = 'message';
-        const usernameEl = document.createElement('div');
-        usernameEl.className = 'username';
-        usernameEl.innerText = data.username || 'Guest';
-        usernameEl.style.color = data.usernameColor || '#ffffff';
-
-        const textEl = document.createElement('div');
-        textEl.className = 'text';
-        textEl.innerText = data.text || '';
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const createdRel = document.createElement('div');
-        createdRel.className = 'small';
-        const createdDate = new Date(createdAt);
-        createdRel.innerText = createdDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-        const timer = document.createElement('div');
-        timer.className = 'timer';
-        timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
-
-        meta.appendChild(createdRel);
-        meta.appendChild(timer);
-
-        wrap.appendChild(usernameEl);
-        wrap.appendChild(textEl);
-        wrap.appendChild(meta);
-
-        messagesDiv.appendChild(wrap);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-        // set up countdown interval for timer + auto-delete when reaches 0
-        if (msgTimers.has(id)){
-          clearInterval(msgTimers.get(id));
-        }
-        const interval = setInterval(async ()=>{
-          const remaining = expireAt - Date.now();
-          if (remaining <= 0){
-            timer.innerText = 'Deleting…';
-            clearInterval(interval);
-            msgTimers.delete(id);
-            // best-effort delete from DB
-            try { await deleteDoc(docRef(db, MESSAGES_COL, id)); } catch(e){ /* ignore */ }
-            // remove node visually (it may be removed by snapshot listener soon)
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-            return;
-          } else {
-            timer.innerText = 'Deleting in ' + formatRemaining(remaining);
-          }
-        }, 1000);
-        msgTimers.set(id, interval);
-      });
-    }, (err)=>{ console.error('messages snapshot error', err); });
-
-    // sending message
-    sendBtn.addEventListener('click', sendMessage);
-    msgInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-
-    async function sendMessage(){
-      const text = msgInput.value.trim();
-      if (!text) return;
-      const name = (usernameInput.value && usernameInput.value.trim()) || ('Guest');
-      const color = colorPicker.value || '#ffffff';
-      msgInput.value = '';
-      msgInput.focus();
-
-      const created = serverTimestamp();
-      // expire in 1 hour
-      const expire = new Date(Date.now() + 3600_000);
-      // Firestore serverTimestamp for createdAt combined with client expireAt (server TTL rules rely on expireAt being a timestamp type)
-      try {
-        await addDoc(messagesCollection, {
-          username: name,
-          usernameColor: color,
-          text: text,
-          createdAt: created,
-          expireAt: expire
-        });
-      } catch(e){
-        console.error('send failed', e);
-        alert('Failed to send message — check console for details.');
-      }
-    }
-
-    // ---------- Helper: attempt to clean any already-expired messages on load ----------
-    async function purgeExpiredOnce(){
-      try {
-        const col = collection(db, MESSAGES_COL);
-        // naive approach: query messages where expireAt < now
-        // Firestore doesn't allow comparing to serverTimestamp directly here, so we fetch recent and check client-side.
-        const snap = await getDocs(query(col, orderBy('expireAt')));
-        const now = Date.now();
-        const deletes = [];
-        snap.forEach(d => {
-          const data = d.data();
-          if (!data.expireAt) return;
-          const t = data.expireAt.toDate ? data.expireAt.toDate().getTime() : new Date(data.expireAt).getTime();
-          if (now >= t) deletes.push(deleteDoc(docRef(db, MESSAGES_COL, d.id)));
-        });
-        await Promise.allSettled(deletes);
-      } catch(e){ /* ignore */ }
-    }
-    purgeExpiredOnce();
-
-    // --------------- FIRESTORE RULES (Example) ---------------
-    // Place these rules in your Firebase console -> Firestore -> Rules and adapt:
-    /*
-    rules_version = '2';
-    service cloud.firestore {
-      match /databases/{database}/documents {
-        // messages collection
-        match /messages/{messageId} {
-          allow read: if true;
-          allow create: if request.resource.data.keys().hasAll(['username','usernameColor','text','createdAt','expireAt'])
-                        && request.resource.data.username is string
-                        && request.resource.data.text is string
-                        && request.resource.data.username.size() <= 40
-                        && request.resource.data.text.size() <= 2000
-                        && request.resource.data.usernameColor.size() <= 10;
-          // allow delete only if expireAt < request.time OR limit deletes to small rate — be careful
-          allow delete: if request.time > request.resource.data.expireAt || request.auth != null;
-        }
-        // presence collection
-        match /presence/{id} {
-          allow read: if true;
-          allow write: if request.resource.data.keys().hasAll(['lastSeen']);
-        }
-      }
-    }
-    */
-
-    // --------------- NOTES & TODOs ---------------
-    // * For robust server-side deletion: enable Firestore TTL on the 'messages' collection using the 'expireAt' field
-    //   (Console: Firestore -> Time-to-live -> Create policy, choose collection and field). TTL is not immediate; deletion can take hours. :contentReference[oaicite:2]{index=2}
-    // * Client-side delete above tries to remove expired docs immediately so your DB stays small.
-    // * If you expect heavy traffic or moderation needs, add authentication and server-side Cloud Functions to validate/clean things.
-    // * Consider rate-limiting (Cloud Functions or security rules) to avoid spam.
-  </script>
+sendBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }});
+async function sendMessage(){
+  const text=msgInput.value.trim(); if(!text) return;
+  const name = usernameInput.value.trim() || 'Guest';
+  const color = colorPicker.value || '#ffffff';
+  msgInput.value=''; msgInput.focus();
+  try { await addDoc(messagesCollection, { username:name, usernameColor:color, text:text, createdAt:serverTimestamp(), expireAt:new Date(Date.now()+3600_000) }); } 
+  catch(e){ console.error('send failed', e); alert('Failed to send message'); }
+}
+</script>
 </body>
 </html>
