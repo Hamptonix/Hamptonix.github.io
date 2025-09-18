@@ -278,41 +278,47 @@ document.addEventListener('keyup', (e) => {
   playerCountEl.textContent = `Players Online: ${total}`;
 }
 
-
-  function getNextResetTimestamp() {
-    const now = new Date();
-    const next = new Date(now);
-    next.setMinutes(0, 0, 0);
-    next.setHours(now.getHours() + 999999);
-    return next.getTime();
+  let lastResetKey = null;
+    function getNextResetTimestamp() {
+    const MS_IN_TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
+    const startDate = new Date('2024-01-01T00:00:00Z').getTime(); // fixed reset start
+    const now = Date.now();
+    const cycles = Math.ceil((now - startDate) / MS_IN_TWO_WEEKS);
+    return startDate + cycles * MS_IN_TWO_WEEKS;
   }
 
-  let lastResetKey = null;
-  //setInterval(() => {
-   // const now = Date.now(), next = getNextResetTimestamp(), delta = next - now;
-  //  const hrs = Math.floor(delta / (1000 * 60 * 60));
-  //  const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
-//    const secs = Math.floor((delta % (1000 * 60)) / 1000);
-  //  resetCountdownEl.textContent =
-  //    `Resetting in: ${String(hrs).padStart(2, '0')}:` +
-  //    `${String(mins).padStart(2, '0')}:` +
-  //    `${String(secs).padStart(2, '0')}`;
-  //}, 1000);
+  // Countdown timer
+  setInterval(() => {
+    const now = Date.now(), next = getNextResetTimestamp(), delta = next - now;
+    const hrs = Math.floor(delta / (1000 * 60 * 60));
+    const mins = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((delta % (1000 * 60)) / 1000);
+    if (resetCountdownEl) {
+      resetCountdownEl.textContent =
+        `Resetting in: ${String(hrs).padStart(2, '0')}:` +
+        `${String(mins).padStart(2, '0')}:` +
+        `${String(secs).padStart(2, '0')}`;
+    }
+  }, 1000);
 
-  // setInterval(() => {
-  //  const now = new Date();
- //   const key = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
- //   if (now.getMinutes() === 0 && now.getSeconds() < 5 && key !== lastResetKey) {
- //     lastResetKey = key;
- //     set(printsRef, null)
- //       .then(() => {
- //         console.log(`[RESET] Canvas reset at ${now.toLocaleTimeString()}`);
- //         const msgBox = document.getElementById('messageBox');
- //         if (msgBox) msgBox.value = `[${now.toLocaleTimeString()}] Canvas was reset.`;
- //       })
- //       .catch(err => console.error('Reset error:', err));
- //   }
- // }, 1000);
+  // Reset board every 2 weeks
+  setInterval(() => {
+    const now = Date.now();
+    const nextReset = getNextResetTimestamp();
+    const key = `${nextReset}`;
+
+    if (now >= nextReset - 1000 && now <= nextReset + 5000 && key !== lastResetKey) {
+      lastResetKey = key;
+      set(printsRef, null)
+        .then(() => {
+          console.log(`[RESET] Canvas reset at ${new Date().toLocaleTimeString()}`);
+          const msgBox = document.getElementById('messageBox');
+          if (msgBox) msgBox.value = `[${new Date().toLocaleTimeString()}] Canvas was reset.`;
+        })
+        .catch(err => console.error('Reset error:', err));
+    }
+  }, 1000);
 
   setPlayerData();
 });
+
