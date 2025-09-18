@@ -177,7 +177,7 @@ import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, o
     // ---------- presence mechanism (simple) ----------
     // We'll write a doc per client in "presence" collection with lastSeen timestamp.
     // Count online as presence docs updated within last 30 seconds.
-    import { doc as docRef, setDoc as setDocRef, serverTimestamp as serverTs, collection as collRef, query as qRef, where as whereRef, getDocs, getDoc as getDocRef } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore.js";
+    import { doc as docRef, setDoc as setDocRef, serverTimestamp as serverTs, collection as collRef, query as qRef, where as whereRef, getDocs, getDoc as getDocRef } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     const PRESENCE_COL = 'presence';
     const presenceDocRef = docRef(db, PRESENCE_COL, clientId);
