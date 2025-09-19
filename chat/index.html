@@ -5,42 +5,201 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
   <title>Hamptonix | Chat</title>
-  <style>
-  :root{
-      --bg:#0b0b0b;
-      --panel:#0f1720;
-      --muted:#9aa4b2;
-      --accent:#10a37f;
-      --button-bg:#0ea5a1; /* upgrade-like */
-      --button-text:#001018;
-      --msg-bg: rgba(255,255,255,0.02);
-    }
-  
-  html, body { height: 100%; margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-  body { background: linear-gradient(180deg,#020204 0%, #091014 100%); color: #e6eef6; display: flex; align-items: stretch; height: 100vh; }
+ <style>
+:root{
+  --bg:#0b0b0b;
+  --panel:#0f1720;
+  --muted:#9aa4b2;
+  --accent:#10a37f;
+  --button-bg:#0ea5a1;
+  --button-text:#001018;
+  --msg-bg: rgba(255,255,255,0.02);
+  --input-bg: rgba(255,255,255,0.05);
+  --input-border: rgba(255,255,255,0.15);
+  --input-focus: #10a37f;
+  --glow: rgba(16,163,127,0.4);
+}
 
-  /* Container */
-  .app { display: flex; width: 100%; max-width: 1200px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 10px; overflow: hidden; height: 95vh; }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
 
-  /* Sidebar */
-  .sidebar { width: 320px; background: var(--panel); padding: 18px; box-sizing: border-box; height: 100%; }
+body {
+  background: linear-gradient(180deg,#020204 0%, #091014 100%);
+  color: #e6eef6;
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+}
 
-  /* Main chat area */
-  .main { flex: 1; display: flex; flex-direction: column; background: var(--bg); height: 100%; }
-  .header { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); }
-  .messages { padding: 18px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-  .composer { border-top: 1px solid rgba(255,255,255,0.03); padding: 12px; display: flex; gap: 10px; align-items: center; }
-  .composer textarea { flex: 1; min-height: 48px; max-height: 120px; resize: none; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); background: transparent; color: inherit; }
-  .send-btn { padding: 10px 14px; border-radius: 8px; background: var(--button-bg); color: var(--button-text); border: none; cursor: pointer; font-weight: 700; box-shadow: 0 6px 20px rgba(14,165,161,0.12); }
+/* Container */
+.app {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 95vh;
+}
 
-  /* Messages styling */
-  .message { background: var(--msg-bg); padding: 10px 12px; border-radius: 8px; width: fit-content; max-width: 78%; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.01); }
-  .username { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-  .text { font-size: 13px; color: #dce9f2; line-height: 1.25; white-space: pre-wrap; }
-  .meta { font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
-  .timer { font-size: 11px; color: var(--muted); }
+/* Sidebar */
+.sidebar {
+  width: 320px;
+  background: var(--panel);
+  padding: 18px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Profile Section */
+.sidebar h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #e6eef6;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 6px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: inherit;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 10px var(--glow);
+  outline: none;
+}
+
+input[type="color"] {
+  width: 56px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="color"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px var(--glow);
+}
+
+/* Send button */
+.send-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 6px 20px rgba(14,165,161,0.3);
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(14,165,161,0.5);
+}
+
+.send-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 15px rgba(14,165,161,0.3);
+}
+
+/* Main chat area */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  height: 100%;
+}
+
+.header {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.messages {
+  padding: 18px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Messages styling */
+.message {
+  background: var(--msg-bg);
+  padding: 12px 16px;
+  border-radius: 12px;
+  width: fit-content;
+  max-width: 78%;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.username {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.text {
+  font-size: 13px;
+  color: #dce9f2;
+  line-height: 1.25;
+  white-space: pre-wrap;
+}
+
+.meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.timer {
+  font-size: 11px;
+  color: var(--muted);
+}
 
 </style>
+
 
 </head>
 <body>
