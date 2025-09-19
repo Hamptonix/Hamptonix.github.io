@@ -6,64 +6,36 @@
   <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
   <title>Hamptonix | Chat</title>
   <style>
-    /* --- ChatGPT-like dark theme basics --- */
-    :root{
-      --bg:#0b0b0b;
-      --panel:#0f1720;
-      --muted:#9aa4b2;
-      --accent:#10a37f;
-      --button-bg:#0ea5a1; /* upgrade-like */
-      --button-text:#001018;
-      --msg-bg: rgba(255,255,255,0.02);
-    }
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-    body{background:linear-gradient(180deg,#020204 0%, #091014 100%); color:#e6eef6; display:flex; align-items:stretch; height:100vh;}
-    /* Container */
-    .app { display:flex; width:100%; max-width:1200px; margin:auto; box-shadow:0 10px 30px rgba(0,0,0,0.6); border-radius:10px; overflow:hidden; }
-    /* Sidebar */
-    .sidebar { width:320px; background:var(--panel); padding:18px; transition:transform .25s ease; box-sizing:border-box; }
-    .sidebar.collapsed { transform:translateX(-100%); }
-    .toggle-btn { position:absolute; left:100%; top:12px; transform:translateX(-12px); background:var(--button-bg); color:var(--button-text); padding:8px 12px; border-radius:999px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.4) }
-    .sidebar h3{margin:6px 0 8px;font-size:14px}
-    label{display:block;font-size:12px;color:var(--muted); margin-top:10px}
-    input[type="text"]{width:100%; padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit}
-    input[type="color"]{width:56px;height:36px;border-radius:6px;border:none;padding:0;margin-left:6px;vertical-align:middle}
-    .small { font-size:12px;color:var(--muted) }
+  html, body { height: 100%; margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+  body { background: linear-gradient(180deg,#020204 0%, #091014 100%); color: #e6eef6; display: flex; align-items: stretch; height: 100vh; }
 
-    /* Main chat area */
-    .main { flex:1; display:flex; flex-direction:column; background:var(--bg); min-height:60vh; }
-    .header { padding:16px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.03); }
-    .title { font-weight:700; letter-spacing:0.2px }
-    .online-pill { font-size:13px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,0.04); color:var(--muted) }
+  /* Container */
+  .app { display: flex; width: 100%; max-width: 1200px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 10px; overflow: hidden; height: 95vh; }
 
-    .messages { padding:18px; flex:1; overflow:auto; display:flex; flex-direction:column; gap:12px; }
-    .message { background:var(--msg-bg); padding:10px 12px; border-radius:8px; width:fit-content; max-width:78%; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.01); }
-    .username { font-weight:700; font-size:13px; margin-bottom:4px; }
-    .text { font-size:13px; color:#dce9f2; line-height:1.25; white-space:pre-wrap; }
-    .meta { font-size:11px; color:var(--muted); margin-top:6px; display:flex; gap:8px; align-items:center }
+  /* Sidebar */
+  .sidebar { width: 320px; background: var(--panel); padding: 18px; box-sizing: border-box; height: 100%; }
 
-    /* small timer under each message */
-    .timer { font-size:11px;color:var(--muted) }
+  /* Main chat area */
+  .main { flex: 1; display: flex; flex-direction: column; background: var(--bg); height: 100%; }
+  .header { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .messages { padding: 18px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .composer { border-top: 1px solid rgba(255,255,255,0.03); padding: 12px; display: flex; gap: 10px; align-items: center; }
+  .composer textarea { flex: 1; min-height: 48px; max-height: 120px; resize: none; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); background: transparent; color: inherit; }
+  .send-btn { padding: 10px 14px; border-radius: 8px; background: var(--button-bg); color: var(--button-text); border: none; cursor: pointer; font-weight: 700; box-shadow: 0 6px 20px rgba(14,165,161,0.12); }
 
-    /* input area */
-    .composer { border-top:1px solid rgba(255,255,255,0.03); padding:12px; display:flex; gap:10px; align-items:center; }
-    .composer textarea { flex:1; min-height:48px; max-height:120px; resize:none; padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit }
-    .send-btn { padding:10px 14px; border-radius:8px; background:var(--button-bg); color:var(--button-text); border:none; cursor:pointer; font-weight:700; box-shadow:0 6px 20px rgba(14,165,161,0.12) }
+  /* Messages styling */
+  .message { background: var(--msg-bg); padding: 10px 12px; border-radius: 8px; width: fit-content; max-width: 78%; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.01); }
+  .username { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .text { font-size: 13px; color: #dce9f2; line-height: 1.25; white-space: pre-wrap; }
+  .meta { font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .timer { font-size: 11px; color: var(--muted); }
 
-    /* left align everything */
-    .messages, .message { align-items:flex-start; text-align:left; }
+</style>
 
-    /* responsive */
-    @media (max-width:880px){
-      .sidebar{ position:absolute; z-index:10; height:100%; }
-      .toggle-btn{ left:auto; right:12px; transform:none; top:12px; }
-    }
-  </style>
 </head>
 <body>
   <div class="app" role="application">
     <div id="sidebar" class="sidebar">
-      <button id="collapseToggle" class="toggle-btn">☰</button>
       <h3>Profile</h3>
       <label>Username</label>
       <input id="usernameInput" type="text" maxlength="40" placeholder="Pick a name (default: Guest)" />
@@ -170,9 +142,6 @@ import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, o
     usernameInput.addEventListener('input', updatePreview);
     colorPicker.addEventListener('input', updatePreview);
 
-    collapseToggle.addEventListener('click', ()=>{
-      sidebar.classList.toggle('collapsed');
-    });
 
     // ---------- presence mechanism (simple) ----------
     // We'll write a doc per client in "presence" collection with lastSeen timestamp.
