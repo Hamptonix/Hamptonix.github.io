@@ -133,16 +133,15 @@ input[type="color"]:hover {
   color: #fff;
 }
 
-/* Messages container */
 .messages {
   padding: 18px;
   flex: 1;
-  overflow-y: auto;      /* vertical scroll */
+  overflow-y: auto;      
   display: flex;
   flex-direction: column;
   gap: 14px;
-  min-height: 0;         /* ensures flexbox allows scrolling */
-  max-width: 100%;       /* constrain width */
+  min-height: 0;         
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -151,12 +150,29 @@ input[type="color"]:hover {
   backdrop-filter: blur(8px);
   padding: 12px 16px;
   border-radius: 16px;
-  width: 100%;           /* full width of container */
-  max-width: 75%;        /* keeps messages readable */
-  word-wrap: break-word; /* wrap long text instead of expanding */
+  max-width: 75%;           /* keep messages readable */
+  word-break: break-word;   /* wrap long text instead of expanding */
+  align-self: flex-start;    /* left-align messages, prevents stretching */
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+.messages::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(16,163,127,0.4);
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+.messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(16,163,127,0.7);
+}
+
 
 
 .message:hover {
