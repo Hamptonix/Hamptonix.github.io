@@ -262,345 +262,169 @@ input[type="color"]:hover {
 
 .send-btn:active {
   transform: translateY(1px);
-  box-shadow: 0 4px 18px rgba(16,163,127,0.3);
+  box-shadow: 0 4px 20px rgba(16,163,127,0.5);
 }
 
-#sidebar .small span:first-child {
-  color: #ffffff;
+/* Authentication section */
+#auth-section {
+  display: block;
+  color: #e6eef6;
+  text-align: center;
+}
+
+#auth-error {
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
 }
 </style>
-
-
-
 </head>
 <body>
-  <div class="app" role="application">
-    <div id="sidebar" class="sidebar">
-      <h3>Profile</h3>
-      <label>Username</label>
-      <input id="usernameInput" type="text" maxlength="40" placeholder="Pick a name (default: Guest)" />
-      <label>Username color <span class="small">(default white)</span></label>
-      <div style="display:flex;align-items:center">
-        <input id="colorPicker" type="color" value="#ffffff" />
-        <div style="margin-left:12px;color:#ffffff;" class="small">Preview: <span id="previewName" style="font-weight:700",>Guest</span></div>
-      </div>
 
-      <div style="margin-top:18px">
-        <button id="clearLocal" style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer">Reset username</button>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="header">
-        <div class="title">Live Chat</div>
-        <div class="online-pill" id="onlineTop">0 online</div>
-      </div>
-
-      <div class="messages" id="messages"></div>
-
-      <div class="composer">
-        <textarea id="msgInput" placeholder="Type a message..." maxlength="2000"></textarea>
-        <button id="sendBtn" class="send-btn">Send</button>
-      </div>
+<!-- App container -->
+<div class="app">
+  <!-- Sidebar: Auth form -->
+  <div class="sidebar" id="auth-section">
+    <h3>Login / Sign Up</h3>
+    <div id="login-form">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="Enter your email" />
+      <label>Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter your password" />
+      <button id="loginBtn">Login</button>
+      <button id="signUpBtn">Sign Up</button>
+      <div id="auth-error"></div>
     </div>
   </div>
 
-  <!-- Firebase (modular SDK) via CDN - works on GitHub Pages without bundler -->
-  <script type="module">
-    // --------- FIREBASE CONFIG: Replace with your own from Firebase Console ----------
-    // 1) Create a Firebase project and add a Web app. Copy the firebaseConfig object here.
-    // 2) Enable Cloud Firestore in the console.
-    // 3) Optionally enable a TTL policy on the 'messages' collection for the 'expireAt' field (recommended).
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  <!-- Main chat area -->
+  <div class="main" id="chat-section" style="display: none;">
+    <div class="header">
+      <h3>Welcome to Hamptonix</h3>
+      <button id="signOutBtn">Sign Out</button>
+    </div>
+    <div class="messages" id="messagesDiv"></div>
+    <div class="composer">
+      <textarea id="msgInput" placeholder="Type your message..." disabled></textarea>
+      <button class="send-btn" id="sendBtn" disabled>Send</button>
+    </div>
+  </div>
+</div>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
-  authDomain: "livechat-4b94e.firebaseapp.com",
-  databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
-  projectId: "livechat-4b94e",
-  storageBucket: "livechat-4b94e.firebasestorage.app",
-  messagingSenderId: "951972267887",
-  appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
-  measurementId: "G-5WF1LLM7FH"
-    };
+<script>
+// Your Firebase config (replace with your own Firebase project settings)
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-    if (!firebaseConfig || !firebaseConfig.projectId) {
-      console.warn("Add your Firebase config to firebaseConfig in the script!");
-    }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+// Handle user login and sign-up
+document.getElementById('signUpBtn').addEventListener('click', async () => {
+  const email = document.getElementById('emailInput').value;
+  const password = document.getElementById('passwordInput').value;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    handleUserLogin(user);
+  } catch (error) {
+    document.getElementById('auth-error').innerText = "Sign up failed: " + error.message;
+  }
+});
 
-    // ---------- UI refs ----------
-    const sidebar = document.getElementById('sidebar');
-    const collapseToggle = document.getElementById('collapseToggle');
-    const usernameInput = document.getElementById('usernameInput');
-    const colorPicker = document.getElementById('colorPicker');
-    const previewName = document.getElementById('previewName');
-    const onlineCount = document.getElementById('onlineCount');
-    const onlineTop = document.getElementById('onlineTop');
-    const messagesDiv = document.getElementById('messages');
-    const msgInput = document.getElementById('msgInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const clearLocal = document.getElementById('clearLocal');
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('emailInput').value;
+  const password = document.getElementById('passwordInput').value;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    handleUserLogin(user);
+  } catch (error) {
+    document.getElementById('auth-error').innerText = "Login failed: " + error.message;
+  }
+});
 
-    // ---------- local identity & presence ----------
-    const LOCAL_KEY = 'livechat_user';
-    let clientId = localStorage.getItem('livechat_clientId');
-    if (!clientId){
-      clientId = 'c-'+Math.random().toString(36).slice(2,10);
-      localStorage.setItem('livechat_clientId', clientId);
-    }
+function handleUserLogin(user) {
+  localStorage.setItem('userId', user.uid);
+  localStorage.setItem('username', user.email.split('@')[0]);
+  updateUI(user);
+}
 
-    // load saved username + color if present
-    const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
-    if (saved.name) usernameInput.value = saved.name;
-    if (saved.color) colorPicker.value = saved.color;
-    updatePreview();
+function updateUI(user) {
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('chat-section').style.display = 'block';
+  document.getElementById('msgInput').disabled = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('usernameInput').value = user.email.split('@')[0];
+  document.getElementById('usernameInput').disabled = true;  // Disable username input after login
+}
 
-    clearLocal.addEventListener('click', ()=>{
-      localStorage.removeItem(LOCAL_KEY);
-      usernameInput.value = '';
-      colorPicker.value = '#ffffff';
-      updatePreview();
-      alert('Local username reset.');
+// User logout
+document.getElementById('signOutBtn').addEventListener('click', () => {
+  signOut(auth).then(() => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    location.reload();  // Reload to show login form again
+  }).catch((error) => {
+    console.error('Sign out failed: ', error);
+  });
+});
+
+// Check if user is logged in
+onAuthStateChanged(auth, user => {
+  if (user) {
+    updateUI(user);
+  } else {
+    document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('chat-section').style.display = 'none';
+  }
+});
+
+// Send message functionality
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+async function sendMessage() {
+  const text = document.getElementById('msgInput').value.trim();
+  if (!text) return;
+
+  // Check if the user is logged in
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    alert('You must be logged in to send a message!');
+    return;
+  }
+
+  const username = localStorage.getItem('username') || 'Guest';
+  const color = '#ffffff';  // Default username color
+  document.getElementById('msgInput').value = '';
+  
+  try {
+    await addDoc(collection(db, "messages"), {
+      userId: userId,
+      username: username,
+      usernameColor: color,
+      text: text,
+      createdAt: serverTimestamp(),
+      expireAt: new Date(Date.now() + 3600_000),  // Expires in 1 hour
     });
+  } catch (e) {
+    console.error('send failed', e);
+    alert('Failed to send message — check console for details.');
+  }
+}
 
-    function updatePreview(){
-      const name = usernameInput.value || 'Guest';
-      previewName.innerText = name;
-      previewName.style.color = colorPicker.value;
-      localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
-    }
-    usernameInput.addEventListener('input', updatePreview);
-    colorPicker.addEventListener('input', updatePreview);
-
-
-    // ---------- presence mechanism (simple) ----------
-    // We'll write a doc per client in "presence" collection with lastSeen timestamp.
-    // Count online as presence docs updated within last 30 seconds.
-    import { doc as docRef, setDoc as setDocRef, serverTimestamp as serverTs, collection as collRef, query as qRef, where as whereRef, getDocs, getDoc as getDocRef } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-    const PRESENCE_COL = 'presence';
-    const presenceDocRef = docRef(db, PRESENCE_COL, clientId);
-
-    async function touchPresence(){
-      try {
-        await setDocRef(presenceDocRef, { lastSeen: serverTs() }, { merge: true });
-      } catch(e) { console.error('presence touch failed', e); }
-    }
-
-    // touch once per 15 seconds
-    touchPresence();
-    setInterval(touchPresence, 15000);
-    // also touch on beforeunload to mark leaving (best-effort)
-    window.addEventListener('beforeunload', ()=> {
-      // note: best-effort; might not complete
-      setDocRef(presenceDocRef, { lastSeen: serverTs(), leaving: true }, { merge: true }).catch(()=>{});
-    });
-
-    // update online count by listening to presence collection snapshots
-    // simple approach: poll for presence docs with recent lastSeen
-    async function updateOnlineCount(){
-      try {
-        const now = Date.now();
-        // read all presence docs (small scale)
-        const presCol = collection(db, PRESENCE_COL);
-        const q = query(presCol);
-        const snap = await getDocs(q);
-        let count = 0;
-        snap.forEach(d=>{
-          const data = d.data();
-          if (!data.lastSeen) return;
-          const last = data.lastSeen.toDate ? data.lastSeen.toDate().getTime() : new Date(data.lastSeen).getTime();
-          if (now - last < 30_000) count++;
-        });
-        onlineCount.innerText = `${count} online`;
-        onlineTop.innerText = `${count} online`;
-      } catch(e){ console.error(e); }
-    }
-    // poll presence every 10s
-    updateOnlineCount();
-    setInterval(updateOnlineCount, 10000);
-
-    // ---------- messaging ----------
-    const MESSAGES_COL = 'messages';
-    // show messages ordered by createdAt
-    const messagesCollection = collection(db, MESSAGES_COL);
-    const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
-
-    // store a local map of message timers to clear intervals when removed
-    const msgTimers = new Map();
-
-    // helper to format seconds to mm:ss or hh:mm:ss
-    function formatRemaining(ms){
-      if (ms <= 0) return '0s';
-      const s = Math.floor(ms/1000);
-      if (s < 60) return `${s}s`;
-      if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
-      return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
-    }
-
-    // reactively render messages as Firestore changes
-    onSnapshot(messagesQuery, (snapshot) => {
-      // snapshot may include added/removed/modified
-      // We'll re-render simply for simplicity (small scale). For large scale you can diff.
-      messagesDiv.innerHTML = '';
-      const now = Date.now();
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        const createdAt = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().getTime() : (data.createdAt ? new Date(data.createdAt).getTime() : Date.now());
-        const expireAt = data.expireAt && data.expireAt.toDate ? data.expireAt.toDate().getTime() : (data.expireAt ? new Date(data.expireAt).getTime() : createdAt + 3600_000);
-
-        // if expired already -> best-effort delete from DB (client-side cleanup)
-        if (Date.now() >= expireAt) {
-          // remove immediately
-          deleteDoc(docRef(db, MESSAGES_COL, id)).catch(()=>{});
-          return;
-        }
-
-        // build dom node
-        const wrap = document.createElement('div');
-        wrap.className = 'message';
-        const usernameEl = document.createElement('div');
-        usernameEl.className = 'username';
-        usernameEl.innerText = data.username || 'Guest';
-        usernameEl.style.color = data.usernameColor || '#ffffff';
-
-        const textEl = document.createElement('div');
-        textEl.className = 'text';
-        textEl.innerText = data.text || '';
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const createdRel = document.createElement('div');
-        createdRel.className = 'small';
-        const createdDate = new Date(createdAt);
-        createdRel.innerText = createdDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-        const timer = document.createElement('div');
-        timer.className = 'timer';
-        timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
-
-        meta.appendChild(createdRel);
-        meta.appendChild(timer);
-
-        wrap.appendChild(usernameEl);
-        wrap.appendChild(textEl);
-        wrap.appendChild(meta);
-
-        messagesDiv.appendChild(wrap);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-        // set up countdown interval for timer + auto-delete when reaches 0
-        if (msgTimers.has(id)){
-          clearInterval(msgTimers.get(id));
-        }
-        const interval = setInterval(async ()=>{
-          const remaining = expireAt - Date.now();
-          if (remaining <= 0){
-            timer.innerText = 'Deleting…';
-            clearInterval(interval);
-            msgTimers.delete(id);
-            // best-effort delete from DB
-            try { await deleteDoc(docRef(db, MESSAGES_COL, id)); } catch(e){ /* ignore */ }
-            // remove node visually (it may be removed by snapshot listener soon)
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-            return;
-          } else {
-            timer.innerText = 'Deleting in ' + formatRemaining(remaining);
-          }
-        }, 1000);
-        msgTimers.set(id, interval);
-      });
-    }, (err)=>{ console.error('messages snapshot error', err); });
-
-    // sending message
-    sendBtn.addEventListener('click', sendMessage);
-    msgInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-
-    async function sendMessage(){
-      const text = msgInput.value.trim();
-      if (!text) return;
-      const name = (usernameInput.value && usernameInput.value.trim()) || ('Guest');
-      const color = colorPicker.value || '#ffffff';
-      msgInput.value = '';
-      msgInput.focus();
-
-      const created = serverTimestamp();
-      // expire in 1 hour
-      const expire = new Date(Date.now() + 3600_000);
-      // Firestore serverTimestamp for createdAt combined with client expireAt (server TTL rules rely on expireAt being a timestamp type)
-      try {
-        await addDoc(messagesCollection, {
-          username: name,
-          usernameColor: color,
-          text: text,
-          createdAt: created,
-          expireAt: expire
-        });
-      } catch(e){
-        console.error('send failed', e);
-        alert('Failed to send message — check console for details.');
-      }
-    }
-
-    // ---------- Helper: attempt to clean any already-expired messages on load ----------
-    async function purgeExpiredOnce(){
-      try {
-        const col = collection(db, MESSAGES_COL);
-        // naive approach: query messages where expireAt < now
-        // Firestore doesn't allow comparing to serverTimestamp directly here, so we fetch recent and check client-side.
-        const snap = await getDocs(query(col, orderBy('expireAt')));
-        const now = Date.now();
-        const deletes = [];
-        snap.forEach(d => {
-          const data = d.data();
-          if (!data.expireAt) return;
-          const t = data.expireAt.toDate ? data.expireAt.toDate().getTime() : new Date(data.expireAt).getTime();
-          if (now >= t) deletes.push(deleteDoc(docRef(db, MESSAGES_COL, d.id)));
-        });
-        await Promise.allSettled(deletes);
-      } catch(e){ /* ignore */ }
-    }
-    purgeExpiredOnce();
-
-    // --------------- FIRESTORE RULES (Example) ---------------
-    // Place these rules in your Firebase console -> Firestore -> Rules and adapt:
-    /*
-    rules_version = '2';
-    service cloud.firestore {
-      match /databases/{database}/documents {
-        // messages collection
-        match /messages/{messageId} {
-          allow read: if true;
-          allow create: if request.resource.data.keys().hasAll(['username','usernameColor','text','createdAt','expireAt'])
-                        && request.resource.data.username is string
-                        && request.resource.data.text is string
-                        && request.resource.data.username.size() <= 40
-                        && request.resource.data.text.size() <= 2000
-                        && request.resource.data.usernameColor.size() <= 10;
-          // allow delete only if expireAt < request.time OR limit deletes to small rate — be careful
-          allow delete: if request.time > request.resource.data.expireAt || request.auth != null;
-        }
-        // presence collection
-        match /presence/{id} {
-          allow read: if true;
-          allow write: if request.resource.data.keys().hasAll(['lastSeen']);
-        }
-      }
-    }
-    */
-
-    // --------------- NOTES & TODOs ---------------
-    // * For robust server-side deletion: enable Firestore TTL on the 'messages' collection using the 'expireAt' field
-    //   (Console: Firestore -> Time-to-live -> Create policy, choose collection and field). TTL is not immediate; deletion can take hours. :contentReference[oaicite:2]{index=2}
-    // * Client-side delete above tries to remove expired docs immediately so your DB stays small.
-    // * If you expect heavy traffic or moderation needs, add authentication and server-side Cloud Functions to validate/clean things.
-    // * Consider rate-limiting (Cloud Functions or security rules) to avoid spam.
-  </script>
+</script>
 </body>
 </html>
