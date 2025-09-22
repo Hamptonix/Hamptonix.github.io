@@ -5,283 +5,101 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
   <title>Hamptonix | Chat</title>
- <style>
-:root{
-  --bg:#0b0b0b;
-  --panel:#0f1720;
-  --muted:#9aa4b2;
-  --accent: rgba(48, 64, 242, 1);      /* changed from teal to your blue */
-  --button-bg:#3040f2;
-  --button-text:#001018;
-  --msg-bg: rgba(255,255,255,0.05);
-  --input-bg: rgba(255,255,255,0.08);
-  --input-border: rgba(255,255,255,0.2);
-  --input-focus: rgba(48, 64, 242, 1);  /* update focus color to match new blue */
-  --glow: rgba(48, 64, 242, 0.4);      /* update glow to match new blue */
-  --blur: 12px;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+    }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(180deg,#020204 0%, #091014 100%);
-}
+    .app {
+      display: flex;
+      height: 100vh;
+    }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
-}
+    .sidebar {
+      width: 300px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-/* App container - glassmorphic card */
-.app {
-  display: flex;
-  width: 100%;
-  max-width: 1200px;
-  height: 95vh;
-  border-radius: 20px;
-  overflow: hidden;
-  backdrop-filter: blur(var(--blur));
-  background: rgba(15,23,32,0.6);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
-}
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Sidebar - glass panel */
-.sidebar {
-  width: 320px;
-  background: rgba(15,23,32,0.4);
-  backdrop-filter: blur(var(--blur));
-  border-right: 1px solid rgba(255,255,255,0.1);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  box-sizing: border-box;
-}
+    .header {
+      padding: 10px 20px;
+      background-color: #2a2a2a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-/* Profile section */
-.sidebar h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
-  color: #e6eef6;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  padding-bottom: 8px;
-}
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
+    .composer {
+      display: flex;
+      padding: 20px;
+      background-color: #1e1e1e;
+    }
 
-input[type="text"] {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid var(--input-border);
-  background: var(--input-bg);
-  color: #fff;
-  font-weight: 500;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
-  margin-right: 0;
-  box-sizing: border-box;
-}
+    textarea {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      resize: none;
+      background-color: #2a2a2a;
+      color: white;
+      border: none;
+    }
 
-input[type="text"]:focus {
-  border-color: var(--input-focus);
-  box-shadow: 0 0 12px var(--glow);
-  outline: none;
-}
+    .send-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-input[type="color"] {
-  width: 56px;
-  height: 36px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    input {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      border: none;
+      background-color: #2a2a2a;
+      color: white;
+    }
 
-input[type="color"]:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 10px var(--glow);
-}
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-/* Main chat area - glass panel */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: rgba(11,11,11,0.3);
-  backdrop-filter: blur(var(--blur));
-  border-left: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Header */
-.header {
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  font-weight: 700;
-  color: #fff;
-}
-
-.messages {
-  padding: 18px;
-  flex: 1;
-  overflow-y: auto;      
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-height: 0;         
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.message {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
-  padding: 12px 16px;
-  border-radius: 16px;
-  max-width: 75%;           /* keep messages readable */
-  word-break: break-word;   /* wrap long text instead of expanding */
-  align-self: flex-start;    /* left-align messages, prevents stretching */
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.messages::-webkit-scrollbar {
-  width: 8px;
-}
-.messages::-webkit-scrollbar-track {
-  background: rgba(48, 64, 242,0.05);
-  border-radius: 8px;
-}
-.messages::-webkit-scrollbar-thumb {
-  background: rgba(40, 54, 213,0.4);
-  border-radius: 8px;
-  transition: background 0.3s;
-}
-.messages::-webkit-scrollbar-thumb:hover {
-  background: rgba(40, 54, 213,0.7);
-}
-
-
-
-.message:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-}
-
-.username {
-  font-weight: 700;
-  font-size: 13px;
-  margin-bottom: 4px;
-  margin-right: 4px;
-}
-
-.text {
-  font-size: 13px;
-  color: #e6eef6;
-  line-height: 1.3;
-  white-space: pre-wrap;
-}
-
-.meta {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 6px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.timer {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* Composer input & button */
-.composer {
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding: 14px 18px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  background: rgba(15,23,32,0.3);
-  backdrop-filter: blur(var(--blur));
-}
-
-.composer textarea {
-  flex: 1;
-  min-height: 48px;
-  max-height: 120px;
-  resize: none;
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.05);
-  color: #fff;
-  font-weight: 500;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
-}
-
-.composer textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 12px var(--glow);
-}
-
-.send-btn {
-  padding: 12px 24px;
-  border-radius: 16px;
-  background: var(--accent);
-  color: #001018;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  box-shadow: 0 6px 25px rgba(16,163,127,0.3);
-  transition: all 0.3s ease;
-}
-
-.send-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(16,163,127,0.5);
-}
-
-.send-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 20px rgba(16,163,127,0.5);
-}
-
-/* Authentication section */
-#auth-section {
-  display: block;
-  color: #e6eef6;
-  text-align: center;
-}
-
-#auth-error {
-  color: red;
-  font-size: 14px;
-  margin-top: 8px;
-}
-</style>
+    #auth-error {
+      color: #ff4d4d;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- App container -->
 <div class="app">
   <!-- Sidebar: Auth form -->
   <div class="sidebar" id="auth-section">
@@ -311,120 +129,120 @@ input[type="color"]:hover {
   </div>
 </div>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+<!-- Firebase SDK (Modular) -->
+<script type="module">
+  // Firebase Modular Imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-<script>
-// Your Firebase config (replace with your own Firebase project settings)
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+  // 🔐 Replace with your actual Firebase project config
+  const firebaseConfig = {
+    apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
+    authDomain: "livechat-4b94e.firebaseapp.com",
+    databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
+    projectId: "livechat-4b94e",
+    storageBucket: "livechat-4b94e.firebasestorage.app",
+    messagingSenderId: "951972267887",
+    appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
+    measurementId: "G-5WF1LLM7FH"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// Handle user login and sign-up
-document.getElementById('signUpBtn').addEventListener('click', async () => {
-  const email = document.getElementById('emailInput').value;
-  const password = document.getElementById('passwordInput').value;
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    handleUserLogin(user);
-  } catch (error) {
-    document.getElementById('auth-error').innerText = "Sign up failed: " + error.message;
-  }
-});
+  // UI references
+  const emailInput = document.getElementById('emailInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const signUpBtn = document.getElementById('signUpBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+  const authError = document.getElementById('auth-error');
+  const chatSection = document.getElementById('chat-section');
+  const authSection = document.getElementById('auth-section');
+  const sendBtn = document.getElementById('sendBtn');
+  const msgInput = document.getElementById('msgInput');
 
-document.getElementById('loginBtn').addEventListener('click', async () => {
-  const email = document.getElementById('emailInput').value;
-  const password = document.getElementById('passwordInput').value;
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    handleUserLogin(user);
-  } catch (error) {
-    document.getElementById('auth-error').innerText = "Login failed: " + error.message;
-  }
-});
-
-function handleUserLogin(user) {
-  localStorage.setItem('userId', user.uid);
-  localStorage.setItem('username', user.email.split('@')[0]);
-  updateUI(user);
-}
-
-function updateUI(user) {
-  document.getElementById('auth-section').style.display = 'none';
-  document.getElementById('chat-section').style.display = 'block';
-  document.getElementById('msgInput').disabled = false;
-  document.getElementById('sendBtn').disabled = false;
-  document.getElementById('usernameInput').value = user.email.split('@')[0];
-  document.getElementById('usernameInput').disabled = true;  // Disable username input after login
-}
-
-// User logout
-document.getElementById('signOutBtn').addEventListener('click', () => {
-  signOut(auth).then(() => {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    location.reload();  // Reload to show login form again
-  }).catch((error) => {
-    console.error('Sign out failed: ', error);
+  // Auth event handlers
+  signUpBtn.addEventListener('click', async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      handleUserLogin(userCredential.user);
+    } catch (error) {
+      authError.innerText = "Sign up failed: " + error.message;
+    }
   });
-});
 
-// Check if user is logged in
-onAuthStateChanged(auth, user => {
-  if (user) {
-    updateUI(user);
-  } else {
-    document.getElementById('auth-section').style.display = 'block';
-    document.getElementById('chat-section').style.display = 'none';
-  }
-});
+  loginBtn.addEventListener('click', async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      handleUserLogin(userCredential.user);
+    } catch (error) {
+      authError.innerText = "Login failed: " + error.message;
+    }
+  });
 
-// Send message functionality
-document.getElementById('sendBtn').addEventListener('click', sendMessage);
-
-async function sendMessage() {
-  const text = document.getElementById('msgInput').value.trim();
-  if (!text) return;
-
-  // Check if the user is logged in
-  const userId = localStorage.getItem('userId');
-  if (!userId) {
-    alert('You must be logged in to send a message!');
-    return;
-  }
-
-  const username = localStorage.getItem('username') || 'Guest';
-  const color = '#ffffff';  // Default username color
-  document.getElementById('msgInput').value = '';
-  
-  try {
-    await addDoc(collection(db, "messages"), {
-      userId: userId,
-      username: username,
-      usernameColor: color,
-      text: text,
-      createdAt: serverTimestamp(),
-      expireAt: new Date(Date.now() + 3600_000),  // Expires in 1 hour
+  signOutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => {
+      localStorage.clear();
+      location.reload();
+    }).catch((error) => {
+      console.error("Sign-out error:", error);
     });
-  } catch (e) {
-    console.error('send failed', e);
-    alert('Failed to send message — check console for details.');
-  }
-}
+  });
 
+  // On auth state change
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      updateUI(user);
+    } else {
+      authSection.style.display = 'block';
+      chatSection.style.display = 'none';
+    }
+  });
+
+  function handleUserLogin(user) {
+    localStorage.setItem('userId', user.uid);
+    localStorage.setItem('username', user.email.split('@')[0]);
+    updateUI(user);
+  }
+
+  function updateUI(user) {
+    authSection.style.display = 'none';
+    chatSection.style.display = 'flex';
+    msgInput.disabled = false;
+    sendBtn.disabled = false;
+  }
+
+  // Message sending logic
+  sendBtn.addEventListener('click', async () => {
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username') || "Guest";
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        userId,
+        username,
+        usernameColor: "#ffffff",
+        text,
+        createdAt: serverTimestamp(),
+        expireAt: new Date(Date.now() + 3600000), // 1 hour expiry
+      });
+      msgInput.value = '';
+    } catch (error) {
+      console.error("Send message error:", error);
+      alert("Failed to send message.");
+    }
+  });
 </script>
 </body>
 </html>
