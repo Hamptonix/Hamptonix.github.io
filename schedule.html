@@ -119,14 +119,13 @@
       </select>
 
       <h2 id="currentPeriod">Loading...</h2>
+      <div class="progress-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
       <div class="timer" id="elapsed">Elapsed: --</div>
       <div class="timer" id="remaining">Remaining: --</div>
       <div class="timer" id="endOfDay">Until End of Day: --</div>
       <div class="timer" id="weekendTimer">Until Weekend: --</div>
-
-      <div class="progress-wrapper">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
     </div>
   </div>
 
@@ -285,6 +284,10 @@
     setInterval(updateSchedule, 1000);
     updateSchedule();
   </script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
    <script>
     const firebaseConfig = {
