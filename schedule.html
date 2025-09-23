@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/style.css"/>
   
   <style>
+  /* --- theme / existing style preserved & extended --- */
   .schedule-app {
     --bg: #0b0b0b;
     --panel: #0f1720;
@@ -19,7 +20,7 @@
     --accent: rgba(48, 64, 242, 1);
     --glow: rgba(48, 64, 242, 0.4);
     --blur: 14px;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    font-family: Poppins, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   }
 
   .schedule-app {
@@ -34,7 +35,7 @@
 
   .schedule-app .container {
     width: 100%;
-    max-width: 600px;
+    max-width: 720px;
     background: rgba(15,23,32,0.6);
     backdrop-filter: blur(var(--blur));
     border-radius: 20px;
@@ -47,62 +48,160 @@
 
   .schedule-app h1 {
     font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: #fff;
   }
 
-  .schedule-app select {
-    padding: 12px 16px;
-    font-size: 1rem;
+  .schedule-app select, .schedule-app input[type="text"] {
+    padding: 10px 14px;
+    font-size: 0.95rem;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.03);
     color: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    outline: none;
+    transition: all 0.18s ease;
+  }
+
+  .top-row {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+  }
+
+  .schedule-app .controls {
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+
+  .btn {
+    padding:10px 14px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    background:linear-gradient(90deg,var(--accent), rgba(80,100,255,0.9));
+    color:#fff;
+    box-shadow:0 6px 18px var(--glow);
+  }
+  .btn.ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: none;
+    color: #e6eef6;
   }
 
   .schedule-app h2 {
-    margin-top: 2rem;
-    font-size: 1.3rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--accent);
   }
 
+  .timers {
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:12px;
+  }
+
   .schedule-app .timer {
-    margin-top: 1rem;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #e6eef6;
-    background: rgba(255,255,255,0.06);
-    padding: 10px 14px;
-    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    padding: 8px 12px;
+    border-radius: 10px;
     display: inline-block;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    min-width:140px;
+    text-align:center;
   }
 
-  .schedule-app .progress-wrapper {
-    margin-top: 1.5rem;
-    background: rgba(255,255,255,0.08);
-    border-radius: 12px;
-    overflow: hidden;
-    height: 16px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+  .schedule-grid {
+    margin-top: 12px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    align-items:flex-start;
+    flex-wrap:wrap;
   }
 
-  .schedule-app .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--glow);
-    transition: width 0.5s ease;
+  .results {
+    width:100%;
+    margin-top:12px;
+    text-align:left;
   }
 
-  .schedule-app label {
-    font-size: 0.9rem;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 0.5rem;
+  .result-list {
+    margin-top:8px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .result-item {
+    padding:8px 12px;
+    border-radius:12px;
+    background: rgba(255,255,255,0.03);
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+
+  .user-schedule {
+    margin-top:12px;
+    text-align:left;
+    background: rgba(255,255,255,0.02);
+    padding:12px;
+    border-radius:12px;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .user-schedule .period {
+    display:flex;
+    justify-content:space-between;
+    padding:8px 6px;
+    border-bottom:1px dashed rgba(255,255,255,0.03);
+  }
+  .user-schedule .period:last-child { border-bottom: none; }
+
+  /* Modal */
+  .modal-backdrop {
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg, rgba(1,2,3,0.6), rgba(1,2,3,0.8));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:3000;
+  }
+  .modal {
+    width:100%;
+    max-width:560px;
+    background: rgba(12,16,24,0.95);
+    border-radius:14px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 12px 48px rgba(0,0,0,0.7);
+    color:#e6eef6;
+  }
+
+  .modal h3 { margin:0 0 8px 0; color:var(--accent); }
+  .modal .row { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;}
+  .modal label { display:block; font-size:0.85rem; color:var(--muted); margin-bottom:6px; }
+  .modal .period-input { width:calc(50% - 6px); min-width:140px; }
+  .modal .period-input.full { width:100%; }
+  .modal .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
+
+  @media (max-width:560px) {
+    .modal .period-input { width:100%; }
+    .top-row { flex-direction:column; }
+    .timers { justify-content:stretch; }
   }
   </style>
 </head>
@@ -112,26 +211,85 @@
   <div class="schedule-app">
     <div class="container">
       <h1>Odyssey Schedule Tracker</h1>
-      <label for="lunch">Select your Lunch:</label>
-      <select id="lunch">
-        <option value="1">Lunch 1</option>
-        <option value="2">Lunch 2</option>
-      </select>
+
+      <div class="top-row">
+        <div class="controls">
+          <label for="lunch" style="margin-right:8px; align-self:center;">Select your Lunch:</label>
+          <select id="lunch">
+            <option value="1">Lunch 1</option>
+            <option value="2">Lunch 2</option>
+          </select>
+        </div>
+
+        <div style="flex:1; display:flex; justify-content:center;">
+          <div class="controls">
+            <input id="searchInput" type="text" placeholder="Search name..." style="min-width:220px;" />
+            <button id="searchBtn" class="btn ghost">Search</button>
+            <button id="openAddBtn" class="btn">Add Your Schedule</button>
+          </div>
+        </div>
+      </div>
 
       <h2 id="currentPeriod">Loading...</h2>
-      <div class="progress-wrapper">
-        <div class="progress-bar" id="progressBar"></div>
+
+      <div class="progress-wrapper" style="margin-top:8px;">
+        <div class="progress-bar" id="progressBar" style="height:12px; border-radius:8px;"></div>
       </div>
-      <div class="timer" id="elapsed">Elapsed: --</div>
-      <div class="timer" id="remaining">Remaining: --</div>
-      <div class="timer" id="endOfDay">Until End of Day: --</div>
-      <div class="timer" id="weekendTimer">Until Weekend: --</div>
-      
+
+      <div class="timers">
+        <div class="timer" id="elapsed">Elapsed: --</div>
+        <div class="timer" id="remaining">Remaining: --</div>
+        <div class="timer" id="endOfDay">Until End of Day: --</div>
+        <div class="timer" id="weekendTimer">Until Weekend: --</div>
+      </div>
+
+      <div class="results">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--muted)">Search results</strong>
+          <small id="resultsCount" style="color:var(--muted)">0</small>
+        </div>
+        <div class="result-list" id="resultList"></div>
+      </div>
+
+      <div id="userScheduleBox" class="user-schedule" style="display:none;"></div>
     </div>
   </div>
 
+  <!-- Modal markup (hidden by default) -->
+  <div id="addModal" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <h3>Add / Edit Your Schedule</h3>
+      <div style="margin-bottom:8px;">
+        <label>Name</label>
+        <input id="modalName" type="text" placeholder="Full name" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#fff;">
+      </div>
+
+      <div style="margin-bottom:8px;">
+        <label>Lunch</label>
+        <select id="modalLunch" style="width:100%; padding:10px; border-radius:8px;">
+          <option value="1">1st Lunch</option>
+          <option value="2">2nd Lunch</option>
+        </select>
+      </div>
+
+      <div id="periodInputs">
+        <!-- period boxes injected here -->
+      </div>
+
+      <div class="modal-actions">
+        <button id="closeModal" class="btn ghost">Cancel</button>
+        <button id="saveSchedule" class="btn">Save Schedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase compat libs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script>
-    // Base schedules (without passing periods)
+    // -------------------- your existing schedule definitions --------------------
     const schedulesBase = {
       1: [
         {name:"Period 1", start:"07:40", end:"08:45"},
@@ -155,7 +313,18 @@
       ]
     };
 
-    // Add passing periods (2 min) after each block
+    function parseTime(timeStr) {
+      const [h,m] = timeStr.split(":").map(Number);
+      const d = new Date();
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+    function addMinutes(timeStr, mins) {
+      const d = parseTime(timeStr);
+      d.setMinutes(d.getMinutes() + mins);
+      return d.toTimeString().slice(0,5);
+    }
+
     function withPassingPeriods(schedule) {
       const result = [];
       for (let i = 0; i < schedule.length; i++) {
@@ -176,17 +345,6 @@
       2: withPassingPeriods(schedulesBase[2])
     };
 
-    function parseTime(timeStr) {
-      const [h,m] = timeStr.split(":").map(Number);
-      const d = new Date();
-      d.setHours(h, m, 0, 0);
-      return d;
-    }
-    function addMinutes(timeStr, mins) {
-      const d = parseTime(timeStr);
-      d.setMinutes(d.getMinutes() + mins);
-      return d.toTimeString().slice(0,5);
-    }
     function formatDuration(ms) {
       if (ms < 0) ms = 0;
       const totalSeconds = Math.floor(ms / 1000);
@@ -196,10 +354,32 @@
       return `${h}h ${m}m ${s}s`;
     }
 
-    function updateSchedule() {
+    function nextWeekendStart(now) {
+      const d = new Date(now);
+      const day = d.getDay();
+      const daysUntilFriday = (5 - day + 7) % 7;
+      d.setDate(d.getDate() + daysUntilFriday);
+      d.setHours(0,0,0,0);
+      return d;
+    }
+    function nextSchoolStart(now) {
+      const d = new Date(now);
+      let day = d.getDay();
+      let addDays = 0;
+      if (day === 5) addDays = 3;
+      else if (day === 6) addDays = 2;
+      else if (day === 0) addDays = 1;
+      else addDays = 1;
+      d.setDate(d.getDate()+addDays);
+      d.setHours(7,40,0,0);
+      return d;
+    }
+
+    // -------------------- timers / UI update --------------------
+    function updateScheduleUI() {
       const lunchChoice = document.getElementById("lunch").value;
       const now = new Date();
-      const day = now.getDay(); // 0=Sun, 1=Mon
+      const day = now.getDay(); // 0=Sun
       const display = document.getElementById("currentPeriod");
       const elapsedEl = document.getElementById("elapsed");
       const remainingEl = document.getElementById("remaining");
@@ -207,7 +387,6 @@
       const endOfDayEl = document.getElementById("endOfDay");
       const weekendEl = document.getElementById("weekendTimer");
 
-      // Weekend handling
       if (day === 5 || day === 6 || day === 0) { 
         display.textContent = "It's the weekend 🎉";
         elapsedEl.textContent = "Elapsed: --";
@@ -236,7 +415,7 @@
         const totalMs = current.end - current.start;
         elapsedEl.textContent = `Elapsed: ${formatDuration(elapsedMs)}`;
         remainingEl.textContent = `Remaining: ${formatDuration(remainingMs)}`;
-        progressBar.style.width = `${(elapsedMs/totalMs)*100}%`;
+        progressBar.style.width = `${Math.max(0, Math.min(100, (elapsedMs/totalMs)*100))}%`;
       } else {
         display.textContent = "No class in session";
         elapsedEl.textContent = "Elapsed: --";
@@ -244,7 +423,6 @@
         progressBar.style.width = "0%";
       }
 
-      // End of day timer
       const lastEnd = parseTime(todaysSchedule[todaysSchedule.length-1].end);
       if (now < lastEnd) {
         endOfDayEl.textContent = "Until End of Day: " + formatDuration(lastEnd - now);
@@ -252,7 +430,6 @@
         endOfDayEl.textContent = "Until School Starts: " + formatDuration(nextSchoolStart(now) - now);
       }
 
-      // Weekend timer
       const weekendStart = nextWeekendStart(now);
       if (now >= weekendStart) {
         weekendEl.textContent = "Weekend: NOW";
@@ -261,36 +438,10 @@
       }
     }
 
-    function nextWeekendStart(now) {
-      const d = new Date(now);
-      const day = d.getDay();
-      const daysUntilFriday = (5 - day + 7) % 7;
-      d.setDate(d.getDate() + daysUntilFriday);
-      d.setHours(0,0,0,0);
-      return d;
-    }
-    function nextSchoolStart(now) {
-      const d = new Date(now);
-      let day = d.getDay();
-      let addDays = 0;
-      if (day === 5) addDays = 3;
-      else if (day === 6) addDays = 2;
-      else if (day === 0) addDays = 1;
-      else addDays = 1;
-      d.setDate(d.getDate()+addDays);
-      d.setHours(7,40,0,0);
-      return d;
-    }
+    setInterval(updateScheduleUI, 1000);
+    updateScheduleUI();
 
-    setInterval(updateSchedule, 1000);
-    updateSchedule();
-  </script>
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-   <script>
+    // -------------------- Firebase init --------------------
     const firebaseConfig = {
       apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
       authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
@@ -302,10 +453,240 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // -------------------- modal logic --------------------
+    const openAddBtn = document.getElementById('openAddBtn');
+    const addModal = document.getElementById('addModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalLunch = document.getElementById('modalLunch');
+    const periodInputs = document.getElementById('periodInputs');
+    const saveScheduleBtn = document.getElementById('saveSchedule');
+
+    // Given lunch choice, return array of period labels user must fill
+    function getInputPeriodsForLunch(lunch) {
+      if (lunch === '1') return ["Period 1","Period 2","Period 3","Period 5","Period 6","Period 7","Period 8"];
+      return ["Period 1","Period 2","Period 3","Period 4","Period 6","Period 7","Period 8"];
+    }
+
+    function renderPeriodInputs(lunch, classesObj = {}) {
+      const periods = getInputPeriodsForLunch(String(lunch));
+      periodInputs.innerHTML = '';
+      const info = document.createElement('div');
+      info.style.fontSize = '0.9rem';
+      info.style.color = 'var(--muted)';
+      info.style.marginBottom = '8px';
+      info.textContent = `Fill the 7 class boxes that match ${lunch === '1' ? '1st Lunch' : '2nd Lunch'}.`;
+      periodInputs.appendChild(info);
+
+      for (let i=0;i<periods.length;i++){
+        const name = periods[i];
+        const wrapper = document.createElement('div');
+        wrapper.className = 'period-input';
+        const label = document.createElement('label');
+        label.textContent = name;
+        label.style.color = 'var(--muted)';
+        label.style.marginBottom = '6px';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = classesObj[name] ?? '';
+        input.placeholder = `Enter class for ${name}`;
+        input.dataset.period = name;
+        input.style.width = '100%';
+        input.style.padding = '8px';
+        input.style.borderRadius = '8px';
+        input.style.border = '1px solid rgba(255,255,255,0.06)';
+        input.style.background = 'transparent';
+        input.style.color = '#fff';
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+        periodInputs.appendChild(wrapper);
+      }
+    }
+
+    openAddBtn.addEventListener('click', () => {
+      document.getElementById('modalName').value = '';
+      modalLunch.value = document.getElementById('lunch').value;
+      renderPeriodInputs(modalLunch.value);
+      addModal.style.display = 'flex';
+    });
+    closeModal.addEventListener('click', ()=> addModal.style.display='none');
+    modalLunch.addEventListener('change', ()=> renderPeriodInputs(modalLunch.value));
+
+    // Save schedule to Firestore
+    saveScheduleBtn.addEventListener('click', async () => {
+      const name = document.getElementById('modalName').value.trim();
+      if (!name) { alert('Please provide your name'); return; }
+      const lunch = modalLunch.value;
+      const inputs = periodInputs.querySelectorAll('input[data-period]');
+      const classes = {};
+      inputs.forEach(inp => classes[inp.dataset.period] = inp.value.trim() || '(No class)');
+      const docId = name.toLowerCase().replace(/\s+/g,'_');
+
+      try {
+        await db.collection('schedules').doc(docId).set({
+          name,
+          nameLower: name.toLowerCase(),
+          lunch,
+          classes,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        addModal.style.display = 'none';
+        // update search results if visible
+        if (document.getElementById('searchInput').value.trim()) {
+          doSearch(); 
+        }
+        alert('Saved schedule!');
+      } catch (e) {
+        console.error('Save failed', e);
+        alert('Failed to save schedule: ' + e.message);
+      }
+    });
+
+    // -------------------- search functionality --------------------
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const resultList = document.getElementById('resultList');
+    const resultsCount = document.getElementById('resultsCount');
+    const userScheduleBox = document.getElementById('userScheduleBox');
+
+    async function doSearch() {
+      const q = searchInput.value.trim().toLowerCase();
+      resultList.innerHTML = '';
+      userScheduleBox.style.display='none';
+      if (!q) { resultsCount.textContent = '0'; return; }
+
+      try {
+        const end = q + '\uf8ff';
+        const snapshot = await db.collection('schedules')
+          .where('nameLower', '>=', q)
+          .where('nameLower', '<=', end)
+          .limit(20)
+          .get();
+
+        const results = [];
+        snapshot.forEach(doc => results.push({ id: doc.id, ...doc.data() }));
+
+        resultsCount.textContent = results.length;
+        if (results.length === 0) {
+          resultList.innerHTML = `<div style="color:var(--muted)">No matches</div>`;
+        } else {
+          resultList.innerHTML = '';
+          results.forEach(r => {
+            const el = document.createElement('div');
+            el.className = 'result-item';
+            el.textContent = r.name + ' — ' + (r.lunch === '1' ? '1st Lunch' : '2nd Lunch');
+            el.addEventListener('click', ()=> showUserSchedule(r));
+            resultList.appendChild(el);
+          });
+        }
+      } catch (e) {
+        console.error('Search failed', e);
+        resultList.innerHTML = `<div style="color:#f88">Search failed</div>`;
+      }
+    }
+
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keydown', (e)=> { if (e.key === 'Enter') doSearch(); });
+
+    // Show schedule for a user object (from Firestore)
+    function showUserSchedule(userDoc) {
+      // userDoc: { name, lunch, classes }
+      const lunch = userDoc.lunch || '1';
+      const classesMap = userDoc.classes || {};
+      const box = userScheduleBox;
+      box.style.display = 'block';
+      box.innerHTML = `<strong style="display:block; color:var(--accent)">${userDoc.name} — ${lunch === '1' ? '1st Lunch' : '2nd Lunch'}</strong>`;
+
+      // Use the same 'schedules' array to compute current period
+      const todaysSchedule = schedules[lunch];
+      const now = new Date();
+      let currentEntry = null;
+      for (const p of todaysSchedule) {
+        const start = parseTime(p.start);
+        const end = parseTime(p.end);
+        if (now >= start && now <= end) { currentEntry = { ...p, start, end }; break; }
+      }
+
+      // Build display list: show base schedule entries (without the passing periods being too noisy?)
+      // We'll show all entries in todaysSchedule in order and for Periods map to classes
+      for (const p of todaysSchedule) {
+        const periodLabel = p.name; // e.g. "Period 1" or "LUNCH" or "Passing Period" or "Period 5"
+        const isPeriod = periodLabel.startsWith('Period');
+        let displayName = periodLabel;
+        if (periodLabel === 'LUNCH') {
+          displayName = 'LUNCH';
+        } else if (periodLabel === 'Passing Period') {
+          displayName = 'Passing Period';
+        } else if (isPeriod) {
+          // If this period is one of the user's input periods, show the user class
+          const className = classesMap[periodLabel] ?? '(No class)';
+          displayName = `${periodLabel} — ${className}`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'period';
+        const left = document.createElement('div');
+        left.textContent = displayName;
+        left.style.fontWeight = (currentEntry && currentEntry.name === p.name && p.name !== 'Passing Period') ? '700' : '500';
+
+        const right = document.createElement('div');
+        right.style.opacity = '0.9';
+        right.textContent = `${p.start} - ${p.end}`;
+
+        // Highlight current entry visually:
+        if (currentEntry && currentEntry.name === p.name) {
+          row.style.background = 'linear-gradient(90deg, rgba(48,64,242,0.08), rgba(48,64,242,0.04))';
+          row.style.border = '1px solid rgba(48,64,242,0.15)';
+        }
+
+        row.appendChild(left);
+        row.appendChild(right);
+        box.appendChild(row);
+      }
+
+      // Additionally show a small note about which class they are in right now:
+      const status = document.createElement('div');
+      status.style.marginTop = '8px';
+      status.style.fontSize = '0.95rem';
+      status.style.color = 'var(--muted)';
+      if (!currentEntry) {
+        status.textContent = 'No class in session right now';
+      } else if (currentEntry.name === 'Passing Period') {
+        status.textContent = 'It is currently a Passing Period';
+      } else if (currentEntry.name === 'LUNCH') {
+        status.textContent = 'It is currently LUNCH';
+      } else {
+        // show the user's class for this period if available
+        const className = (userDoc.classes && userDoc.classes[currentEntry.name]) || '(No class)';
+        status.textContent = `Current: ${currentEntry.name} — ${className}`;
+      }
+      box.appendChild(status);
+    }
+
+    // Allow clicking a result to pre-fill modal for edit
+    // We'll set listener on results area using event delegation (if you want edit on click-hold)
+    resultList.addEventListener('click', async (e) => {
+      // if user clicked a result-item, fetch corresponding doc from Firestore by name in text
+      const target = e.target.closest('.result-item');
+      if (!target) return;
+      const text = target.textContent.split(' — ')[0];
+      const docId = text.toLowerCase().replace(/\s+/g,'_');
+      try {
+        const doc = await db.collection('schedules').doc(docId).get();
+        if (!doc.exists) return;
+        const data = doc.data();
+        // open modal with prefilled values for edit
+        document.getElementById('modalName').value = data.name || '';
+        modalLunch.value = data.lunch || '1';
+        renderPeriodInputs(modalLunch.value, data.classes || {});
+        addModal.style.display = 'flex';
+      } catch (err) {
+        console.error('prefill failed', err);
+      }
+    });
+
+    // -------------------- navbar loader (keeps your existing code) --------------------
     fetch('/navbar.html')
       .then((res) => res.text())
       .then((html) => {
@@ -316,9 +697,9 @@
         const creditsBox = document.getElementById('creditsBox');
         const creditsAmount = document.getElementById('creditsAmount');
 
-        auth.onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            userStatus.textContent = user.email || 'User';
+            if (userStatus) userStatus.textContent = user.email || 'User';
             if (loginBtn) loginBtn.style.display = 'none';
             if (creditsBox) creditsBox.style.display = 'inline-flex';
 
@@ -326,13 +707,13 @@
               .doc(user.uid)
               .onSnapshot((doc) => {
                 if (doc.exists) {
-                  creditsAmount.textContent = doc.data().credits ?? 0;
+                  if (creditsAmount) creditsAmount.textContent = doc.data().credits ?? 0;
                 } else {
-                  creditsAmount.textContent = '0';
+                  if (creditsAmount) creditsAmount.textContent = '0';
                 }
               });
           } else {
-            userStatus.textContent = 'Logged Out';
+            if (userStatus) userStatus.textContent = 'Logged Out';
             if (loginBtn) loginBtn.style.display = 'inline-block';
             if (creditsBox) creditsBox.style.display = 'none';
           }
@@ -340,6 +721,5 @@
       })
       .catch((err) => console.error('Failed to load navbar:', err));
   </script>
-  
 </body>
 </html>
