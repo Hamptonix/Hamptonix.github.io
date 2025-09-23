@@ -127,5 +127,59 @@
     setInterval(updateSchedule, 1000);
     updateSchedule();
   </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+      projectId: "hamptonixwebsite-dea39",
+      storageBucket: "hamptonixwebsite-dea39.appspot.com",
+      messagingSenderId: "847673046697",
+      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+      measurementId: "G-CBL1NL69PH",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    fetch('/navbar.html')
+      .then((res) => res.text())
+      .then((html) => {
+        document.getElementById('navbar-container').innerHTML = html;
+
+        const userStatus = document.getElementById('userStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const creditsBox = document.getElementById('creditsBox');
+        const creditsAmount = document.getElementById('creditsAmount');
+
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            userStatus.textContent = user.email || 'User';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (creditsBox) creditsBox.style.display = 'inline-flex';
+
+            db.collection('users')
+              .doc(user.uid)
+              .onSnapshot((doc) => {
+                if (doc.exists) {
+                  creditsAmount.textContent = doc.data().credits ?? 0;
+                } else {
+                  creditsAmount.textContent = '0';
+                }
+              });
+          } else {
+            userStatus.textContent = 'Logged Out';
+            if (loginBtn) loginBtn.style.display = 'inline-block';
+            if (creditsBox) creditsBox.style.display = 'none';
+          }
+        });
+      })
+      .catch((err) => console.error('Failed to load navbar:', err));
+  </script>
 </body>
 </html>
