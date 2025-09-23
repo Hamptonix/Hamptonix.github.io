@@ -5,56 +5,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
   <title>Hamptonix | Schedule</title>
-
-  <link rel="stylesheet" href="/style.css" />
-  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6fa;
-      color: #222;
-      text-align: center;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    select {
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      margin: 1rem 0 0.5rem;
-    }
-    .timer {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #3040f2;
-    }
+  /* Scoped only to the schedule app */
+  .schedule-app {
+    --bg: #0b0b0b;
+    --panel: #0f1720;
+    --muted: #9aa4b2;
+    --accent: rgba(48, 64, 242, 1);
+    --glow: rgba(48, 64, 242, 0.4);
+    --blur: 14px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+
+  /* Background gradient */
+  .schedule-app {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #020204 0%, #091014 100%);
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  /* Main card */
+  .schedule-app .container {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(15,23,32,0.6);
+    backdrop-filter: blur(var(--blur));
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+    color: #e6eef6;
+  }
+
+  /* Title */
+  .schedule-app h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+  }
+
+  /* Dropdown */
+  .schedule-app select {
+    padding: 12px 16px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .schedule-app select:hover,
+  .schedule-app select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--glow);
+    outline: none;
+  }
+
+  /* Current period */
+  .schedule-app h2 {
+    margin-top: 2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* Timer display */
+  .schedule-app .timer {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e6eef6;
+    background: rgba(255,255,255,0.06);
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  /* Progress bar wrapper */
+  .schedule-app .progress-wrapper {
+    margin-top: 1.5rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 16px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* Actual progress */
+  .schedule-app .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--glow);
+    transition: width 0.5s ease;
+  }
+
+  /* Label */
+  .schedule-app label {
+    font-size: 0.9rem;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
   </style>
 </head>
 <body>
-
   <div id="navbar-container"></div>
-  
-  <div class="container">
-    <h1>Odyssey Schedule Tracker</h1>
-    <label for="lunch">Select your Lunch: </label>
-    <select id="lunch">
-      <option value="1">Lunch 1</option>
-      <option value="2">Lunch 2</option>
-    </select>
 
-    <h2 id="currentPeriod">Loading...</h2>
-    <div class="timer" id="elapsed">Elapsed: 0m 0s</div>
-    <div class="timer" id="remaining">Remaining: 0m 0s</div>
+  <div class="schedule-app">
+    <div class="container">
+      <h1>Odyssey Schedule Tracker</h1>
+      <label for="lunch">Select your Lunch:</label>
+      <select id="lunch">
+        <option value="1">Lunch 1</option>
+        <option value="2">Lunch 2</option>
+      </select>
+
+      <h2 id="currentPeriod">Loading...</h2>
+      <div class="timer" id="elapsed">Elapsed: 0m 0s</div>
+      <div class="timer" id="remaining">Remaining: 0m 0s</div>
+
+      <!-- Progress bar -->
+      <div class="progress-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -106,12 +189,14 @@
       const display = document.getElementById("currentPeriod");
       const elapsedEl = document.getElementById("elapsed");
       const remainingEl = document.getElementById("remaining");
+      const progressBar = document.getElementById("progressBar");
 
       if (current) {
         display.textContent = `Current: ${current.name}`;
 
         const elapsedMs = now - current.start;
         const remainingMs = current.end - now;
+        const totalMs = current.end - current.start;
 
         const elapsedM = Math.floor(elapsedMs/60000);
         const elapsedS = Math.floor((elapsedMs%60000)/1000);
@@ -121,69 +206,20 @@
 
         elapsedEl.textContent = `Elapsed: ${elapsedM}m ${elapsedS}s`;
         remainingEl.textContent = `Remaining: ${remainingM}m ${remainingS}s`;
+
+        // Progress %
+        const percent = Math.min(100, Math.max(0, (elapsedMs/totalMs)*100));
+        progressBar.style.width = percent + "%";
       } else {
         display.textContent = "No class in session";
         elapsedEl.textContent = "Elapsed: --";
         remainingEl.textContent = "Remaining: --";
+        progressBar.style.width = "0%";
       }
     }
 
     setInterval(updateSchedule, 1000);
     updateSchedule();
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-      projectId: "hamptonixwebsite-dea39",
-      storageBucket: "hamptonixwebsite-dea39.appspot.com",
-      messagingSenderId: "847673046697",
-      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH",
-    };
-
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    fetch('/navbar.html')
-      .then((res) => res.text())
-      .then((html) => {
-        document.getElementById('navbar-container').innerHTML = html;
-
-        const userStatus = document.getElementById('userStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const creditsBox = document.getElementById('creditsBox');
-        const creditsAmount = document.getElementById('creditsAmount');
-
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            userStatus.textContent = user.email || 'User';
-            if (loginBtn) loginBtn.style.display = 'none';
-            if (creditsBox) creditsBox.style.display = 'inline-flex';
-
-            db.collection('users')
-              .doc(user.uid)
-              .onSnapshot((doc) => {
-                if (doc.exists) {
-                  creditsAmount.textContent = doc.data().credits ?? 0;
-                } else {
-                  creditsAmount.textContent = '0';
-                }
-              });
-          } else {
-            userStatus.textContent = 'Logged Out';
-            if (loginBtn) loginBtn.style.display = 'inline-block';
-            if (creditsBox) creditsBox.style.display = 'none';
-          }
-        });
-      })
-      .catch((err) => console.error('Failed to load navbar:', err));
   </script>
 </body>
 </html>
