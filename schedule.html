@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Schedule Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fa;
+      color: #222;
+      text-align: center;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      margin: 1rem 0 0.5rem;
+    }
+    .timer {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #3040f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>School Schedule Tracker</h1>
+    <label for="lunch">Select Lunch: </label>
+    <select id="lunch">
+      <option value="1">Lunch 1</option>
+      <option value="2">Lunch 2</option>
+    </select>
+
+    <h2 id="currentPeriod">Loading...</h2>
+    <div class="timer" id="elapsed">Elapsed: 0m 0s</div>
+    <div class="timer" id="remaining">Remaining: 0m 0s</div>
+  </div>
+
+  <script>
+    const schedules = {
+      1: [
+        {name:"P1", start:"07:40", end:"08:45"},
+        {name:"P2", start:"08:47", end:"09:42"},
+        {name:"P3", start:"09:54", end:"10:59"},
+        {name:"LUNCH", start:"11:01", end:"11:21"},
+        {name:"P5", start:"11:23", end:"12:28"},
+        {name:"P6", start:"12:30", end:"13:35"},
+        {name:"P7", start:"13:37", end:"14:42"},
+        {name:"P8", start:"14:44", end:"15:49"},
+      ],
+      2: [
+        {name:"P1", start:"07:40", end:"08:45"},
+        {name:"P2", start:"08:47", end:"09:42"},
+        {name:"P3", start:"09:54", end:"10:59"},
+        {name:"P4", start:"11:01", end:"12:06"},
+        {name:"LUNCH", start:"12:08", end:"12:28"},
+        {name:"P6", start:"12:30", end:"13:35"},
+        {name:"P7", start:"13:37", end:"14:42"},
+        {name:"P8", start:"14:44", end:"15:49"},
+      ]
+    };
+
+    function parseTime(timeStr) {
+      const [h,m] = timeStr.split(":").map(Number);
+      const d = new Date();
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+
+    function updateSchedule() {
+      const lunchChoice = document.getElementById("lunch").value;
+      const now = new Date();
+      const todaysSchedule = schedules[lunchChoice];
+
+      let current = null;
+      for (const p of todaysSchedule) {
+        const start = parseTime(p.start);
+        const end = parseTime(p.end);
+        if (now >= start && now <= end) {
+          current = { ...p, start, end };
+          break;
+        }
+      }
+
+      const display = document.getElementById("currentPeriod");
+      const elapsedEl = document.getElementById("elapsed");
+      const remainingEl = document.getElementById("remaining");
+
+      if (current) {
+        display.textContent = `Current: ${current.name}`;
+
+        const elapsedMs = now - current.start;
+        const remainingMs = current.end - now;
+
+        const elapsedM = Math.floor(elapsedMs/60000);
+        const elapsedS = Math.floor((elapsedMs%60000)/1000);
+
+        const remainingM = Math.floor(remainingMs/60000);
+        const remainingS = Math.floor((remainingMs%60000)/1000);
+
+        elapsedEl.textContent = `Elapsed: ${elapsedM}m ${elapsedS}s`;
+        remainingEl.textContent = `Remaining: ${remainingM}m ${remainingS}s`;
+      } else {
+        display.textContent = "No class in session";
+        elapsedEl.textContent = "Elapsed: --";
+        remainingEl.textContent = "Remaining: --";
+      }
+    }
+
+    setInterval(updateSchedule, 1000);
+    updateSchedule();
+  </script>
+</body>
+</html>
