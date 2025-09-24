@@ -443,18 +443,34 @@ async function sendMessage() {
 }
 
 // ---------- Render messages ----------
+const msgTimers = new Map();
+
 onSnapshot(messagesQuery, (snapshot) => {
   messagesDiv.innerHTML = '';
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
+    const id = docSnap.id;
+
+    const createdAt = data.createdAt?.toDate?.().getTime() || Date.now();
+    const expireAt = data.expireAt?.toDate?.().getTime() || (createdAt + 3600_000);
+
+    // remove expired messages immediately
+    if (Date.now() >= expireAt) {
+      deleteDoc(doc(db, MESSAGES_COL, id)).catch(()=>{});
+      return;
+    }
+
+    // message wrapper
     const wrap = document.createElement('div');
     wrap.className = 'message';
 
+    // username
     const usernameEl = document.createElement('div');
     usernameEl.className = 'username';
     usernameEl.style.color = data.usernameColor || '#ffffff';
     usernameEl.innerText = data.username || 'Guest';
 
+    // add verified badge
     if (data.verified) {
       const badge = document.createElement("img");
       badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
@@ -465,17 +481,24 @@ onSnapshot(messagesQuery, (snapshot) => {
       usernameEl.appendChild(badge);
     }
 
+    // message text
     const textEl = document.createElement('div');
     textEl.className = 'text';
     textEl.innerText = data.text || '';
 
+    // meta + timer
     const meta = document.createElement('div');
     meta.className = 'meta';
     const createdRel = document.createElement('div');
     createdRel.className = 'small';
-    createdRel.innerText = new Date(data.createdAt?.toDate?.() || Date.now())
-      .toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    createdRel.innerText = new Date(createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    const timer = document.createElement('div');
+    timer.className = 'timer';
+    timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
+
     meta.appendChild(createdRel);
+    meta.appendChild(timer);
 
     wrap.appendChild(usernameEl);
     wrap.appendChild(textEl);
@@ -483,8 +506,34 @@ onSnapshot(messagesQuery, (snapshot) => {
 
     messagesDiv.appendChild(wrap);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // set countdown timer
+    if (msgTimers.has(id)) clearInterval(msgTimers.get(id));
+    const interval = setInterval(async ()=>{
+      const remaining = expireAt - Date.now();
+      if (remaining <= 0){
+        timer.innerText = 'Deleting…';
+        clearInterval(interval);
+        msgTimers.delete(id);
+        try { await deleteDoc(doc(db, MESSAGES_COL, id)); } catch(e){ }
+        if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+      } else {
+        timer.innerText = 'Deleting in ' + formatRemaining(remaining);
+      }
+    }, 1000);
+    msgTimers.set(id, interval);
   });
 });
+
+// helper
+function formatRemaining(ms){
+  if (ms <= 0) return '0s';
+  const s = Math.floor(ms/1000);
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
+}
+
 
 
     // --------------- NOTES & TODOs ---------------
