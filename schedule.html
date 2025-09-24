@@ -441,8 +441,9 @@
     setInterval(updateScheduleUI, 1000);
     updateScheduleUI();
 
-    // -------------------- Firebase init --------------------
-    const firebaseConfig = {
+    // -------------------- Firebase init (two apps) --------------------
+    // Navbar Firebase project (keeps your nav/auth/credits)
+    const navConfig = {
       apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
       authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
       projectId: "hamptonixwebsite-dea39",
@@ -451,9 +452,22 @@
       appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
       measurementId: "G-CBL1NL69PH",
     };
+    const navApp = firebase.initializeApp(navConfig, "navApp");
+    const navDb = navApp.firestore();
+    const navAuth = navApp.auth();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    // Schedule Firebase project (NEW - your provided config)
+    const scheduleConfig = {
+      apiKey: "AIzaSyC5fRmcLfedV0C_KQI7xgiLxe9QSFJ9Nqg",
+      authDomain: "school-schedule-tracker-dd433.firebaseapp.com",
+      projectId: "school-schedule-tracker-dd433",
+      storageBucket: "school-schedule-tracker-dd433.firebasestorage.app",
+      messagingSenderId: "424273851516",
+      appId: "1:424273851516:web:fcd136728acaee29a0c5f9",
+      measurementId: "G-36S4Q1GB3G"
+    };
+    const scheduleApp = firebase.initializeApp(scheduleConfig, "scheduleApp");
+    const scheduleDb = scheduleApp.firestore();
 
     // -------------------- modal logic --------------------
     const openAddBtn = document.getElementById('openAddBtn');
@@ -513,7 +527,7 @@
     closeModal.addEventListener('click', ()=> addModal.style.display='none');
     modalLunch.addEventListener('change', ()=> renderPeriodInputs(modalLunch.value));
 
-    // Save schedule to Firestore
+    // Save schedule to Firestore (SCHEDULE DB)
     saveScheduleBtn.addEventListener('click', async () => {
       const name = document.getElementById('modalName').value.trim();
       if (!name) { alert('Please provide your name'); return; }
@@ -523,14 +537,18 @@
       inputs.forEach(inp => classes[inp.dataset.period] = inp.value.trim() || '(No class)');
       const docId = name.toLowerCase().replace(/\s+/g,'_');
 
+      const scheduleObj = {
+        name,
+        nameLower: name.toLowerCase(),
+        lunch,
+        classes,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      console.log('Attempting to save schedule:', scheduleObj);
+
       try {
-        await db.collection('schedules').doc(docId).set({
-          name,
-          nameLower: name.toLowerCase(),
-          lunch,
-          classes,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        await scheduleDb.collection('schedules').doc(docId).set(scheduleObj);
         addModal.style.display = 'none';
         // update search results if visible
         if (document.getElementById('searchInput').value.trim()) {
@@ -539,7 +557,7 @@
         alert('Saved schedule!');
       } catch (e) {
         console.error('Save failed', e);
-        alert('Failed to save schedule: ' + e.message);
+        alert('Failed to save schedule: ' + (e.message || e));
       }
     });
 
@@ -558,7 +576,7 @@
 
       try {
         const end = q + '\uf8ff';
-        const snapshot = await db.collection('schedules')
+        const snapshot = await scheduleDb.collection('schedules')
           .where('nameLower', '>=', q)
           .where('nameLower', '<=', end)
           .limit(20)
@@ -576,6 +594,7 @@
             const el = document.createElement('div');
             el.className = 'result-item';
             el.textContent = r.name + ' — ' + (r.lunch === '1' ? '1st Lunch' : '2nd Lunch');
+            // click shows the schedule
             el.addEventListener('click', ()=> showUserSchedule(r));
             resultList.appendChild(el);
           });
@@ -608,8 +627,7 @@
         if (now >= start && now <= end) { currentEntry = { ...p, start, end }; break; }
       }
 
-      // Build display list: show base schedule entries (without the passing periods being too noisy?)
-      // We'll show all entries in todaysSchedule in order and for Periods map to classes
+      // Build display list: show base schedule entries (including passing periods)
       for (const p of todaysSchedule) {
         const periodLabel = p.name; // e.g. "Period 1" or "LUNCH" or "Passing Period" or "Period 5"
         const isPeriod = periodLabel.startsWith('Period');
@@ -664,16 +682,14 @@
       box.appendChild(status);
     }
 
-    // Allow clicking a result to pre-fill modal for edit
-    // We'll set listener on results area using event delegation (if you want edit on click-hold)
+    // Allow clicking a result (delegated) to pre-fill modal for edit (keeps behavior from your previous script)
     resultList.addEventListener('click', async (e) => {
-      // if user clicked a result-item, fetch corresponding doc from Firestore by name in text
       const target = e.target.closest('.result-item');
       if (!target) return;
       const text = target.textContent.split(' — ')[0];
       const docId = text.toLowerCase().replace(/\s+/g,'_');
       try {
-        const doc = await db.collection('schedules').doc(docId).get();
+        const doc = await scheduleDb.collection('schedules').doc(docId).get();
         if (!doc.exists) return;
         const data = doc.data();
         // open modal with prefilled values for edit
@@ -686,7 +702,7 @@
       }
     });
 
-    // -------------------- navbar loader (keeps your existing code) --------------------
+    // -------------------- navbar loader (keeps your existing code but on navApp) --------------------
     fetch('/navbar.html')
       .then((res) => res.text())
       .then((html) => {
@@ -697,13 +713,13 @@
         const creditsBox = document.getElementById('creditsBox');
         const creditsAmount = document.getElementById('creditsAmount');
 
-        firebase.auth().onAuthStateChanged((user) => {
+        navAuth.onAuthStateChanged((user) => {
           if (user) {
             if (userStatus) userStatus.textContent = user.email || 'User';
             if (loginBtn) loginBtn.style.display = 'none';
             if (creditsBox) creditsBox.style.display = 'inline-flex';
 
-            db.collection('users')
+            navDb.collection('users')
               .doc(user.uid)
               .onSnapshot((doc) => {
                 if (doc.exists) {
