@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const baseMoveDistance = 5;
   const keysPressed = {};
   const keyTimers = {};
-  const initialDelay = 200;
+  const initialDelay = 100;
   const repeatInterval = 50;
 
   const playersRef = ref(db, 'players');
@@ -180,10 +180,10 @@ window.addEventListener('DOMContentLoaded', () => {
         case 'Space':
           if (isErasing) {
             eraseAtPosition();
-            keyTimers[code] = setInterval(eraseAtPosition, 200);
+            keyTimers[code] = setInterval(eraseAtPosition, 100);
           } else {
             printColor();
-            keyTimers[code] = setInterval(printColor, 200);
+            keyTimers[code] = setInterval(printColor, 100);
           }
           break;
         case 'Equal':
