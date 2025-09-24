@@ -312,11 +312,11 @@ input[type="color"]:hover {
     // 2) Enable Cloud Firestore in the console.
     // 3) Optionally enable a TTL policy on the 'messages' collection for the 'expireAt' field (recommended).
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { setDoc, serverTimestamp as serverTs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
+const firebaseConfig = {
+  apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
   authDomain: "livechat-4b94e.firebaseapp.com",
   databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
   projectId: "livechat-4b94e",
@@ -324,263 +324,66 @@ import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, o
   messagingSenderId: "951972267887",
   appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
   measurementId: "G-5WF1LLM7FH"
-    };
+};
 
-    if (!firebaseConfig || !firebaseConfig.projectId) {
-      console.warn("Add your Firebase config to firebaseConfig in the script!");
-    }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+// ---------- UI references ----------
+const usernameInput = document.getElementById('usernameInput');
+const colorPicker = document.getElementById('colorPicker');
+const previewName = document.getElementById('previewName');
+const onlineTop = document.getElementById('onlineTop');
+const messagesDiv = document.getElementById('messages');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const clearLocal = document.getElementById('clearLocal');
 
-    // ---------- UI refs ----------
-    const sidebar = document.getElementById('sidebar');
-    const collapseToggle = document.getElementById('collapseToggle');
-    const usernameInput = document.getElementById('usernameInput');
-    const colorPicker = document.getElementById('colorPicker');
-    const previewName = document.getElementById('previewName');
-    const onlineCount = document.getElementById('onlineCount');
-    const onlineTop = document.getElementById('onlineTop');
-    const messagesDiv = document.getElementById('messages');
-    const msgInput = document.getElementById('msgInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const clearLocal = document.getElementById('clearLocal');
+// ---------- local identity ----------
+const LOCAL_KEY = 'livechat_user';
+let clientId = localStorage.getItem('livechat_clientId');
+if (!clientId){
+  clientId = 'c-'+Math.random().toString(36).slice(2,10);
+  localStorage.setItem('livechat_clientId', clientId);
+}
 
-    // ---------- local identity & presence ----------
-    const LOCAL_KEY = 'livechat_user';
-    let clientId = localStorage.getItem('livechat_clientId');
-    if (!clientId){
-      clientId = 'c-'+Math.random().toString(36).slice(2,10);
-      localStorage.setItem('livechat_clientId', clientId);
-    }
+const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+if (saved.name) usernameInput.value = saved.name;
+if (saved.color) colorPicker.value = saved.color;
+updatePreview();
 
-    // load saved username + color if present
-    const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
-    if (saved.name) usernameInput.value = saved.name;
-    if (saved.color) colorPicker.value = saved.color;
-    updatePreview();
+clearLocal.addEventListener('click', ()=>{
+  localStorage.removeItem(LOCAL_KEY);
+  usernameInput.value = '';
+  colorPicker.value = '#ffffff';
+  updatePreview();
+  alert('Local username reset.');
+});
 
-    clearLocal.addEventListener('click', ()=>{
-      localStorage.removeItem(LOCAL_KEY);
-      usernameInput.value = '';
-      colorPicker.value = '#ffffff';
-      updatePreview();
-      alert('Local username reset.');
-    });
+function updatePreview(){
+  const name = usernameInput.value || 'Guest';
+  previewName.innerText = name;
+  previewName.style.color = colorPicker.value;
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
+}
 
-    function updatePreview(){
-      const name = usernameInput.value || 'Guest';
-      previewName.innerText = name;
-      previewName.style.color = colorPicker.value;
-      localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
-    }
-    usernameInput.addEventListener('input', updatePreview);
-    colorPicker.addEventListener('input', updatePreview);
+usernameInput.addEventListener('input', updatePreview);
+colorPicker.addEventListener('input', updatePreview);
 
+// ---------- Messaging ----------
+const MESSAGES_COL = 'messages';
+const messagesCollection = collection(db, MESSAGES_COL);
+const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
 
-    // ---------- presence mechanism (simple) ----------
-    // We'll write a doc per client in "presence" collection with lastSeen timestamp.
-    // Count online as presence docs updated within last 30 seconds.
-    import { doc as docRef, setDoc as setDocRef, serverTimestamp as serverTs, collection as collRef, query as qRef, where as whereRef, getDocs, getDoc as getDocRef } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-    const PRESENCE_COL = 'presence';
-    const presenceDocRef = docRef(db, PRESENCE_COL, clientId);
-
-    async function touchPresence(){
-      try {
-        await setDocRef(presenceDocRef, { lastSeen: serverTs() }, { merge: true });
-      } catch(e) { console.error('presence touch failed', e); }
-    }
-
-    // touch once per 15 seconds
-    touchPresence();
-    setInterval(touchPresence, 15000);
-    // also touch on beforeunload to mark leaving (best-effort)
-    window.addEventListener('beforeunload', ()=> {
-      // note: best-effort; might not complete
-      setDocRef(presenceDocRef, { lastSeen: serverTs(), leaving: true }, { merge: true }).catch(()=>{});
-    });
-
-    // update online count by listening to presence collection snapshots
-    // simple approach: poll for presence docs with recent lastSeen
-    async function updateOnlineCount(){
-      try {
-        const now = Date.now();
-        // read all presence docs (small scale)
-        const presCol = collection(db, PRESENCE_COL);
-        const q = query(presCol);
-        const snap = await getDocs(q);
-        let count = 0;
-        snap.forEach(d=>{
-          const data = d.data();
-          if (!data.lastSeen) return;
-          const last = data.lastSeen.toDate ? data.lastSeen.toDate().getTime() : new Date(data.lastSeen).getTime();
-          if (now - last < 30_000) count++;
-        });
-        onlineCount.innerText = `${count} online`;
-        onlineTop.innerText = `${count} online`;
-      } catch(e){ console.error(e); }
-    }
-    // poll presence every 10s
-    updateOnlineCount();
-    setInterval(updateOnlineCount, 10000);
-
-    // ---------- messaging ----------
-    const MESSAGES_COL = 'messages';
-    // show messages ordered by createdAt
-    const messagesCollection = collection(db, MESSAGES_COL);
-    const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
-
-    // store a local map of message timers to clear intervals when removed
-    const msgTimers = new Map();
-
-    // helper to format seconds to mm:ss or hh:mm:ss
-    function formatRemaining(ms){
-      if (ms <= 0) return '0s';
-      const s = Math.floor(ms/1000);
-      if (s < 60) return `${s}s`;
-      if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
-      return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
-    }
-
-    // reactively render messages as Firestore changes
-    onSnapshot(messagesQuery, (snapshot) => {
-      // snapshot may include added/removed/modified
-      // We'll re-render simply for simplicity (small scale). For large scale you can diff.
-      messagesDiv.innerHTML = '';
-      const now = Date.now();
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        const createdAt = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().getTime() : (data.createdAt ? new Date(data.createdAt).getTime() : Date.now());
-        const expireAt = data.expireAt && data.expireAt.toDate ? data.expireAt.toDate().getTime() : (data.expireAt ? new Date(data.expireAt).getTime() : createdAt + 3600_000);
-
-        // if expired already -> best-effort delete from DB (client-side cleanup)
-        if (Date.now() >= expireAt) {
-          // remove immediately
-          deleteDoc(docRef(db, MESSAGES_COL, id)).catch(()=>{});
-          return;
-        }
-
-        // build dom node
-        const wrap = document.createElement('div');
-        wrap.className = 'message';
-        const usernameEl = document.createElement('div');
-        usernameEl.className = 'username';
-        usernameEl.innerText = data.username || 'Guest';
-        usernameEl.style.color = data.usernameColor || '#ffffff';
-
-        const textEl = document.createElement('div');
-        textEl.className = 'text';
-        textEl.innerText = data.text || '';
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const createdRel = document.createElement('div');
-        createdRel.className = 'small';
-        const createdDate = new Date(createdAt);
-        createdRel.innerText = createdDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-        const timer = document.createElement('div');
-        timer.className = 'timer';
-        timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
-
-        meta.appendChild(createdRel);
-        meta.appendChild(timer);
-
-        wrap.appendChild(usernameEl);
-        wrap.appendChild(textEl);
-        wrap.appendChild(meta);
-
-        messagesDiv.appendChild(wrap);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-        // set up countdown interval for timer + auto-delete when reaches 0
-        if (msgTimers.has(id)){
-          clearInterval(msgTimers.get(id));
-        }
-        const interval = setInterval(async ()=>{
-          const remaining = expireAt - Date.now();
-          if (remaining <= 0){
-            timer.innerText = 'Deleting…';
-            clearInterval(interval);
-            msgTimers.delete(id);
-            // best-effort delete from DB
-            try { await deleteDoc(docRef(db, MESSAGES_COL, id)); } catch(e){ /* ignore */ }
-            // remove node visually (it may be removed by snapshot listener soon)
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-            return;
-          } else {
-            timer.innerText = 'Deleting in ' + formatRemaining(remaining);
-          }
-        }, 1000);
-        msgTimers.set(id, interval);
-      });
-    }, (err)=>{ console.error('messages snapshot error', err); });
-
-    // sending message
-    sendBtn.addEventListener('click', sendMessage);
-    msgInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-
-    async function sendMessage(){
-      const text = msgInput.value.trim();
-      if (!text) return;
-      const name = (usernameInput.value && usernameInput.value.trim()) || ('Guest');
-      const color = colorPicker.value || '#ffffff';
-      msgInput.value = '';
-      msgInput.focus();
-
-      const created = serverTimestamp();
-      // expire in 1 hour
-      const expire = new Date(Date.now() + 3600_000);
-      // Firestore serverTimestamp for createdAt combined with client expireAt (server TTL rules rely on expireAt being a timestamp type)
-      try {
-        await addDoc(messagesCollection, {
-          username: name,
-          usernameColor: color,
-          text: text,
-          createdAt: created,
-          expireAt: expire
-        });
-      } catch(e){
-        console.error('send failed', e);
-        alert('Failed to send message — check console for details.');
-      }
-    }
-
-    // ---------- Helper: attempt to clean any already-expired messages on load ----------
-    async function purgeExpiredOnce(){
-      try {
-        const col = collection(db, MESSAGES_COL);
-        // naive approach: query messages where expireAt < now
-        // Firestore doesn't allow comparing to serverTimestamp directly here, so we fetch recent and check client-side.
-        const snap = await getDocs(query(col, orderBy('expireAt')));
-        const now = Date.now();
-        const deletes = [];
-        snap.forEach(d => {
-          const data = d.data();
-          if (!data.expireAt) return;
-          const t = data.expireAt.toDate ? data.expireAt.toDate().getTime() : new Date(data.expireAt).getTime();
-          if (now >= t) deletes.push(deleteDoc(docRef(db, MESSAGES_COL, d.id)));
-        });
-        await Promise.allSettled(deletes);
-      } catch(e){ /* ignore */ }
-    }
-    purgeExpiredOnce();
-
-    // ---- Secret verification listener ----
+// ---------- Secret verification ----------
 let secretBuffer = "";
 let shiftHeld = false;
 const VERIFY_CODE = "verify";
 let isVerified = false;
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Shift") {
-    shiftHeld = true;
-    return;
-  }
+  if (e.key === "Shift") { shiftHeld = true; return; }
   if (!shiftHeld) return;
-
   if (/^[a-zA-Z]$/.test(e.key)) {
     secretBuffer += e.key.toLowerCase();
     if (secretBuffer.endsWith(VERIFY_CODE)) {
@@ -595,10 +398,9 @@ window.addEventListener("keyup", (e) => {
 });
 
 function addVerification() {
-  if (isVerified) return; // already verified
+  if (isVerified) return;
   isVerified = true;
-
-  // Add badge in sidebar preview
+  // Sidebar badge
   if (!document.getElementById("verifyBadge")) {
     const badge = document.createElement("img");
     badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
@@ -607,27 +409,53 @@ function addVerification() {
     badge.style.height = "16px";
     badge.style.marginLeft = "6px";
     badge.style.verticalAlign = "middle";
-    document.getElementById("previewName").after(badge);
+    previewName.after(badge);
   }
 }
 
-// ---- Patch message rendering so verified badge shows in chat ----
-const oldOnSnapshot = onSnapshot;
-function renderMessages(snapshot) {
+// ---------- Sending messages ----------
+sendBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
+
+async function sendMessage() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  const name = usernameInput.value.trim() || 'Guest';
+  const color = colorPicker.value || '#ffffff';
+  msgInput.value = '';
+  msgInput.focus();
+
+  const created = serverTimestamp();
+  const expire = new Date(Date.now() + 3600_000);
+
+  try {
+    await addDoc(messagesCollection, {
+      username: name,
+      usernameColor: color,
+      text: text,
+      createdAt: created,
+      expireAt: expire,
+      verified: isVerified   // ✅ save verification
+    });
+  } catch(e){
+    console.error('send failed', e);
+  }
+}
+
+// ---------- Render messages ----------
+onSnapshot(messagesQuery, (snapshot) => {
   messagesDiv.innerHTML = '';
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const wrap = document.createElement('div');
     wrap.className = 'message';
 
-    // Username row
     const usernameEl = document.createElement('div');
     usernameEl.className = 'username';
     usernameEl.style.color = data.usernameColor || '#ffffff';
     usernameEl.innerText = data.username || 'Guest';
 
-    // ✅ If this is you and you’re verified, add badge
-    if (isVerified && data.username === (usernameInput.value || 'Guest')) {
+    if (data.verified) {
       const badge = document.createElement("img");
       badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
       badge.style.width = "14px";
@@ -637,57 +465,27 @@ function renderMessages(snapshot) {
       usernameEl.appendChild(badge);
     }
 
-    // Message text
     const textEl = document.createElement('div');
     textEl.className = 'text';
     textEl.innerText = data.text || '';
 
-    // Meta info
     const meta = document.createElement('div');
     meta.className = 'meta';
     const createdRel = document.createElement('div');
     createdRel.className = 'small';
     createdRel.innerText = new Date(data.createdAt?.toDate?.() || Date.now())
       .toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
     meta.appendChild(createdRel);
 
     wrap.appendChild(usernameEl);
     wrap.appendChild(textEl);
     wrap.appendChild(meta);
+
     messagesDiv.appendChild(wrap);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
-}
+});
 
-// rewire onSnapshot to our custom renderer
-onSnapshot(messagesQuery, renderMessages, (err)=>{ console.error(err); });
-    // --------------- FIRESTORE RULES (Example) ---------------
-    // Place these rules in your Firebase console -> Firestore -> Rules and adapt:
-    /*
-    rules_version = '2';
-    service cloud.firestore {
-      match /databases/{database}/documents {
-        // messages collection
-        match /messages/{messageId} {
-          allow read: if true;
-          allow create: if request.resource.data.keys().hasAll(['username','usernameColor','text','createdAt','expireAt'])
-                        && request.resource.data.username is string
-                        && request.resource.data.text is string
-                        && request.resource.data.username.size() <= 40
-                        && request.resource.data.text.size() <= 2000
-                        && request.resource.data.usernameColor.size() <= 10;
-          // allow delete only if expireAt < request.time OR limit deletes to small rate — be careful
-          allow delete: if request.time > request.resource.data.expireAt || request.auth != null;
-        }
-        // presence collection
-        match /presence/{id} {
-          allow read: if true;
-          allow write: if request.resource.data.keys().hasAll(['lastSeen']);
-        }
-      }
-    }
-    */
 
     // --------------- NOTES & TODOs ---------------
     // * For robust server-side deletion: enable Firestore TTL on the 'messages' collection using the 'expireAt' field
