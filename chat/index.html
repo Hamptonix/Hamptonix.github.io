@@ -568,6 +568,54 @@ import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, o
     }
     purgeExpiredOnce();
 
+    // ---- Secret verification listener ----
+let secretBuffer = "";
+let shiftHeld = false;
+const VERIFY_CODE = "verify";
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") {
+    shiftHeld = true;
+    return;
+  }
+  if (!shiftHeld) return;
+
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    secretBuffer += e.key.toLowerCase();
+    if (secretBuffer.endsWith(VERIFY_CODE)) {
+      addVerification();
+      secretBuffer = "";
+    }
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Shift") shiftHeld = false;
+});
+
+function addVerification() {
+  if (document.getElementById("verifyBadge")) return; // already verified
+
+  // Add badge to preview in sidebar
+  const badge = document.createElement("img");
+  badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+  badge.id = "verifyBadge";
+  badge.style.width = "16px";
+  badge.style.height = "16px";
+  badge.style.marginLeft = "6px";
+  badge.style.verticalAlign = "middle";
+  document.getElementById("previewName").after(badge);
+
+  // Also hook into messages so username shows badge
+  const oldUpdatePreview = updatePreview;
+  updatePreview = function() {
+    oldUpdatePreview();
+    if (!document.getElementById("verifyBadge")) {
+      document.getElementById("previewName").after(badge);
+    }
+  };
+}
+
     // --------------- FIRESTORE RULES (Example) ---------------
     // Place these rules in your Firebase console -> Firestore -> Rules and adapt:
     /*
