@@ -572,6 +572,7 @@ import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, o
 let secretBuffer = "";
 let shiftHeld = false;
 const VERIFY_CODE = "verify";
+let isVerified = false;
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Shift") {
@@ -594,28 +595,73 @@ window.addEventListener("keyup", (e) => {
 });
 
 function addVerification() {
-  if (document.getElementById("verifyBadge")) return; // already verified
+  if (isVerified) return; // already verified
+  isVerified = true;
 
-  // Add badge to preview in sidebar
-  const badge = document.createElement("img");
-  badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
-  badge.id = "verifyBadge";
-  badge.style.width = "16px";
-  badge.style.height = "16px";
-  badge.style.marginLeft = "6px";
-  badge.style.verticalAlign = "middle";
-  document.getElementById("previewName").after(badge);
-
-  // Also hook into messages so username shows badge
-  const oldUpdatePreview = updatePreview;
-  updatePreview = function() {
-    oldUpdatePreview();
-    if (!document.getElementById("verifyBadge")) {
-      document.getElementById("previewName").after(badge);
-    }
-  };
+  // Add badge in sidebar preview
+  if (!document.getElementById("verifyBadge")) {
+    const badge = document.createElement("img");
+    badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+    badge.id = "verifyBadge";
+    badge.style.width = "16px";
+    badge.style.height = "16px";
+    badge.style.marginLeft = "6px";
+    badge.style.verticalAlign = "middle";
+    document.getElementById("previewName").after(badge);
+  }
 }
 
+// ---- Patch message rendering so verified badge shows in chat ----
+const oldOnSnapshot = onSnapshot;
+function renderMessages(snapshot) {
+  messagesDiv.innerHTML = '';
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const wrap = document.createElement('div');
+    wrap.className = 'message';
+
+    // Username row
+    const usernameEl = document.createElement('div');
+    usernameEl.className = 'username';
+    usernameEl.style.color = data.usernameColor || '#ffffff';
+    usernameEl.innerText = data.username || 'Guest';
+
+    // ✅ If this is you and you’re verified, add badge
+    if (isVerified && data.username === (usernameInput.value || 'Guest')) {
+      const badge = document.createElement("img");
+      badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+      badge.style.width = "14px";
+      badge.style.height = "14px";
+      badge.style.marginLeft = "4px";
+      badge.style.verticalAlign = "middle";
+      usernameEl.appendChild(badge);
+    }
+
+    // Message text
+    const textEl = document.createElement('div');
+    textEl.className = 'text';
+    textEl.innerText = data.text || '';
+
+    // Meta info
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const createdRel = document.createElement('div');
+    createdRel.className = 'small';
+    createdRel.innerText = new Date(data.createdAt?.toDate?.() || Date.now())
+      .toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    meta.appendChild(createdRel);
+
+    wrap.appendChild(usernameEl);
+    wrap.appendChild(textEl);
+    wrap.appendChild(meta);
+    messagesDiv.appendChild(wrap);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+// rewire onSnapshot to our custom renderer
+onSnapshot(messagesQuery, renderMessages, (err)=>{ console.error(err); });
     // --------------- FIRESTORE RULES (Example) ---------------
     // Place these rules in your Firebase console -> Firestore -> Rules and adapt:
     /*
