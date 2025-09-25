@@ -142,32 +142,24 @@ input[type="color"]:hover {
   box-sizing: border-box;
 }
 
+/* group wrapper (one user block) */
+.message-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: flex-start;
+  max-width: 75%;
+}
+
+/* each bubble (individual message inside a group) */
 .message {
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(8px);
   padding: 12px 16px;
   border-radius: 16px;
-  max-width: 75%;
   word-break: break-word;
-  align-self: flex-start;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.messages::-webkit-scrollbar {
-  width: 8px;
-}
-.messages::-webkit-scrollbar-track {
-  background: rgba(48, 64, 242,0.05);
-  border-radius: 8px;
-}
-.messages::-webkit-scrollbar-thumb {
-  background: rgba(40, 54, 213,0.4);
-  border-radius: 8px;
-  transition: background 0.3s;
-}
-.messages::-webkit-scrollbar-thumb:hover {
-  background: rgba(40, 54, 213,0.7);
 }
 
 .message:hover {
@@ -180,6 +172,9 @@ input[type="color"]:hover {
   font-size: 13px;
   margin-bottom: 4px;
   margin-right: 4px;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 
 .text {
@@ -218,7 +213,7 @@ input[type="color"]:hover {
 .composer textarea {
   flex: 1;
   min-height: 48px;
-  max-height: 120px;
+  max-height: 180px;
   resize: none;
   padding: 12px;
   border-radius: 16px;
@@ -255,8 +250,21 @@ input[type="color"]:hover {
   transform: translateY(1px);
 }
 
+.message img {
+  display:block;
+  margin-top:8px;
+  max-width: 260px;
+  border-radius: 12px;
+}
+
 #sidebar .small span:first-child {
   color: #ffffff;
+}
+
+/* emoji picker positioning adjustments */
+emoji-picker {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  border-radius: 12px;
 }
   </style>
 </head>
@@ -271,6 +279,7 @@ input[type="color"]:hover {
         <input id="colorPicker" type="color" value="#ffffff" />
         <div style="margin-left:12px;color:#ffffff;" class="small">Preview: <span id="previewName" style="font-weight:700">Guest</span></div>
       </div>
+
       <div style="margin-top:18px">
         <button id="clearLocal" style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer">Reset username</button>
       </div>
@@ -285,8 +294,8 @@ input[type="color"]:hover {
       <div class="messages" id="messages"></div>
 
       <div class="composer">
-        <button id="emojiBtn" style="background:transparent;border:none;font-size:20px;cursor:pointer;">😊</button>
-        <button id="imgBtn" style="background:transparent;border:none;font-size:20px;cursor:pointer;">📷</button>
+        <button id="emojiBtn" title="Emoji" style="background:transparent;border:none;font-size:20px;cursor:pointer;">😊</button>
+        <button id="imgBtn" title="Attach image" style="background:transparent;border:none;font-size:20px;cursor:pointer;">📷</button>
         <input type="file" id="imgInput" accept="image/*" style="display:none;" />
         <textarea id="msgInput" placeholder="Type a message..." maxlength="2000"></textarea>
         <button id="sendBtn" class="send-btn">Send</button>
@@ -295,17 +304,34 @@ input[type="color"]:hover {
     </div>
   </div>
 
+  <!-- emoji picker -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+
+  <!-- main script -->
   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy,
+  deleteDoc,
+  doc,
+  setDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
+// ---------- FIREBASE CONFIG: keep yours as in original ----------
 const firebaseConfig = {
   apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
   authDomain: "livechat-4b94e.firebaseapp.com",
+  databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
   projectId: "livechat-4b94e",
-  storageBucket: "livechat-4b94e.appspot.com",
+  storageBucket: "livechat-4b94e.firebasestorage.app",
   messagingSenderId: "951972267887",
   appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
   measurementId: "G-5WF1LLM7FH"
@@ -315,9 +341,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// ---------- UI references ----------
 const usernameInput = document.getElementById('usernameInput');
 const colorPicker = document.getElementById('colorPicker');
 const previewName = document.getElementById('previewName');
+const onlineTop = document.getElementById('onlineTop');
 const messagesDiv = document.getElementById('messages');
 const msgInput = document.getElementById('msgInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -327,12 +355,17 @@ const emojiPicker = document.getElementById("emojiPicker");
 const imgBtn = document.getElementById("imgBtn");
 const imgInput = document.getElementById("imgInput");
 
+// ---------- local identity ----------
 const LOCAL_KEY = 'livechat_user';
-if (localStorage.getItem(LOCAL_KEY)) {
-  const saved = JSON.parse(localStorage.getItem(LOCAL_KEY));
-  if (saved.name) usernameInput.value = saved.name;
-  if (saved.color) colorPicker.value = saved.color;
+let clientId = localStorage.getItem('livechat_clientId');
+if (!clientId){
+  clientId = 'c-'+Math.random().toString(36).slice(2,10);
+  localStorage.setItem('livechat_clientId', clientId);
 }
+
+const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+if (saved.name) usernameInput.value = saved.name;
+if (saved.color) colorPicker.value = saved.color;
 updatePreview();
 
 clearLocal.addEventListener('click', ()=>{
@@ -349,13 +382,86 @@ function updatePreview(){
   previewName.style.color = colorPicker.value;
   localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
 }
+
 usernameInput.addEventListener('input', updatePreview);
 colorPicker.addEventListener('input', updatePreview);
+colorPicker.addEventListener('change', updatePreview);
 
+// ---------- Messaging ----------
 const MESSAGES_COL = 'messages';
 const messagesCollection = collection(db, MESSAGES_COL);
 const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
 
+// ---------- Secret verification (Shift + 'verify' sequence) ----------
+let secretBuffer = "";
+let shiftHeld = false;
+const VERIFY_CODE = "verify";
+let isVerified = false;
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") { shiftHeld = true; return; }
+  if (!shiftHeld) return;
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    secretBuffer += e.key.toLowerCase();
+    if (secretBuffer.endsWith(VERIFY_CODE)) {
+      addVerification();
+      secretBuffer = "";
+    }
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Shift") shiftHeld = false;
+});
+
+function addVerification() {
+  if (isVerified) return;
+  isVerified = true;
+  // Sidebar badge
+  if (!document.getElementById("verifyBadge")) {
+    const badge = document.createElement("img");
+    badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+    badge.id = "verifyBadge";
+    badge.style.width = "16px";
+    badge.style.height = "16px";
+    badge.style.marginLeft = "6px";
+    badge.style.verticalAlign = "middle";
+    previewName.after(badge);
+  }
+}
+
+// ---------- Presence / online count ----------
+const PRESENCE_COL = 'presence';
+const presenceRef = (id) => doc(db, PRESENCE_COL, id);
+
+async function updatePresence() {
+  try {
+    await setDoc(presenceRef(clientId), {
+      lastSeen: serverTimestamp(),
+      username: usernameInput.value || 'Guest'
+    });
+  } catch (e) {
+    console.warn('presence update failed', e);
+  }
+}
+// initial presence write + periodic refresh
+updatePresence();
+setInterval(updatePresence, 20000);
+
+// live online count (counts presence docs updated recently)
+onSnapshot(collection(db, PRESENCE_COL), (snap) => {
+  let count = 0;
+  const now = Date.now();
+  snap.forEach(d => {
+    const last = d.data().lastSeen;
+    if (!last) return;
+    const t = last.toDate().getTime();
+    if (t > now - 45000) count++;
+  });
+  onlineTop.innerText = `${count} online`;
+});
+
+// ---------- Sending messages ----------
 sendBtn.addEventListener('click', sendMessage);
 msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
 
@@ -367,16 +473,25 @@ async function sendMessage() {
   msgInput.value = '';
   msgInput.focus();
 
-  await addDoc(messagesCollection, {
-    username: name,
-    usernameColor: color,
-    text,
-    createdAt: serverTimestamp(),
-    expireAt: new Date(Date.now() + 600000)
-  });
+  const created = serverTimestamp();
+  const expire = new Date(Date.now() + 600000);
+
+  try {
+    await addDoc(messagesCollection, {
+      username: name,
+      usernameColor: color,
+      text: text,
+      createdAt: created,
+      expireAt: expire,
+      verified: isVerified,
+      clientId
+    });
+  } catch(e){
+    console.error('send failed', e);
+  }
 }
 
-// emoji picker
+// ---------- Emoji picker ----------
 emojiBtn.addEventListener("click", () => {
   emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
 });
@@ -385,83 +500,184 @@ emojiPicker.addEventListener("emoji-click", e => {
   msgInput.focus();
 });
 
-// image upload
+// ---------- Image upload (uploads to Firebase Storage then saves message) ----------
 imgBtn.addEventListener("click", ()=> imgInput.click());
 imgInput.addEventListener("change", async () => {
   const file = imgInput.files[0];
   if (!file) return;
   const name = usernameInput.value.trim() || 'Guest';
   const color = colorPicker.value || '#ffffff';
-  const fileRef = ref(storage, `uploads/${Date.now()}-${file.name}`);
-  await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
-  await addDoc(messagesCollection, {
-    username: name,
-    usernameColor: color,
-    imageUrl: url,
-    createdAt: serverTimestamp(),
-    expireAt: new Date(Date.now() + 600000)
-  });
+  const caption = msgInput.value.trim();
+  // keep filename small & unique
+  const fileRef = ref(storage, `uploads/${Date.now()}-${file.name.replace(/\s+/g,'_')}`);
+  try {
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
+    msgInput.value = ''; // consume caption if any
+    await addDoc(messagesCollection, {
+      username: name,
+      usernameColor: color,
+      text: caption || '',
+      imageUrl: url,
+      createdAt: serverTimestamp(),
+      expireAt: new Date(Date.now() + 600000),
+      verified: isVerified,
+      clientId
+    });
+  } catch (e) {
+    console.error('image upload failed', e);
+    alert('Image upload failed. Check console.');
+  }
 });
 
-// render messages with grouping
-let lastUser = null;
-let lastWrap = null;
+// ---------- Render messages with grouping + per-message delete timers ----------
+const msgTimers = new Map(); // id -> intervalId
+
+// helper to clear all timers (we clear/recreate on each snapshot to keep them in sync)
+function clearAllTimers(){
+  msgTimers.forEach(i => clearInterval(i));
+  msgTimers.clear();
+}
+
+function formatRemaining(ms){
+  if (ms <= 0) return '0s';
+  const s = Math.floor(ms/1000);
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
+}
+
+// utility to create a bubble element for a single message doc
+function createMessageBubble(data, id, createdAt, expireAt, parentGroup){
+  const bubble = document.createElement('div');
+  bubble.className = 'message';
+
+  // text + image
+  const textEl = document.createElement('div');
+  textEl.className = 'text';
+  if (data.text) textEl.innerText = data.text;
+  if (data.imageUrl) {
+    const img = document.createElement('img');
+    img.src = data.imageUrl;
+    img.alt = data.text || 'image';
+    textEl.appendChild(img);
+  }
+  bubble.appendChild(textEl);
+
+  // meta area
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const createdRel = document.createElement('div');
+  createdRel.className = 'small';
+  createdRel.innerText = new Date(createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const timer = document.createElement('div');
+  timer.className = 'timer';
+  timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
+  meta.appendChild(createdRel);
+  meta.appendChild(timer);
+
+  bubble.appendChild(meta);
+
+  // set countdown timer for this doc
+  if (msgTimers.has(id)) {
+    clearInterval(msgTimers.get(id));
+    msgTimers.delete(id);
+  }
+  const interval = setInterval(async ()=>{
+    const remaining = expireAt - Date.now();
+    if (remaining <= 0){
+      timer.innerText = 'Deleting…';
+      clearInterval(interval);
+      msgTimers.delete(id);
+      try { await deleteDoc(doc(db, MESSAGES_COL, id)); } catch(e){ /* ignore */ }
+      // remove bubble from DOM
+      if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+      // if parentGroup has only username and no message bubbles, remove it
+      if (parentGroup && parentGroup.parentNode) {
+        const remainingMsgs = Array.from(parentGroup.children).filter(ch => ch.classList && ch.classList.contains('message'));
+        if (remainingMsgs.length === 0) parentGroup.parentNode.removeChild(parentGroup);
+      }
+    } else {
+      timer.innerText = 'Deleting in ' + formatRemaining(remaining);
+    }
+  }, 1000);
+  msgTimers.set(id, interval);
+
+  return bubble;
+}
+
+// main realtime listener
 onSnapshot(messagesQuery, (snapshot) => {
+  // wipe timers (we'll recreate for visible docs)
+  clearAllTimers();
+
   messagesDiv.innerHTML = '';
-  lastUser = null;
-  lastWrap = null;
+  let lastUser = null;
+  let lastGroup = null;
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const id = docSnap.id;
-    const createdAt = data.createdAt?.toDate?.().getTime() || Date.now();
-    const expireAt = data.expireAt?.toDate?.().getTime() || (createdAt + 600000);
-    if (Date.now() >= expireAt) { deleteDoc(doc(db, MESSAGES_COL, id)); return; }
 
-    let wrap;
-    if (lastUser === data.username) {
-      wrap = lastWrap;
-      const textEl = document.createElement('div');
-      textEl.className = 'text';
-      if (data.text) textEl.innerText = data.text;
-      if (data.imageUrl) {
-        const img = document.createElement("img");
-        img.src = data.imageUrl;
-        img.style.maxWidth = "250px";
-        img.style.borderRadius = "12px";
-        textEl.appendChild(img);
-      }
-      wrap.appendChild(textEl);
+    const createdAt = data.createdAt?.toDate?.().getTime() || Date.now();
+    const expireAt = data.expireAt?.toDate?.().getTime() || (createdAt + 3600_000);
+
+    // remove expired messages immediately
+    if (Date.now() >= expireAt) {
+      deleteDoc(doc(db, MESSAGES_COL, id)).catch(()=>{});
+      return;
+    }
+
+    // Grouping: if same username as previous doc, append into same group
+    if (lastUser === data.username && lastGroup) {
+      const bubble = createMessageBubble(data, id, createdAt, expireAt, lastGroup);
+      lastGroup.appendChild(bubble);
     } else {
-      wrap = document.createElement('div');
-      wrap.className = 'message';
+      // new group
+      const group = document.createElement('div');
+      group.className = 'message-group';
 
       const usernameEl = document.createElement('div');
       usernameEl.className = 'username';
       usernameEl.style.color = data.usernameColor || '#ffffff';
       usernameEl.innerText = data.username || 'Guest';
-      wrap.appendChild(usernameEl);
 
-      const textEl = document.createElement('div');
-      textEl.className = 'text';
-      if (data.text) textEl.innerText = data.text;
-      if (data.imageUrl) {
-        const img = document.createElement("img");
-        img.src = data.imageUrl;
-        img.style.maxWidth = "250px";
-        img.style.borderRadius = "12px";
-        textEl.appendChild(img);
+      // verified badge (if message is flagged verified)
+      if (data.verified) {
+        const badge = document.createElement('img');
+        badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+        badge.style.width = "14px";
+        badge.style.height = "14px";
+        badge.style.marginLeft = "4px";
+        badge.style.verticalAlign = "middle";
+        usernameEl.appendChild(badge);
       }
-      wrap.appendChild(textEl);
-      messagesDiv.appendChild(wrap);
-    }
 
-    lastUser = data.username;
-    lastWrap = wrap;
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      group.appendChild(usernameEl);
+
+      // first bubble
+      const bubble = createMessageBubble(data, id, createdAt, expireAt, group);
+      group.appendChild(bubble);
+
+      messagesDiv.appendChild(group);
+
+      lastUser = data.username;
+      lastGroup = group;
+    }
   });
+
+  // autoscroll to bottom
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 });
+
+// ---------- NOTES ----------
+/*
+ - For server-side TTL you can enable Firestore TTL on the 'messages' collection using 'expireAt' field.
+ - This client-side deletion tries to remove expired docs immediately, but TTL enforces it server-side.
+ - If you have heavy traffic, add auth, moderation, and rate-limiting via security rules or Cloud Functions.
+ - Image uploads go to Firebase Storage path 'uploads/'. Make sure your Storage rules allow the upload pattern you need.
+*/
+
   </script>
 </body>
 </html>
