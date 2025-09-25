@@ -1,1 +1,547 @@
-domain doesn't exist
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
+  <title>Hamptonix | Chat</title>
+ <style>
+:root{
+  --bg:#0b0b0b;
+  --panel:#0f1720;
+  --muted:#9aa4b2;
+  --accent: rgba(48, 64, 242, 1);      /* changed from teal to your blue */
+  --button-bg:#3040f2;
+  --button-text:#001018;
+  --msg-bg: rgba(255,255,255,0.05);
+  --input-bg: rgba(255,255,255,0.08);
+  --input-border: rgba(255,255,255,0.2);
+  --input-focus: rgba(48, 64, 242, 1);  /* update focus color to match new blue */
+  --glow: rgba(48, 64, 242, 0.4);      /* update glow to match new blue */
+  --blur: 12px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,#020204 0%, #091014 100%);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* App container - glassmorphic card */
+.app {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 95vh;
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(var(--blur));
+  background: rgba(15,23,32,0.6);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Sidebar - glass panel */
+.sidebar {
+  width: 320px;
+  background: rgba(15,23,32,0.4);
+  backdrop-filter: blur(var(--blur));
+  border-right: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+/* Profile section */
+.sidebar h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #e6eef6;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 8px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 12px var(--glow);
+  outline: none;
+}
+
+input[type="color"] {
+  width: 56px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="color"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px var(--glow);
+}
+
+/* Main chat area - glass panel */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(11,11,11,0.3);
+  backdrop-filter: blur(var(--blur));
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Header */
+.header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-weight: 700;
+  color: #fff;
+}
+
+.messages {
+  padding: 18px;
+  flex: 1;
+  overflow-y: auto;      
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;         
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.message {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 75%;           /* keep messages readable */
+  word-break: break-word;   /* wrap long text instead of expanding */
+  align-self: flex-start;    /* left-align messages, prevents stretching */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+.messages::-webkit-scrollbar-track {
+  background: rgba(48, 64, 242,0.05);
+  border-radius: 8px;
+}
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(40, 54, 213,0.4);
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+.messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(40, 54, 213,0.7);
+}
+
+
+
+.message:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+}
+
+.username {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+  margin-right: 4px;
+}
+
+.text {
+  font-size: 13px;
+  color: #e6eef6;
+  line-height: 1.3;
+  white-space: pre-wrap;
+}
+
+.meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.timer {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Composer input & button */
+.composer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(15,23,32,0.3);
+  backdrop-filter: blur(var(--blur));
+}
+
+.composer textarea {
+  flex: 1;
+  min-height: 48px;
+  max-height: 120px;
+  resize: none;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.composer textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.send-btn {
+  padding: 12px 24px;
+  border-radius: 16px;
+  background: var(--accent);
+  color: #001018;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 6px 25px rgba(16,163,127,0.3);
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(16,163,127,0.5);
+}
+
+.send-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 18px rgba(16,163,127,0.3);
+}
+
+#sidebar .small span:first-child {
+  color: #ffffff;
+}
+</style>
+
+
+
+</head>
+<body>
+  <div class="app" role="application">
+    <div id="sidebar" class="sidebar">
+      <h3>Profile</h3>
+      <label>Username</label>
+      <input id="usernameInput" type="text" maxlength="40" placeholder="Pick a name (default: Guest)" />
+      <label>Username color <span class="small">(default white)</span></label>
+      <div style="display:flex;align-items:center">
+        <input id="colorPicker" type="color" value="#ffffff" />
+        <div style="margin-left:12px;color:#ffffff;" class="small">Preview: <span id="previewName" style="font-weight:700",>Guest</span></div>
+      </div>
+
+      <div style="margin-top:18px">
+        <button id="clearLocal" style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer">Reset username</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="title">Live Chat</div>
+        <div class="online-pill" id="onlineTop">0 online</div>
+      </div>
+
+      <div class="messages" id="messages"></div>
+
+      <div class="composer">
+        <textarea id="msgInput" placeholder="Type a message..." maxlength="2000"></textarea>
+        <button id="sendBtn" class="send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase (modular SDK) via CDN - works on GitHub Pages without bundler -->
+  <script type="module">
+    // --------- FIREBASE CONFIG: Replace with your own from Firebase Console ----------
+    // 1) Create a Firebase project and add a Web app. Copy the firebaseConfig object here.
+    // 2) Enable Cloud Firestore in the console.
+    // 3) Optionally enable a TTL policy on the 'messages' collection for the 'expireAt' field (recommended).
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { setDoc, serverTimestamp as serverTs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB5J4QTNIxYQrGCmnDWtGkiQ8ehi5PfGWI",
+  authDomain: "livechat-4b94e.firebaseapp.com",
+  databaseURL: "https://livechat-4b94e-default-rtdb.firebaseio.com",
+  projectId: "livechat-4b94e",
+  storageBucket: "livechat-4b94e.firebasestorage.app",
+  messagingSenderId: "951972267887",
+  appId: "1:951972267887:web:b7e96c86e8c5ca94098a9a",
+  measurementId: "G-5WF1LLM7FH"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ---------- UI references ----------
+const usernameInput = document.getElementById('usernameInput');
+const colorPicker = document.getElementById('colorPicker');
+const previewName = document.getElementById('previewName');
+const onlineTop = document.getElementById('onlineTop');
+const messagesDiv = document.getElementById('messages');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const clearLocal = document.getElementById('clearLocal');
+
+// ---------- local identity ----------
+const LOCAL_KEY = 'livechat_user';
+let clientId = localStorage.getItem('livechat_clientId');
+if (!clientId){
+  clientId = 'c-'+Math.random().toString(36).slice(2,10);
+  localStorage.setItem('livechat_clientId', clientId);
+}
+
+const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+if (saved.name) usernameInput.value = saved.name;
+if (saved.color) colorPicker.value = saved.color;
+updatePreview();
+
+clearLocal.addEventListener('click', ()=>{
+  localStorage.removeItem(LOCAL_KEY);
+  usernameInput.value = '';
+  colorPicker.value = '#ffffff';
+  updatePreview();
+  alert('Local username reset.');
+});
+
+function updatePreview(){
+  const name = usernameInput.value || 'Guest';
+  previewName.innerText = name;
+  previewName.style.color = colorPicker.value;
+  localStorage.setItem(LOCAL_KEY, JSON.stringify({ name: usernameInput.value, color: colorPicker.value }));
+}
+
+usernameInput.addEventListener('input', updatePreview);
+colorPicker.addEventListener('input', updatePreview);
+
+// ---------- Messaging ----------
+const MESSAGES_COL = 'messages';
+const messagesCollection = collection(db, MESSAGES_COL);
+const messagesQuery = query(messagesCollection, orderBy('createdAt', 'asc'));
+
+// ---------- Secret verification ----------
+let secretBuffer = "";
+let shiftHeld = false;
+const VERIFY_CODE = "verify";
+let isVerified = false;
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") { shiftHeld = true; return; }
+  if (!shiftHeld) return;
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    secretBuffer += e.key.toLowerCase();
+    if (secretBuffer.endsWith(VERIFY_CODE)) {
+      addVerification();
+      secretBuffer = "";
+    }
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Shift") shiftHeld = false;
+});
+
+function addVerification() {
+  if (isVerified) return;
+  isVerified = true;
+  // Sidebar badge
+  if (!document.getElementById("verifyBadge")) {
+    const badge = document.createElement("img");
+    badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+    badge.id = "verifyBadge";
+    badge.style.width = "16px";
+    badge.style.height = "16px";
+    badge.style.marginLeft = "6px";
+    badge.style.verticalAlign = "middle";
+    previewName.after(badge);
+  }
+}
+
+// ---------- Sending messages ----------
+sendBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
+
+async function sendMessage() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  const name = usernameInput.value.trim() || 'Guest';
+  const color = colorPicker.value || '#ffffff';
+  msgInput.value = '';
+  msgInput.focus();
+
+  const created = serverTimestamp();
+  const expire = new Date(Date.now() + 3600_000);
+
+  try {
+    await addDoc(messagesCollection, {
+      username: name,
+      usernameColor: color,
+      text: text,
+      createdAt: created,
+      expireAt: expire,
+      verified: isVerified   // ✅ save verification
+    });
+  } catch(e){
+    console.error('send failed', e);
+  }
+}
+
+// ---------- Render messages ----------
+const msgTimers = new Map();
+
+onSnapshot(messagesQuery, (snapshot) => {
+  messagesDiv.innerHTML = '';
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const id = docSnap.id;
+
+    const createdAt = data.createdAt?.toDate?.().getTime() || Date.now();
+    const expireAt = data.expireAt?.toDate?.().getTime() || (createdAt + 3600_000);
+
+    // remove expired messages immediately
+    if (Date.now() >= expireAt) {
+      deleteDoc(doc(db, MESSAGES_COL, id)).catch(()=>{});
+      return;
+    }
+
+    // message wrapper
+    const wrap = document.createElement('div');
+    wrap.className = 'message';
+
+    // username
+    const usernameEl = document.createElement('div');
+    usernameEl.className = 'username';
+    usernameEl.style.color = data.usernameColor || '#ffffff';
+    usernameEl.innerText = data.username || 'Guest';
+
+    // add verified badge
+    if (data.verified) {
+      const badge = document.createElement("img");
+      badge.src = "https://cdn-icons-png.freepik.com/256/17460/17460216.png";
+      badge.style.width = "14px";
+      badge.style.height = "14px";
+      badge.style.marginLeft = "4px";
+      badge.style.verticalAlign = "middle";
+      usernameEl.appendChild(badge);
+    }
+
+    // message text
+    const textEl = document.createElement('div');
+    textEl.className = 'text';
+    textEl.innerText = data.text || '';
+
+    // meta + timer
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const createdRel = document.createElement('div');
+    createdRel.className = 'small';
+    createdRel.innerText = new Date(createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    const timer = document.createElement('div');
+    timer.className = 'timer';
+    timer.innerText = 'Deleting in ' + formatRemaining(expireAt - Date.now());
+
+    meta.appendChild(createdRel);
+    meta.appendChild(timer);
+
+    wrap.appendChild(usernameEl);
+    wrap.appendChild(textEl);
+    wrap.appendChild(meta);
+
+    messagesDiv.appendChild(wrap);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // set countdown timer
+    if (msgTimers.has(id)) clearInterval(msgTimers.get(id));
+    const interval = setInterval(async ()=>{
+      const remaining = expireAt - Date.now();
+      if (remaining <= 0){
+        timer.innerText = 'Deleting…';
+        clearInterval(interval);
+        msgTimers.delete(id);
+        try { await deleteDoc(doc(db, MESSAGES_COL, id)); } catch(e){ }
+        if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+      } else {
+        timer.innerText = 'Deleting in ' + formatRemaining(remaining);
+      }
+    }, 1000);
+    msgTimers.set(id, interval);
+  });
+});
+
+// helper
+function formatRemaining(ms){
+  if (ms <= 0) return '0s';
+  const s = Math.floor(ms/1000);
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
+}
+
+
+
+    // --------------- NOTES & TODOs ---------------
+    // * For robust server-side deletion: enable Firestore TTL on the 'messages' collection using the 'expireAt' field
+    //   (Console: Firestore -> Time-to-live -> Create policy, choose collection and field). TTL is not immediate; deletion can take hours. :contentReference[oaicite:2]{index=2}
+    // * Client-side delete above tries to remove expired docs immediately so your DB stays small.
+    // * If you expect heavy traffic or moderation needs, add authentication and server-side Cloud Functions to validate/clean things.
+    // * Consider rate-limiting (Cloud Functions or security rules) to avoid spam.
+  </script>
+</body>
+</html>
