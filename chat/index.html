@@ -426,7 +426,7 @@ async function sendMessage() {
   msgInput.focus();
 
   const created = serverTimestamp();
-  const expire = new Date(Date.now() + 3600_000);
+  const expire = new Date(Date.now() + 600000);
 
   try {
     await addDoc(messagesCollection, {
