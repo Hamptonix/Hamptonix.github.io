@@ -430,6 +430,47 @@ function addVerification() {
   }
 }
 
+// ---------- Secret owner crown (Shift + 'eliowner' sequence) ----------
+const OWNER_CODE = "eliowner"; // case-insensitive
+let isOwner = false;
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") { shiftHeld = true; return; }
+  if (!shiftHeld) return;
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    secretBuffer += e.key.toLowerCase();
+
+    // check for verification
+    if (secretBuffer.endsWith(VERIFY_CODE)) {
+      addVerification();
+      secretBuffer = "";
+    }
+
+    // check for owner crown
+    if (secretBuffer.endsWith(OWNER_CODE)) {
+      addOwnerCrown();
+      secretBuffer = "";
+    }
+  }
+});
+
+function addOwnerCrown() {
+  if (isOwner) return;
+  isOwner = true;
+  // Sidebar badge
+  if (!document.getElementById("ownerBadge")) {
+    const crown = document.createElement("img");
+    crown.src = "https://i.postimg.cc/fLsdMSrp/an-crown-26.png";
+    crown.id = "ownerBadge";
+    crown.style.width = "18px";
+    crown.style.height = "18px";
+    crown.style.marginLeft = "6px";
+    crown.style.verticalAlign = "middle";
+    previewName.after(crown);
+  }
+}
+
+
 // ---------- Presence / online count ----------
 const PRESENCE_COL = 'presence';
 const presenceRef = (id) => doc(db, PRESENCE_COL, id);
@@ -484,6 +525,7 @@ async function sendMessage() {
       createdAt: created,
       expireAt: expire,
       verified: isVerified,
+      owner: isOwner,
       clientId
     });
   } catch(e){
@@ -651,6 +693,17 @@ onSnapshot(messagesQuery, (snapshot) => {
         badge.style.marginLeft = "4px";
         badge.style.verticalAlign = "middle";
         usernameEl.appendChild(badge);
+      }
+
+      // owner crown
+      if (data.owner) {
+        const crown = document.createElement("img");
+        crown.src = "https://i.postimg.cc/fLsdMSrp/an-crown-26.png";
+        crown.style.width = "16px";
+        crown.style.height = "16px";
+        crown.style.marginLeft = "4px";
+        crown.style.verticalAlign = "middle";
+        usernameEl.appendChild(crown);
       }
 
       group.appendChild(usernameEl);
