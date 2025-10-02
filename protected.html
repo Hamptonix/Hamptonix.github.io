@@ -8,9 +8,10 @@
     body { font-family: Arial, sans-serif; text-align:center; padding:50px; }
     #protected { display: none; }
     input, button { padding:10px; margin:8px; font-size:16px; }
-    :root{
+    
+:root{
   --bg:#0b0b0b;
-  --panel:#0f1720;
+  --panel:#1a1a1a; /* slightly brighter than black */
   --muted:#9aa4b2;
   --accent:#3040f2;
   --button-bg:#3040f2;
@@ -20,7 +21,7 @@
   --input-focus: #3040f2;
   --glow: rgba(48, 64, 242, 0.4);
   --blur: 12px;
-  --h1: #ffffff;
+  --text-color:#ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -35,25 +36,27 @@ body {
   background: linear-gradient(180deg,#020204 0%, #091014 100%);
 }
 
-.login-card {
-  background: rgba(15,23,32,0.6);
+.login-card, .message-card {
+  background: var(--panel);
   backdrop-filter: blur(var(--blur));
-  padding: 40px 36px;
   border-radius: 20px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.7);
   border: 1px solid rgba(255,255,255,0.1);
-  width: 360px;
+  padding: 40px 36px;
+  width: 90%;
+  max-width: 500px;
   text-align: center;
+  color: var(--text-color);
   animation: fadeIn 0.8s ease;
 }
 
-h2 {
-  color: #e6eef6;
+h2, h1 {
   margin-bottom: 24px;
   font-weight: 700;
-  font-size: 24px;
-  text-shadow: 0 0 8px rgba(0,0,0,0.5);
 }
+
+h2 { font-size: 24px; }
+h1 { font-size: 28px; }
 
 input[type="password"] {
   width: 100%;
@@ -97,15 +100,23 @@ button:active {
   transform: translateY(1px);
 }
 
-p {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 18px;
+p#error-msg {
+  color: var(--accent);
+  font-size: 14px;
+  margin-top: 12px;
 }
 
 @keyframes fadeIn {
   from {opacity: 0; transform: translateY(-10px);}
   to {opacity: 1; transform: translateY(0);}
+}
+
+.fullscreen-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
 }
   </style>
 
