@@ -7,6 +7,104 @@
     body { font-family: Arial, sans-serif; text-align:center; padding:50px; }
     #protected { display: none; }
     input, button { padding:10px; margin:8px; font-size:16px; }
+    :root{
+  --bg:#0b0b0b;
+  --panel:#0f1720;
+  --muted:#9aa4b2;
+  --accent:#3040f2;
+  --button-bg:#3040f2;
+  --button-text:#001018;
+  --input-bg: rgba(255,255,255,0.08);
+  --input-border: rgba(255,255,255,0.2);
+  --input-focus: #3040f2;
+  --glow: rgba(48, 64, 242, 0.4);
+  --blur: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  height: 100vh;
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg,#020204 0%, #091014 100%);
+}
+
+.login-card {
+  background: rgba(15,23,32,0.6);
+  backdrop-filter: blur(var(--blur));
+  padding: 40px 36px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  width: 360px;
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+
+h2 {
+  color: #e6eef6;
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 24px;
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+
+input[type="password"] {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 20px;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+input[type="password"]:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 12px var(--glow);
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 18px;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
   </style>
 
   <script type="module">
