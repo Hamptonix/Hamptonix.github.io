@@ -88,10 +88,29 @@ body {
   text-align: left;  /* align contents left */
   padding: 40px 20px; /* 20px margin inside panel */
 }
+#protected h1 {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#protected {
+  display: flex;
+  align-items: center; /* vertical alignment */
+  gap: 10px;           /* space between elements */
+}
+
 
 #protected h1, #protected p, #protected button {
   margin-left: 20px; /* spacing between content and panel edge */
   margin-bottom: 20px;
+}
+
+#protected button {
+  width: auto;           /* let it size to content */
+  padding: 10px 20px;    /* adjust as needed */
+  display: inline-block; /* sit next to text if desired */
+  margin-left: 20px;     /* space from h1 */
+  vertical-align: middle;/* align with text */
 }
 
 h1, h2 {
