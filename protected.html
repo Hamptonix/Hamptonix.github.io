@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Protected Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align:center; padding:50px; }
+    #protected { display: none; }
+    input, button { padding:10px; margin:8px; font-size:16px; }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // 🔥 Replace with your Firebase project config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCFhgm5r0cSAih3aNZY4J_k75GzscfIFmo",
+      authDomain: "hiddenpage.firebaseapp.com",
+      projectId: "hiddenpage",
+      storageBucket: "hiddenpage.firebasestorage.app",
+      messagingSenderId: "959503250705",
+      appId: "1:959503250705:web:c757877a00725c165388b0",
+      measurementId: "G-QJD0EYXZQW"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Hardcoded email for single-password login
+    const fixedEmail = "secretuser@example.com"; // 👈 Create this in Firebase Auth
+
+    // Auth state listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("protected").style.display = "block";
+      } else {
+        document.getElementById("login").style.display = "block";
+        document.getElementById("protected").style.display = "none";
+      }
+    });
+
+    // Login function
+    window.login = async () => {
+      const pass = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, fixedEmail, pass);
+      } catch (e) {
+        alert("Wrong key!");
+        // Attempt to close tab
+        try { window.close(); } catch {}
+        // If browser blocks, just wipe content
+        document.body.innerHTML = "<h1>❌ Access Denied</h1>";
+      }
+    };
+
+    // Logout
+    window.logout = async () => {
+      await signOut(auth);
+    };
+
+    // index.js (Cloud Function)
+  const functions = require("firebase-functions");
+  
+  exports.beforeCreate = functions.auth.user().beforeCreate((user, context) => {
+    // Only allow one email
+    if (user.email !== "secretuser@example.com") {
+      throw new functions.auth.HttpsError(
+        "permission-denied",
+        "Account creation disabled"
+      );
+    }
+  });
+
+  </script>
+</head>
+<body>
+  <!-- Login -->
+  <div id="login">
+    <h2>Enter Key</h2>
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Unlock</button>
+  </div>
+
+  <!-- Protected -->
+  <div id="protected">
+    <h1>🎉 Secret Page 🎉</h1>
+    <p>If you see this, the password was correct.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+</body>
+</html>
