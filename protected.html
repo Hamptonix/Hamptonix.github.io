@@ -57,6 +57,27 @@ body {
   transition: all 0.5s ease; /* smooth size/margin changes */
 }
 
+
+.panel {
+  transition: all 0.5s ease;
+  max-width: 500px;
+  text-align: center;
+}
+
+/* When user is logged in, add this class */
+.panel.expanded {
+  max-width: 800px;
+  text-align: left;
+  padding: 40px 20px;
+}
+
+.panel.expanded h1,
+.panel.expanded p,
+.panel.expanded button {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
 /* Protected panel overrides */
 #protected {
   max-width: 800px; /* bigger panel */
