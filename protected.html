@@ -72,7 +72,8 @@ body {
 }
 
 .panel.expanded h1,
-.panel.expanded p, {
+.panel.expanded p,
+.panel.expanded button {
   margin-left: 20px;
   margin-bottom: 20px;
 }
@@ -145,6 +146,33 @@ button:active {
   margin-top: 12px;
 }
 
+#logout-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  z-index: 1000; /* keep on top */
+}
+
+#logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+#logout-btn:active {
+  transform: translateY(1px);
+}
+
+
 @keyframes fadeIn {
   from {opacity:0; transform:translateY(-10px);}
   to {opacity:1; transform:translateY(0);}
@@ -161,6 +189,9 @@ button:active {
     <p id="error-msg"></p>
   </div>
 </div>
+
+<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -202,16 +233,28 @@ function showLogin() {
     </div>`;
 }
 
+const logoutBtn = document.getElementById("logout-btn");
+
 function showProtected() {
-  document.body.innerHTML = `
-    <div class="panel-wrapper">
-      <div class="panel" id="protected">
-        <h1>Welcome to the Hamptonix Developer Console</h1>
-        <p>working on the contents soon.</p>
-        <button onclick="logout()">Logout</button>
-      </div>
-    </div>`;
+  panel.classList.add("expanded");
+  panel.innerHTML = `
+    <h1>Welcome to the Hamptonix Developer Console</h1>
+    <p>Working on the contents soon.</p>
+  `;
+  logoutBtn.style.display = "block"; // show logout button
 }
+
+function showLogin() {
+  panel.classList.remove("expanded");
+  panel.innerHTML = `
+    <h2>Enter Administrator Login</h2>
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Unlock</button>
+    <p id="error-msg"></p>
+  `;
+  logoutBtn.style.display = "none"; // hide logout button
+}
+
 
 window.login = async () => {
   const pass = document.getElementById("password").value;
