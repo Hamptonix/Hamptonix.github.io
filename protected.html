@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
-  <title>Hamptonix | Admin</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align:center; padding:50px; }
-    #protected { display: none; }
-    input, button { padding:10px; margin:8px; font-size:16px; }
-    
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamptonix Admin</title>
+<style>
 :root{
   --bg:#0b0b0b;
   --panel:#1a1a1a; /* slightly brighter than black */
@@ -27,36 +23,45 @@
 * { box-sizing: border-box; }
 
 body {
-  height: 100vh;
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
+  height: 100vh;
+  background: linear-gradient(180deg,#020204 0%, #091014 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(180deg,#020204 0%, #091014 100%);
 }
 
-.login-card, .message-card {
+.panel-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.panel {
   background: var(--panel);
   backdrop-filter: blur(var(--blur));
   border-radius: 20px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.7);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 40px 36px;
-  width: 90%;
+  padding: 40px;
   max-width: 500px;
+  width: 100%;
   text-align: center;
   color: var(--text-color);
   animation: fadeIn 0.8s ease;
 }
 
-h2, h1 {
+h1, h2 {
   margin-bottom: 24px;
   font-weight: 700;
 }
 
-h2 { font-size: 24px; }
 h1 { font-size: 28px; }
+h2 { font-size: 24px; }
 
 input[type="password"] {
   width: 100%;
@@ -100,106 +105,98 @@ button:active {
   transform: translateY(1px);
 }
 
-p#error-msg {
+#error-msg {
   color: var(--accent);
   font-size: 14px;
   margin-top: 12px;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0; transform: translateY(-10px);}
-  to {opacity: 1; transform: translateY(0);}
+  from {opacity:0; transform:translateY(-10px);}
+  to {opacity:1; transform:translateY(0);}
 }
-
-.fullscreen-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-}
-  </style>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    // 🔥 Replace with your Firebase project config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCFhgm5r0cSAih3aNZY4J_k75GzscfIFmo",
-      authDomain: "hiddenpage.firebaseapp.com",
-      projectId: "hiddenpage",
-      storageBucket: "hiddenpage.firebasestorage.app",
-      messagingSenderId: "959503250705",
-      appId: "1:959503250705:web:c757877a00725c165388b0",
-      measurementId: "G-QJD0EYXZQW"
-    };
-
-    // Init Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Hardcoded email for single-password login
-    const fixedEmail = "a@a.com"; // 👈 Create this in Firebase Auth
-
-    // Auth state listener
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("protected").style.display = "block";
-      } else {
-        document.getElementById("login").style.display = "block";
-        document.getElementById("protected").style.display = "none";
-      }
-    });
-
-    // Login function
-    window.login = async () => {
-      const pass = document.getElementById("password").value;
-      try {
-        await signInWithEmailAndPassword(auth, fixedEmail, pass);
-      } catch (e) {
-        alert("Wrong key!");
-        // Attempt to close tab
-        try { window.close(); } catch {}
-        // If browser blocks, just wipe content
-        document.body.innerHTML = "<h1>❌ Access Denied</h1>";
-      }
-    };
-
-    // Logout
-    window.logout = async () => {
-      await signOut(auth);
-    };
-
-    // index.js (Cloud Function)
-  const functions = require("firebase-functions");
-  
-  exports.beforeCreate = functions.auth.user().beforeCreate((user, context) => {
-    // Only allow one email
-    if (user.email !== "secretuser@example.com") {
-      throw new functions.auth.HttpsError(
-        "permission-denied",
-        "Account creation disabled"
-      );
-    }
-  });
-
-  </script>
+</style>
 </head>
 <body>
-  <!-- Login -->
-  <div id="login">
+
+<div id="login-wrapper" class="panel-wrapper">
+  <div class="panel" id="login">
     <h2>Enter Key</h2>
     <input id="password" type="password" placeholder="Password" />
     <button onclick="login()">Unlock</button>
+    <p id="error-msg"></p>
   </div>
+</div>
 
-  <!-- Protected -->
-  <div id="protected">
-    <h1>🎉 Secret Page 🎉</h1>
-    <p>If you see this, the password was correct.</p>
-    <button onclick="logout()">Logout</button>
-  </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCFhgm5r0cSAih3aNZY4J_k75GzscfIFmo",
+  authDomain: "hiddenpage.firebaseapp.com",
+  projectId: "hiddenpage",
+  storageBucket: "hiddenpage.firebasestorage.app",
+  messagingSenderId: "959503250705",
+  appId: "1:959503250705:web:c757877a00725c165388b0",
+  measurementId: "G-QJD0EYXZQW"
+};
+
+// Init Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Hardcoded email for single-password login
+const fixedEmail = "a@a.com"; // Create this in Firebase Auth
+
+// Auth state listener
+onAuthStateChanged(auth, (user) => {
+  if (user) showProtected();
+  else showLogin();
+});
+
+function showLogin() {
+  document.body.innerHTML = `
+    <div class="panel-wrapper">
+      <div class="panel" id="login">
+        <h2>Enter Key</h2>
+        <input id="password" type="password" placeholder="Password" />
+        <button onclick="login()">Unlock</button>
+        <p id="error-msg"></p>
+      </div>
+    </div>`;
+}
+
+function showProtected() {
+  document.body.innerHTML = `
+    <div class="panel-wrapper">
+      <div class="panel" id="protected">
+        <h1>🎉 Secret Page 🎉</h1>
+        <p>If you see this, the password was correct.</p>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>`;
+}
+
+window.login = async () => {
+  const pass = document.getElementById("password").value;
+  try {
+    await signInWithEmailAndPassword(auth, fixedEmail, pass);
+  } catch (e) {
+    document.body.innerHTML = `
+      <div class="panel-wrapper">
+        <div class="panel">
+          <h1>❌ Access Denied ❌</h1>
+        </div>
+      </div>`;
+  }
+}
+
+window.logout = async () => {
+  await signOut(auth);
+}
+</script>
+
 </body>
 </html>
