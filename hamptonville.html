@@ -1,0 +1,473 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Multiplayer Square Game (Firebase)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; color:#eee; display:flex; gap:20px; height:100vh; margin:0; align-items:flex-start; padding:20px; }
+    #ui { width:320px; }
+    canvas { background:#0b2a1f; border:4px solid #333; image-rendering:pixelated; display:block; }
+    input, button { display:block; width:100%; margin:6px 0; padding:8px; box-sizing:border-box; }
+    #playersList { max-height:160px; overflow:auto; background:#0f1f17; padding:8px; border-radius:6px; }
+    .small { font-size:0.9rem; color:#ccc; }
+  </style>
+</head>
+<body>
+
+<div id="ui">
+  <h2>Square Multiplayer</h2>
+
+  <div id="authBox">
+    <input id="username" placeholder="Username (case-insensitive unique)" />
+    <input id="password" placeholder="Password" type="password" />
+    <button id="registerBtn">Register</button>
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" style="display:none">Logout</button>
+    <div id="status" class="small"></div>
+  </div>
+
+  <hr />
+  <div class="small">Your coins: <span id="myCoins">0</span></div>
+  <div class="small">Players online:</div>
+  <div id="playersList"></div>
+  <div style="margin-top:8px" class="small">Controls: Arrow keys to move / pick coins</div>
+</div>
+
+<div>
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+</div>
+
+<script type="module">
+  // --- Firebase SDK imports (modular) ---
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getDatabase, ref, set, onValue, push, get, remove, runTransaction, child, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  // --- REPLACE with your Firebase config ---
+  const firebaseConfig = {
+  apiKey: "AIzaSyAo_ZyKuw8T0rYTfLgBIum-qay0K6LRXO8",
+  authDomain: "hamptonville-28039.firebaseapp.com",
+  databaseURL: "https://hamptonville-28039-default-rtdb.firebaseio.com",
+  projectId: "hamptonville-28039",
+  storageBucket: "hamptonville-28039.firebasestorage.app",
+  messagingSenderId: "712062153757",
+  appId: "1:712062153757:web:ac7a632fd7fbbe62c5c2f4",
+  measurementId: "G-Q041ZY3598"
+};
+  // --- end config ---
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // UI elements
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const registerBtn = document.getElementById('registerBtn');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const statusDiv = document.getElementById('status');
+  const myCoinsSpan = document.getElementById('myCoins');
+  const playersListDiv = document.getElementById('playersList');
+
+  // Canvas + world
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const WORLD_SIZE = 500; // 500x500 world (fixed)
+  const VIEW_W = canvas.width;
+  const VIEW_H = canvas.height;
+  const PLAYER_SIZE = 28;
+  const PLAYER_SPEED = 120; // pixels per second
+  const COIN_RADIUS = 6;
+
+  let currentUser = null;
+  let localPlayer = { x: WORLD_SIZE/2, y: WORLD_SIZE/2, coins: 0, username: null };
+  let players = {}; // other players
+  let coins = {}; // {coinId: {x,y}}
+  let keys = {};
+  let lastTs = performance.now();
+
+  // helper: make "pseudo-email" for username so we can use Auth email/password
+  function pseudoEmailForUsername(username) {
+    // make sure to use an email-like string unique to this project.
+    return `${username}@squaregame.local`;
+  }
+
+  // --- AUTH / REGISTRATION ---
+  async function register(username, password) {
+    username = username.trim();
+    if (!username) return setStatus('Username required');
+    const lower = username.toLowerCase();
+
+    try {
+      // create auth user with pseudo-email
+      const email = pseudoEmailForUsername(lower);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = cred.user.uid;
+
+      // attempt to claim the username atomically
+      const usernameRef = ref(db, `usernames/${lower}`);
+      const result = await runTransaction(usernameRef, (currentVal) => {
+        if (currentVal === null) return uid; // reserve
+        return; // abort transaction (username taken)
+      });
+
+      if (!result.committed) {
+        // username already taken: delete the auth account we created, and inform user
+        await deleteUser(auth.currentUser);
+        return setStatus('Username already taken (case-insensitive). Choose another.');
+      }
+
+      // write player record
+      const playerRef = ref(db, `players/${uid}`);
+      await set(playerRef, {
+        username: username, // store original-case name
+        x: localPlayer.x,
+        y: localPlayer.y,
+        coins: 0,
+        lastSeen: Date.now()
+      });
+
+      setStatus('Registered and logged in as ' + username);
+    } catch (err) {
+      console.error(err);
+      setStatus('Register error: ' + (err.message || err));
+    }
+  }
+
+  async function login(username, password) {
+    username = username.trim();
+    if (!username) return setStatus('Username required');
+    const lower = username.toLowerCase();
+    const email = pseudoEmailForUsername(lower);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setStatus('Logged in as ' + username);
+    } catch (err) {
+      console.error(err);
+      setStatus('Login error: ' + (err.message || err));
+    }
+  }
+
+  function logout() {
+    signOut(auth).catch(console.error);
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    if (user) {
+      // load player data
+      const uid = user.uid;
+      // listen to our player entry
+      const meRef = ref(db, `players/${uid}`);
+      onValue(meRef, (snap) => {
+        const val = snap.val();
+        if (val) {
+          localPlayer.x = (typeof val.x === 'number') ? val.x : localPlayer.x;
+          localPlayer.y = (typeof val.y === 'number') ? val.y : localPlayer.y;
+          localPlayer.coins = val.coins || 0;
+          localPlayer.username = val.username || (user.email.split('@')[0]);
+          myCoinsSpan.textContent = localPlayer.coins;
+        }
+      });
+      // mark presence: write lastSeen and set onDisconnect cleanup
+      const presenceRef = ref(db, `presence/${uid}`);
+      set(presenceRef, { username: user.email.split('@')[0], lastSeen: Date.now() });
+
+      // enable UI
+      logoutBtn.style.display = 'block';
+      registerBtn.style.display = 'none';
+      loginBtn.style.display = 'none';
+      usernameInput.style.display = 'none';
+      passwordInput.style.display = 'none';
+      statusDiv.textContent = 'Welcome, ' + (user.displayName || user.email.split('@')[0]);
+
+      // listen to all players and coins
+      listenPlayers();
+      listenCoins();
+
+      // ensure coins exist (initial generation) - only run if coins node empty
+      await ensureCoinsGenerated();
+    } else {
+      // not logged in
+      logoutBtn.style.display = 'none';
+      registerBtn.style.display = 'block';
+      loginBtn.style.display = 'block';
+      usernameInput.style.display = 'block';
+      passwordInput.style.display = 'block';
+      setStatus('Not signed in');
+      players = {};
+      coins = {};
+      playersListDiv.innerHTML = '';
+      myCoinsSpan.textContent = '0';
+    }
+  });
+
+  registerBtn.addEventListener('click', () => register(usernameInput.value, passwordInput.value));
+  loginBtn.addEventListener('click', () => login(usernameInput.value, passwordInput.value));
+  logoutBtn.addEventListener('click', () => logout());
+
+  function setStatus(text) {
+    statusDiv.textContent = text;
+  }
+
+  // --- LISTENERS ---
+  function listenPlayers() {
+    const playersRef = ref(db, 'players');
+    onValue(playersRef, (snap) => {
+      players = {};
+      const data = snap.val() || {};
+      for (const uid in data) {
+        players[uid] = data[uid];
+      }
+      // render list
+      renderPlayersList();
+    });
+  }
+
+  function listenCoins() {
+    const coinsRef = ref(db, 'coins');
+    onValue(coinsRef, (snap) => {
+      coins = snap.val() || {};
+    });
+  }
+
+  function renderPlayersList() {
+    playersListDiv.innerHTML = '';
+    for (const uid in players) {
+      const p = players[uid];
+      const el = document.createElement('div');
+      el.textContent = `${p.username || uid} — coins: ${p.coins || 0}`;
+      if (currentUser && uid === currentUser.uid) el.style.fontWeight = '700';
+      playersListDiv.appendChild(el);
+    }
+  }
+
+  // --- COIN GENERATION (initial) ---
+  async function ensureCoinsGenerated() {
+    const coinsRef = ref(db, 'coins');
+    const snapshot = await get(coinsRef);
+    if (snapshot.exists()) return;
+    // generate 60 coins randomly across 500x500 world
+    const toWrite = {};
+    for (let i=0;i<60;i++){
+      const id = push(ref(db, 'coins')).key;
+      toWrite[id] = { x: Math.floor(Math.random()*WORLD_SIZE), y: Math.floor(Math.random()*WORLD_SIZE) };
+    }
+    await set(coinsRef, toWrite);
+    console.log('Generated coins.');
+  }
+
+  // --- GAME LOOP / DRAWING ---
+  function worldToView(wx, wy, playerX, playerY) {
+    // keep player centered in screen
+    const offsetX = playerX - VIEW_W/2;
+    const offsetY = playerY - VIEW_H/2;
+    return { vx: Math.round(wx - offsetX), vy: Math.round(wy - offsetY) };
+  }
+
+  function draw() {
+    // clear
+    ctx.clearRect(0,0,VIEW_W,VIEW_H);
+
+    // draw grid (optional)
+    ctx.save();
+    ctx.globalAlpha = 0.08;
+    for (let gx=0; gx<=WORLD_SIZE; gx+=50) {
+      const v = worldToView(gx,0, localPlayer.x, localPlayer.y);
+      ctx.beginPath();
+      ctx.moveTo(v.vx, 0);
+      ctx.lineTo(v.vx, VIEW_H);
+      ctx.strokeStyle = '#063';
+      ctx.stroke();
+    }
+    for (let gy=0; gy<=WORLD_SIZE; gy+=50) {
+      const v = worldToView(0,gy, localPlayer.x, localPlayer.y);
+      ctx.beginPath();
+      ctx.moveTo(0, v.vy);
+      ctx.lineTo(VIEW_W, v.vy);
+      ctx.strokeStyle = '#063';
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // draw coins
+    for (const coinId in coins) {
+      const c = coins[coinId];
+      const v = worldToView(c.x, c.y, localPlayer.x, localPlayer.y);
+      // don't draw if offscreen
+      if (v.vx < -20 || v.vx > VIEW_W+20 || v.vy < -20 || v.vy > VIEW_H+20) continue;
+      ctx.beginPath();
+      ctx.fillStyle = '#ffd700';
+      ctx.arc(v.vx, v.vy, COIN_RADIUS, 0, Math.PI*2);
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#a67c00';
+      ctx.stroke();
+    }
+
+    // draw other players
+    for (const uid in players) {
+      if (!currentUser || uid === currentUser.uid) continue; // skip local (draw last)
+      const p = players[uid];
+      const v = worldToView(p.x, p.y, localPlayer.x, localPlayer.y);
+      ctx.fillStyle = '#444';
+      ctx.fillRect(v.vx - PLAYER_SIZE/2, v.vy - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
+      drawFace(v.vx, v.vy, 'left'); // default neutral look
+      // name tag
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px monospace';
+      ctx.fillText(p.username || uid, v.vx - PLAYER_SIZE/2, v.vy - PLAYER_SIZE/2 - 6);
+    }
+
+    // draw local player centered
+    const centerX = VIEW_W/2;
+    const centerY = VIEW_H/2;
+    ctx.fillStyle = '#33a';
+    ctx.fillRect(centerX - PLAYER_SIZE/2, centerY - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
+
+    // determine last movement direction for face
+    const dir = lastMovementDir || 'down';
+    drawFace(centerX, centerY, dir);
+
+    // HUD
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(6, VIEW_H-30, 140, 24);
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px monospace';
+    ctx.fillText('Coins: ' + localPlayer.coins, 12, VIEW_H-14);
+  }
+
+  // draws a simple mouth oriented by dir: 'up','down','left','right'
+  function drawFace(cx, cy, dir) {
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const eyeOffset = 8;
+    // eyes
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(cx - 8, cy - 6, 4, 4);
+    ctx.fillRect(cx + 4, cy - 6, 4, 4);
+
+    // mouth as line
+    ctx.beginPath();
+    if (dir === 'up') {
+      ctx.moveTo(cx - 6, cy - 14);
+      ctx.lineTo(cx + 6, cy - 14);
+    } else if (dir === 'down') {
+      ctx.moveTo(cx - 6, cy + 12);
+      ctx.lineTo(cx + 6, cy + 12);
+    } else if (dir === 'left') {
+      ctx.moveTo(cx - 14, cy - 2);
+      ctx.lineTo(cx - 14, cy + 8);
+    } else { // right
+      ctx.moveTo(cx + 14, cy - 2);
+      ctx.lineTo(cx + 14, cy + 8);
+    }
+    ctx.stroke();
+  }
+
+  // movement tracking for face direction
+  let lastMovementDir = 'down';
+
+  function update(dt) {
+    // read keys to move world around the centered player
+    let dx = 0, dy = 0;
+    if (keys['ArrowLeft']) dx -= 1;
+    if (keys['ArrowRight']) dx += 1;
+    if (keys['ArrowUp']) dy -= 1;
+    if (keys['ArrowDown']) dy += 1;
+
+    if (dx !== 0 || dy !== 0) {
+      const len = Math.hypot(dx, dy);
+      dx /= len; dy /= len;
+      localPlayer.x += dx * PLAYER_SPEED * dt;
+      localPlayer.y += dy * PLAYER_SPEED * dt;
+      // clamp to world
+      localPlayer.x = Math.max(PLAYER_SIZE/2, Math.min(WORLD_SIZE-PLAYER_SIZE/2, localPlayer.x));
+      localPlayer.y = Math.max(PLAYER_SIZE/2, Math.min(WORLD_SIZE-PLAYER_SIZE/2, localPlayer.y));
+      // set face direction
+      if (Math.abs(dx) > Math.abs(dy)) lastMovementDir = dx > 0 ? 'right' : 'left';
+      else lastMovementDir = dy > 0 ? 'down' : 'up';
+
+      // push position to DB (throttle)
+      pushLocalPosition();
+    }
+
+    // pickup detection
+    for (const coinId in coins) {
+      const c = coins[coinId];
+      const dist = Math.hypot(c.x - localPlayer.x, c.y - localPlayer.y);
+      if (dist < (PLAYER_SIZE/2 + COIN_RADIUS + 4)) {
+        // attempt to claim coin
+        claimCoin(coinId);
+      }
+    }
+  }
+
+  // send position to DB; simple throttling
+  let lastPosPush = 0;
+  function pushLocalPosition() {
+    if (!currentUser) return;
+    const now = performance.now();
+    if (now - lastPosPush < 100) return; // 10Hz
+    lastPosPush = now;
+    const pRef = ref(db, `players/${currentUser.uid}`);
+    set(pRef, {
+      username: localPlayer.username || (currentUser.email.split('@')[0]),
+      x: localPlayer.x,
+      y: localPlayer.y,
+      coins: localPlayer.coins,
+      lastSeen: Date.now()
+    }).catch(console.error);
+  }
+
+  // claim coin safely using transaction
+  async function claimCoin(coinId) {
+    const coinRef = ref(db, `coins/${coinId}`);
+    try {
+      const res = await runTransaction(coinRef, (current) => {
+        if (current === null) return; // already taken -> abort
+        // remove coin by setting to null
+        return null;
+      });
+      if (!res.committed) return; // someone else took it
+      // coin removed successfully; increment player's coins via transaction
+      if (!currentUser) return;
+      const myRef = ref(db, `players/${currentUser.uid}/coins`);
+      await runTransaction(myRef, (currentCoins) => {
+        return (currentCoins || 0) + 1;
+      });
+      // also update local immediately
+      localPlayer.coins += 1;
+      myCoinsSpan.textContent = localPlayer.coins;
+    } catch (err) {
+      console.error('Claim coin error', err);
+    }
+  }
+
+  // main loop
+  function loop(ts) {
+    const dt = Math.min(0.05, (ts - lastTs) / 1000);
+    lastTs = ts;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // input
+  window.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+  });
+  window.addEventListener('keyup', (e) => {
+    keys[e.key] = false;
+  });
+
+  // initial status
+  setStatus('Ready. Register or Login.');
+
+</script>
+
+</body>
+</html>
