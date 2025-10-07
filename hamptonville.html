@@ -370,7 +370,7 @@
   // movement tracking for face direction
   let lastMovementDir = 'down';
 
-  function update(dt) {
+  function gameUpdate(dt) {
     // read keys to move world around the centered player
     let dx = 0, dy = 0;
     if (keys['ArrowLeft']) dx -= 1;
@@ -450,7 +450,7 @@
   function loop(ts) {
     const dt = Math.min(0.05, (ts - lastTs) / 1000);
     lastTs = ts;
-    update(dt);
+    gameUpdate(dt);
     draw();
     requestAnimationFrame(loop);
   }
