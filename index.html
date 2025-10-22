@@ -176,15 +176,33 @@
       .contactbutton {
         width: 100%;
         padding: 10px;
-        margin: 0px 0;
+        margin: 0px 0px;
         border-radius: 8px;
         font-weight: 500;
-        font-size: 13px;
+        font-size: 15px;
         background-color: rgba(66, 135, 245, 0.8);
         color: white;
         border: none;
         cursor: pointer;
+        flex: 1;
+        font-family: 'Poppins', Sans-Serif;
       }
+      
+      .thebuttons {
+        display: flex;
+        max-width: 500px;
+        flex: 0 0 48%;
+        gap: 10px;
+        width: 100%;
+      }
+      
+      .button-icon {
+        width: 20px;      
+        height: 20px;
+        margin-right: 5px; 
+        vertical-align: middle; 
+      }
+
 
 
     </style>
@@ -199,7 +217,12 @@
         <h1 class="title">About Me</h1>
       </div>
       <p>Hello, I'm Hamptonix and I'm a newbie developer from the United States. I develop in-browser games, macros, and programs. My dream is to one day design and build CPU's and graphics cards.</p>
-      <button class="contactbutton" onclick="location.href='https://guns.lol/hamptonix'">My Socials</button>
+      
+      <div class="thebuttons">
+        <button class="contactbutton" onclick="location.href='https://guns.lol/hamptonix'"><img src="https://i.postimg.cc/XNgh6bvX/image.png" alt="icon" class="button-icon" />My Socials</button>
+        <button class="contactbutton" onclick="location.href='https://github.com/Hamptonix/Hamptonix.github.io/'"><img src="https://i.postimg.cc/50yH91Mk/image-1.png" alt="icon" class="button-icon" />Repository</button>
+      </div>
+      
     </div>
    
     <div class="languageboxes">
