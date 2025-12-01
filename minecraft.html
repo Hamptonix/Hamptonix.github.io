@@ -1,1 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" />
+  <title>Hamptonix SMP | Minecraft Server</title>
 
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+
+  <!-- PAGE-SCOPED STYLES (NO NAVBAR INTERFERENCE) -->
+  <style>
+    .smp-homepage * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #1f1f1f;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .navbar {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .smp-homepage {
+      width: 100%;
+      max-width: 500px;
+      background-color: rgba(20,20,20,0.95);
+      padding: 30px;
+      margin-top: 25px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .smp-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .smp-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+    }
+
+    .smp-title {
+      color: #fff;
+      font-size: 28px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .smp-desc {
+      color: #bfbdbd;
+      text-align: center;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .smp-release {
+      color: #fff;
+      background-color: rgba(66,135,245,0.7);
+      border: 2px solid #4287f5;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .smp-btn-area {
+      display: flex;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .smp-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      background-color: rgba(255, 60, 60, 0.8);
+      color: white;
+      transition: 0.3s ease;
+    }
+
+    .smp-btn:hover {
+      background-color: rgba(255, 60, 60, 1);
+    }
+
+    .smp-btn img {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <div class="smp-homepage">
+    <div class="smp-top">
+      <img class="smp-logo" src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" alt="Hamptonix SMP Logo">
+      <h1 class="smp-title">Hamptonix SMP</h1>
+    </div>
+
+    <p class="smp-desc">
+      Welcome to the official homepage for <strong>Hamptonix SMP</strong> — a brand-new Minecraft survival world coming soon with community events, seasons, challenges, shops, and more!
+    </p>
+
+    <div class="smp-release">
+      Launching February 2026
+    </div>
+
+    <div class="smp-btn-area">
+      <button class="smp-btn" onclick="location.href='https://instagram.com/hamptonixdev'">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+        Get Updates on Instagram
+      </button>
+    </div>
+  </div>
+  
+  <br>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+      projectId: "hamptonixwebsite-dea39",
+      storageBucket: "hamptonixwebsite-dea39.appspot.com",
+      messagingSenderId: "847673046697",
+      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+      measurementId: "G-CBL1NL69PH",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+
+        const userStatus = document.getElementById('userStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const creditsBox = document.getElementById('creditsBox');
+        const creditsAmount = document.getElementById('creditsAmount');
+
+        auth.onAuthStateChanged(user => {
+          if (user) {
+            userStatus.textContent = user.email || "User";
+            if (loginBtn) loginBtn.style.display = "none";
+            if (creditsBox) creditsBox.style.display = "inline-flex";
+
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+              creditsAmount.textContent = doc.exists ? doc.data().credits ?? 0 : "0";
+            });
+          } else {
+            userStatus.textContent = "Logged Out";
+            if (loginBtn) loginBtn.style.display = "inline-block";
+            if (creditsBox) creditsBox.style.display = "none";
+          }
+        });
+      })
+      .catch(err => console.error("Navbar load failed:", err));
+  </script>
+
+</body>
+</html>
