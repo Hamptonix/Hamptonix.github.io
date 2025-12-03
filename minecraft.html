@@ -56,7 +56,7 @@
 
     .smp-homepage {
       width: 100%;
-      max-width: 100vh;
+      max-width: 70vh;
       min-height: 70vh;
       height: 70%;
       overflow-x: none;
@@ -71,19 +71,12 @@
     }
 
     .smp-top {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
-      justify-content: space-between;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
-    .left-side {
-     display: flex;
-     align-items: center;
-     flex: 1; /* allows this group to grow/shrink */
-     min-width: 0; /* important so text can shrink properly */
-    }
 
     .smp-logo {
       width: 100px;
@@ -118,7 +111,11 @@
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
-      margin-left: 100px;
+      max-width: 300px;
+      text-align: center;
+      margin-left: auto;
+margin-right: auto;
+display: block;
     }
 
     .smp-btn-area {
@@ -163,13 +160,12 @@
 
   <div class="smp-homepage">
     <div class="smp-top">
-      <div class="left-side">
       <img class="smp-logo" src="/sdsdsdsdsds.jpg" alt="Hamptonix SMP Logo">
       <h1 class="smp-title">&nbsp;&nbsp;&nbsp;Hamptonix</h1>
-      </div>
-      <div class="smp-release">
-      Launching February 2026
     </div>
+    
+    <div class="smp-release">
+      Launching February 2026
     </div>
 
     <h3 class="smp-desc">
