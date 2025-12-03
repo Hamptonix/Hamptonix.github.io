@@ -22,7 +22,15 @@
         left: 50%;
         transform: translateX(-50%);
         box-sizing: border-box;
+        font-family: 'Poppins', Sans-Serif;
+        color: #ffffff;
+        margin: 0;
+        font-size: 40px;
       }
+
+      .navbar .button {
+        font-family: 'Poppins', Sans-Serif;
+        font-size: 16px;}
     
     .smp-homepage * {
       box-sizing: border-box;
@@ -35,6 +43,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-x: hidden;
+      height: 70%;
     }
 
     .navbar {
@@ -46,27 +56,38 @@
 
     .smp-homepage {
       width: 100%;
-      max-width: 500px;
+      max-width: 100vh;
+      min-height: 70vh;
+      height: 70%;
+      overflow-x: none;
       background-color: rgba(20,20,20,0.95);
       padding: 30px;
       margin-top: 25px;
       border-radius: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: left;
       gap: 20px;
     }
 
     .smp-top {
       display: flex;
+      flex-direction: row;
       align-items: center;
       gap: 10px;
+      justify-content: space-between;
+    }
+
+    .left-side {
+     display: flex;
+     align-items: center;
+     flex: 1; /* allows this group to grow/shrink */
+     min-width: 0; /* important so text can shrink properly */
     }
 
     .smp-logo {
       width: 100px;
       height: 100px;
-      border-radius: 12px;
     }
 
     .smp-title {
@@ -77,10 +98,16 @@
     }
 
     .smp-desc {
-      color: #bfbdbd;
-      text-align: center;
+      color: #ffffff;
+      text-align: left;
       margin: 0;
       line-height: 1.5;
+    }
+
+    .smp-desc.feature {
+      margin-top: 10px;
+      color: #bfbdbd;
+      font-size: 16px;
     }
 
     .smp-release {
@@ -91,10 +118,13 @@
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
+      margin-left: 100px;
     }
 
     .smp-btn-area {
       display: flex;
+      flex-direction: column;
+      gap: 10px;
       width: 100%;
       margin-top: 10px;
     }
@@ -111,13 +141,14 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
-      background-color: rgba(255, 60, 60, 0.8);
-      color: white;
+      background-color: rgba(98, 98, 98, 0.8);
+      color: rgb(255, 255, 255);
       transition: 0.3s ease;
     }
 
+
     .smp-btn:hover {
-      background-color: rgba(255, 60, 60, 1);
+      background-color: rgb(126, 126, 126);
     }
 
     .smp-btn img {
@@ -132,22 +163,49 @@
 
   <div class="smp-homepage">
     <div class="smp-top">
+      <div class="left-side">
       <img class="smp-logo" src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" alt="Hamptonix SMP Logo">
       <h1 class="smp-title">Hamptonix SMP</h1>
-    </div>
-
-    <p class="smp-desc">
-      Welcome to the official homepage for <strong>Hamptonix SMP</strong> — a brand-new Minecraft survival world coming soon with community events, seasons, challenges, shops, and more!
-    </p>
-
-    <div class="smp-release">
+      </div>
+      <div class="smp-release">
       Launching February 2026
     </div>
+    </div>
+
+    <h3 class="smp-desc">
+      Welcome to the official homepage for <strong>Hamptonix SMP</strong> — a brand-new Minecraft survival world coming soon with community events, seasons, challenges, shops, and more!
+    </h3>
+
+    <p class="smp-desc feature">
+      <strong>Features:</strong>
+      <br>
+      • Java and Bedrock Compatible Server 1.21+
+      <br>
+      • Custom Items and Features
+      <br> 
+      • Fun Community Events and Prizes
+      <br>
+      • Active Developement Team and Support
+    </p>
+
+    <p class="smp-desc feature">
+      <strong>Server Specs:</strong>
+      <br>
+      • Ryzen 7 7700X CPU
+      <br>
+      • 32 GB DDR5-6000 Dedicated RAM 
+    </p>
+
+    
 
     <div class="smp-btn-area">
       <button class="smp-btn" onclick="location.href='https://instagram.com/hamptonixdev'">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
         Get Updates on Instagram
+      </button>
+      <button class="smp-btn" onclick="location.href='https://discord.gg/KG6vafUzKJ'">
+        <img src="/discord.png">
+        Join the Discord
       </button>
     </div>
   </div>
