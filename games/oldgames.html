@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png"/>
+  <title>Hamptonix | Old Games</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css">
+
+  <body>
+
+  <!-- Your page content -->
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <style>
+  body {
+    margin: 0;
+    background: #1f1f1f;
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+  }
+
+  /* Wrap games in their own container so styles don't affect navbar */
+  .games-container {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: flex-start; /* align top vertically */
+    min-height: calc(100vh - 60px); /* subtract navbar height if needed */
+    padding-top: 20px;
+  }
+
+  .games-container2 {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: flex-start; /* align top vertically */
+    min-height: 160; /* subtract navbar height if needed */
+    padding-top: 20px;
+  }
+
+  .games-container3 {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: flex-start; /* align top vertically */
+    min-height: 160; /* subtract navbar height if needed */
+    padding-top: 20px;
+  }
+
+  .game-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .game-icon {
+    display: block;
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .game-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .game-icon:hover {
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+<div id="navbar-container"></div>
+
+<h1 style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px; color: #ffffff">My Old Scratch Games</h1>
+
+<div class="games-container2">
+  <div class="game-panel">
+     <a href="https://scratch.mit.edu/projects/783013496/" class="game-icon" title="3dgame">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Game 1" />
+    </a>
+    <a href="https://scratch.mit.edu/projects/818742341/" class="game-icon" title="Pixel Pad">
+      <img src="https://i.postimg.cc/4yd9ZYGv/cover-1.jpg" alt="Game 3" />
+    </a>
+    <a href="https://scratch.mit.edu/projects/680364776/" class="game-icon" title="FarmingGame">
+      <img src="/oldgames.jpeg" alt="Game 3" />
+    </a>
+  </div>
+</div>
+
+
+  <br>
+
+
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+  authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+  projectId: "hamptonixwebsite-dea39",
+  storageBucket: "hamptonixwebsite-dea39.appspot.com",
+  messagingSenderId: "847673046697",
+  appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+  measurementId: "G-CBL1NL69PH"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Load the navbar and display user status
+  fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
+
+      firebase.auth().onAuthStateChanged(user => {
+        const statusEl = document.getElementById("userStatus");
+        const loginBtn = document.getElementById("loginBtn");
+
+        if (user && user.email) {
+          statusEl.textContent = user.email;
+          loginBtn.style.display = 'none'; // Hide Log In button
+        } else {
+          statusEl.textContent = "Logged Out";
+          loginBtn.style.display = 'inline-block'; // Show Log In button
+        }
+      });
+    });
+  </script>
+</body>
 
