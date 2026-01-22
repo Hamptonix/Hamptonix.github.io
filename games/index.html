@@ -81,6 +81,69 @@
   .game-icon:hover {
     transform: scale(1.1);
   }
+  
+  .game-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.game-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Image stays at the bottom */
+.game-icon img {
+  position: relative;
+  z-index: 1;
+}
+
+/* Gradient fade (middle layer) */
+.game-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0)
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 15px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Title text (top layer, full white) */
+.game-icon .game-title {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  z-index: 3;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Hover effects */
+.game-icon:hover::after {
+  opacity: 1;
+}
+
+.game-icon:hover .game-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 </style>
 </head>
 <body>
@@ -92,13 +155,13 @@
 <div class="games-container2">
   <div class="game-panel">
      <a href="/games/localgames/mining.html" class="game-icon" title="Mining Game">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Game 1" />
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Mining Game" />
     </a>
     <a href="https://cube2game.itch.io/cube2" class="game-icon" title="Cube 2">
-      <img src="https://i.postimg.cc/4yd9ZYGv/cover-1.jpg" alt="Game 2" />
+      <img src="https://i.postimg.cc/4yd9ZYGv/cover-1.jpg" alt="Cube 2" />
     </a>
     <a href="/games/oldgames" class="game-icon" title="My Old Games">
-      <img src="/oldgames.jpeg" alt="Game 3" />
+      <img src="/oldgames.jpeg" alt="My Old Games" />
     </a>
   </div>
 </div>
@@ -108,97 +171,97 @@
 <div class="games-container">
   <div class="game-panel">
     <a href="https://buckshotroulette.online/steam/" class="game-icon" title="Buckshot Roulette">
-      <img src="https://gcdn.thunderstore.io/live/repository/icons/fungoid-BUCKSHOT_ROULETTE-1.0.0.png.256x256_q95.png" alt="Game 2" />
+      <img src="https://gcdn.thunderstore.io/live/repository/icons/fungoid-BUCKSHOT_ROULETTE-1.0.0.png.256x256_q95.png" alt="Buckshot Roulette" />
     </a>
     <a href="https://smashkarts.io/" class="game-icon" title="Smash Karts">
-      <img src="https://i.postimg.cc/gJp04f5C/poki-smash-karts-icon-filled-256.png" alt="Game 3" />
+      <img src="https://i.postimg.cc/gJp04f5C/poki-smash-karts-icon-filled-256.png" alt="Smash Karts" />
     </a>
     <a href="https://shellshock.io/" class="game-icon" title="Shell Shockers">
-      <img src="https://i.postimg.cc/HWcpXWVr/unnamed.png" alt="Game 4" />
+      <img src="https://i.postimg.cc/HWcpXWVr/unnamed.png" alt="Shell Shockers" />
     </a>
     <a href="https://plinko-web-game.netlify.app/" class="game-icon" title="Plinko">
-      <img src="/plinko.jpeg" alt="Game Plinko" />
+      <img src="/plinko.jpeg" alt="Plinko" />
     </a>
     <a href="https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2" class="game-icon" title="Fortnite">
-      <img src="https://i.postimg.cc/g01bPQtz/16-BP-Trello-Image.webp" alt="Game 29" />
+      <img src="https://i.postimg.cc/g01bPQtz/16-BP-Trello-Image.webp" alt="Fortnite" />
     </a>
     <a href="https://crazycattle3d.com/#online-game/" class="game-icon" title="Crazy Caddle 3D">
-      <img src="https://i.postimg.cc/50GxYyvS/images.jpg" alt="Game 6" />
+      <img src="https://i.postimg.cc/50GxYyvS/images.jpg" alt="Crazy Caddle 3D" />
     </a>
     <a href="https://eaglercraft.com/mc/1.8.8/" class="game-icon" title="Minecraft 1.8.8">
-      <img src="https://i.postimg.cc/QMTWSFkV/unnamed.webp" alt="Game 7" />
+      <img src="https://i.postimg.cc/QMTWSFkV/unnamed.webp" alt="Minecraft 1.8.8" />
     </a>
     <a href="https://nzp.gay/" class="game-icon" title="Zombies">
-      <img src="https://gcdn.thunderstore.io/live/repository/icons/Omega115-COD_Zombies_Zosig_Voicelines-1.1.0.png.256x256_q95.jpg" alt="Game 8" />
+      <img src="https://gcdn.thunderstore.io/live/repository/icons/Omega115-COD_Zombies_Zosig_Voicelines-1.1.0.png.256x256_q95.jpg" alt="COD Zombies" />
     </a>
     <a href="https://skribbl.io/" class="game-icon" title="Skribbl">
-      <img src="https://i.postimg.cc/ZnzFvRCJ/256x256bb-removebg-preview.png" alt="Game 9" />
+      <img src="https://i.postimg.cc/ZnzFvRCJ/256x256bb-removebg-preview.png" alt="Skribbl" />
     </a>
     <a href="https://garticphone.com/draw?2" class="game-icon" title="Gartic Phone">
-      <img src="https://cdn2.steamgriddb.com/icon/92a795b46873063e419773b4f310fc29.png" alt="Game 10" />
+      <img src="https://cdn2.steamgriddb.com/icon/92a795b46873063e419773b4f310fc29.png" alt="Gartic Phone" />
     </a>
     <a href="https://wiki-race.com/" class="game-icon" title="Wiki Race">
-      <img src="https://i.postimg.cc/9Q1hxw2F/Wikipedia-logo-v2-svg-removebg-preview.png" alt="Game 11" />
+      <img src="https://i.postimg.cc/9Q1hxw2F/Wikipedia-logo-v2-svg-removebg-preview.png" alt="Wiki Race" />
     </a>
     <a href="http://tanksmith.io/" class="game-icon" title="Tank Smith">
-      <img src="https://i.postimg.cc/tJwjr4zC/unnamed.jpg" alt="Game 12" />
+      <img src="https://i.postimg.cc/tJwjr4zC/unnamed.jpg" alt="Tank Smith.io" />
     </a>
     <a href="https://bloxd.io/" class="game-icon" title="Bloxed">
-      <img src="https://i.postimg.cc/DZz3nXjw/unnamed-1.webp" alt="Game 13" />
+      <img src="https://i.postimg.cc/DZz3nXjw/unnamed-1.webp" alt="Bloxed.io" />
     </a>
     <a href="https://www.twoplayergames.org/game/basket-random" class="game-icon" title="Basket Ball Random">
-      <img src="https://1games.io/data/image/game/basket-random/banner/basket-random.png" alt="Game 14" />
+      <img src="https://1games.io/data/image/game/basket-random/banner/basket-random.png" alt="Basketball Random" />
     </a>
     <a href="https://player03.com/run/3/beta/" class="game-icon" title="Run 3">
-      <img src="https://funclap.com/uploads/2025/6/run-3-unblocked-funclap.png" alt="Game 15" />
+      <img src="https://funclap.com/uploads/2025/6/run-3-unblocked-funclap.png" alt="Run 3" />
     </a>
     <a href="https://thirtydollar.website/" class="game-icon" title="30 Dollar Website">
-      <img src="https://thirtydollar.website/icons/boowomp.png" alt="Game 16" />
+      <img src="https://thirtydollar.website/icons/boowomp.png" alt="$30 Website" />
     </a>
     <a href="https://florr.io/" class="game-icon" title="Florr">
-      <img src="https://slope3online.io/data/image/game/florr-io-slope3online.io.png" alt="Game 17" />
+      <img src="https://slope3online.io/data/image/game/florr-io-slope3online.io.png" alt="Florr.io" />
     </a>
     <a href="https://diep.io/" class="game-icon" title="Diep">
-      <img src="https://play.gilect.com/images/icons/diepio.webp" alt="Game 18" />
+      <img src="https://play.gilect.com/images/icons/diepio.webp" alt="Diep.io" />
     </a>
     <a href="https://survev.io/" class="game-icon" title="Survev">
-      <img src="https://play.gilect.com/images/icons/survevio.webp" alt="Game 19" />
+      <img src="https://play.gilect.com/images/icons/survevio.webp" alt="Survev.io" />
     </a>
     <a href="https://paperio.site/conflict/" class="game-icon" title="Paper">
-      <img src="https://www.speedrun.com/static/game/pdv23796/cover.png?v=06579d9" alt="Game 20" />
+      <img src="https://www.speedrun.com/static/game/pdv23796/cover.png?v=06579d9" alt="Paper.io" />
     </a>
     <a href="https://agar.io/#ffa" class="game-icon" title="Agar">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Agar.io_Logo.png" alt="Game 21" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Agar.io_Logo.png" alt="Agar.io" />
     </a>
     <a href="https://krunker.io/" class="game-icon" title="Krunker">
-      <img src="https://hillsofsteelgame.github.io/images/icon/krunker-io.jpg" alt="Game 22" />
+      <img src="https://hillsofsteelgame.github.io/images/icon/krunker-io.jpg" alt="Krunker.io" />
     </a>
     <a href="https://totaljerkface.com/happy_wheels.tjf" class="game-icon" title="Happy Wheels">
-      <img src="https://media.abcya3.net/images/300/happy-wheels-2.jpg" alt="Game 23" />
+      <img src="https://media.abcya3.net/images/300/happy-wheels-2.jpg" alt="Happy Wheels" />
     </a>
     <a href="https://web-osu-mania.pages.dev/" class="game-icon" title="Osu">
-      <img src="https://pm1.aminoapps.com/7716/28302f8ea60e2c43e9c905acf47a527cf928265fr1-500-500v2_00.jpg" alt="Game 24" />
+      <img src="https://pm1.aminoapps.com/7716/28302f8ea60e2c43e9c905acf47a527cf928265fr1-500-500v2_00.jpg" alt="Osu" />
     </a>
     <a href="https://neal.fun/infinite-craft/" class="game-icon" title="Infinite Craft">
-      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8f/a6/51/8fa6513d-1dd5-3976-0c3c-0a272ad08584/AppIcon-0-0-1x_U007epad-0-85-220.png/256x256bb.jpg" alt="Game 25" />
+      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8f/a6/51/8fa6513d-1dd5-3976-0c3c-0a272ad08584/AppIcon-0-0-1x_U007epad-0-85-220.png/256x256bb.jpg" alt="Infinite Craft" />
     </a>
     <a href="https://neal.fun/password-game/" class="game-icon" title="Password Game">
-      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/38/72/4f/38724f19-df8a-872e-2162-8bc2ba88faf0/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/256x256bb.jpg" alt="Game 26" />
+      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/38/72/4f/38724f19-df8a-872e-2162-8bc2ba88faf0/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/256x256bb.jpg" alt="Password Game" />
     </a>
     <a href="https://neal.fun/stimulation-clicker/" class="game-icon" title="Sim Clicker">
-      <img src="https://i.postimg.cc/yNpY3Lft/images.png" alt="Game 27" />
+      <img src="https://i.postimg.cc/yNpY3Lft/images.png" alt="Simulation Clicker" />
     </a>
     <a href="https://www.crazygames.com/game/traffic-rider-vvq" class="game-icon" title="Traffic Rider">
-      <img src="https://i.postimg.cc/MZYdf7bF/256x256baaaaaaaaaaaaaaab-1.jpg" alt="Game 28" />
+      <img src="https://i.postimg.cc/MZYdf7bF/256x256baaaaaaaaaaaaaaab-1.jpg" alt="Traffic Rider" />
     </a>
     <a href="https://makeitmeme.com/en/" class="game-icon" title="Make It Meme">
-      <img src="https://cdn-1.webcatalog.io/catalog/poki-make-it-meme/poki-make-it-meme-icon-filled-256.png?v=1714780006458" alt="Game 30" />
+      <img src="https://cdn-1.webcatalog.io/catalog/poki-make-it-meme/poki-make-it-meme-icon-filled-256.png?v=1714780006458" alt="Make it Meme" />
     </a>
     <a href="https://slither.io/en/" class="game-icon" title="Slither">
-      <img src="https://i.postimg.cc/y8kprSjC/images.jpg" alt="Game 31" />
+      <img src="https://i.postimg.cc/y8kprSjC/images.jpg" alt="Slither.io" />
     </a>
     <a href="https://www.crazygames.com/game/escape-road-asm" class="game-icon" title="Escape Road">
-      <img src="https://i.postimg.cc/sD6sq8Vy/escape-road-asm-1x1-cover.png" alt="Game 32" />
+      <img src="https://i.postimg.cc/sD6sq8Vy/escape-road-asm-1x1-cover.png" alt="Escape Road" />
     </a>
   </div>
 </div>
@@ -208,16 +271,16 @@
 <div class="games-container3">
   <div class="game-panel">
      <a href="https://www.romsgames.net/nintendo-64-rom-mario-kart-64/" class="game-icon" title="Mario Kart 64">
-      <img src="https://cache.downloadroms.io/static/58bfff1a84cb18d960c4d943366a60372d637010/image.jpeg" alt="Game 1" />
+      <img src="https://cache.downloadroms.io/static/58bfff1a84cb18d960c4d943366a60372d637010/image.jpeg" alt="Mario Kart 64" />
     </a>
     <a href="https://www.romsgames.net/nintendo-64-rom-doom-64/" class="game-icon" title="Doom 64">
-      <img src="https://cache.downloadroms.io/static/2b6df8742e55b1bc7c696b334bbdc1f5e902df54/image.jpeg" alt="Game 2" />
+      <img src="https://cache.downloadroms.io/static/2b6df8742e55b1bc7c696b334bbdc1f5e902df54/image.jpeg" alt="Doom 64" />
     </a>
     <a href="https://www.romsgames.net/nintendo-64-rom-paper-mario/" class="game-icon" title="Paper Mario 64">
-      <img src="https://cache.downloadroms.io/static/eb04a3390439dae4380a2aac731065dc191a0646/image.jpeg" alt="Game 3" />
+      <img src="https://cache.downloadroms.io/static/eb04a3390439dae4380a2aac731065dc191a0646/image.jpeg" alt="Paper Mario 64" />
     </a>
     <a href="https://www.romsgames.net/nintendo-64-rom-goldeneye-007/" class="game-icon" title="Goldeneye 64">
-      <img src="https://cache.downloadroms.io/static/176e29fcbf8caf8dfd06e7bd405e42ac3863b6f3/image.jpeg" alt="Game 4" />
+      <img src="https://cache.downloadroms.io/static/176e29fcbf8caf8dfd06e7bd405e42ac3863b6f3/image.jpeg" alt="GoldenEye007 64" />
     </a>
   </div>
 </div>
@@ -258,6 +321,16 @@
         }
       });
     });
+    
+document.querySelectorAll(".game-icon").forEach(icon => {
+    const img = icon.querySelector("img");
+    if (!img || !img.alt) return;
+
+    const title = document.createElement("span");
+    title.className = "game-title";
+    title.textContent = img.alt;
+
+    icon.appendChild(title);
+  });
   </script>
 </body>
-
