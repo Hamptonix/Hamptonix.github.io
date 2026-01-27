@@ -61,9 +61,10 @@
         padding-right: 30px;
         border-radius: 20px;
         display: flex;
-        flex-direction: column;      
+        flex-direction: row;      
         align-items: center;
         gap: 5px;
+        justify-content: center;
       }
      
 
@@ -224,7 +225,19 @@
         vertical-align: middle; 
       }
 
-
+      .secretbutton {
+        width: 30px;
+        padding: 3px;
+        margin: 0px 0px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 15px;
+        background-color: rgba(66, 135, 245, 0.8);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-family: 'Poppins', Sans-Serif;
+      }
 
     </style>
   </head>
@@ -306,6 +319,7 @@
     <div class="container2">
       
       <p>© Hamptonix. All Rights Reserved. | Version 3.265</p>
+      <button class="secretbutton" onclick="location.href='/secret'">?</button>
       
     </div>
       
