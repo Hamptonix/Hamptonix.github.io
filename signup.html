@@ -3,208 +3,290 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/HnDd4JkX/channels4-profile-removebg-preview.png" />
+  <link rel="icon" type="image/png" href="/hamptonixmcsmall.png" />
   <title>Hamptonix | Log In</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+
+      .navbar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 1200px;
+  margin: 15px 0; /* just vertical spacing from top */
+  background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(18px) saturate(140%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+    .navbar .logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .navbar .button, .navbar a.button {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+    }
+
+    .navbar .button:hover, .navbar a.button:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--violet);
+    }
+
+    .navbar .button.active, .navbar a.button.active {
+      border-color: var(--violet);
+    }
+
+    :root {
+      --bg: #05070f;
+      --cardTop: rgba(30, 36, 60, 0.55);
+      --cardBot: rgba(18, 22, 40, 0.55);
+      --stroke: rgba(255,255,255,0.15);
+      --title: rgba(255,255,255,0.96);
+      --text: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.65);
+      --violet: #7a7cff;
+      --radius: 18px;
+      --shadow: 0 25px 80px rgba(0,0,0,0.65);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      background:
+        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
+        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
+        linear-gradient(180deg, #05070f, #0b1022);
+      color: var(--text);
+      padding-top: 80px; /* leave navbar space */
+    }
+
+
+    .smp-homepage {
+      width: 90%;
+      max-width: 450px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 100px auto 0 auto;
+    }
+
+    .smp-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      flex-direction: column;
+    }
+
+    .smp-title {
+      color: var(--title);
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+      text-shadow: 0 0 14px rgba(122,124,255,0.35);
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background-color: rgba(0,0,0,0.25);
+      color: var(--text);
+      font-size: 14px;
+       box-sizing: border-box;
+    }
+
+    .auth-input:focus {
+      border-color: var(--violet);
+      outline: none;
+      box-shadow: 0 0 12px rgba(122,124,255,0.25);
+      background-color: rgba(0,0,0,0.3);
+    }
+
+    .smp-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .smp-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      border-color: var(--violet);
+    }
+
+    .auth-message {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .auth-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .auth-section h2 {
+      color: var(--title);
+      font-size: 22px;
+      text-align: center;
+      margin: 0;
+    }
+
+    
+  </style>
 </head>
 <body>
 
-  <style>
-  body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #1f1f1f;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  flex-direction: column;
-}
+<div id="navbar-container"></div>
 
-#navbar-container {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.auth-container {
-  max-width: 400px;
-  margin-top: 100px auto;
-  margin: 50px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.auth-container h2 {
-  margin-bottom: 18px;
-  font-weight: 600;
-  color: #111;
-}
-
-.auth-form input,
-.auth-container input {
-  width: 100%;
-  box-sizing: border-box; /* ensures padding doesn't break layout */
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.auth-form input:focus,
-.auth-container input:focus {
-  border-color: #000;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
-  background: #fff;
-}
-
-.auth-form button,
-.auth-container button {
-  width: 100%;
-  padding: 12px;
-  background: #000;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.auth-form button:hover,
-.auth-container button:hover {
-  background: #222;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.auth-container p {
-  font-size: 12px;
-  color: #555;
-  margin-top: 5px;
-}
-
-.auth-container a {
-  color: #000;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-</style>
-
-  <div id="navbar-container"></div>
-
-  <br>
-
-  <div class="auth-container">
-    <h2>Sign Up</h2>
-    <input type="email" id="signupEmail" placeholder="Email" />
-    <input type="password" id="signupPassword" placeholder="Password" />
-    <button onclick="signUp()">Sign Up</button>
-
-    <h2>Log In</h2>
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-    <button onclick="logIn()">Log In</button>
-
-    <p id="message"></p>
+<div class="smp-homepage">
+  <div class="smp-top">
+    <h1 class="smp-title">Sign Up / Log In</h1>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- SIGN UP -->
+  <div class="auth-section">
+    <h2>Sign Up</h2>
+    <input class="auth-input" type="email" id="signupEmail" placeholder="Email" />
+    <input class="auth-input" type="password" id="signupPassword" placeholder="Password" />
+    <button class="smp-btn" onclick="signUp()">Sign Up</button>
+  </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-      projectId: "hamptonixwebsite-dea39",
-      storageBucket: "hamptonixwebsite-dea39.appspot.com",
-      messagingSenderId: "847673046697",
-      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH",
-    };
+  <!-- LOG IN -->
+  <div class="auth-section">
+    <h2>Log In</h2>
+    <input class="auth-input" type="email" id="loginEmail" placeholder="Email" />
+    <input class="auth-input" type="password" id="loginPassword" placeholder="Password" />
+    <button class="smp-btn" onclick="logIn()">Log In</button>
+  </div>
 
-    firebase.initializeApp(firebaseConfig);
+  <p class="auth-message" id="message"></p>
+</div>
 
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    fetch('/navbar.html')
-      .then((res) => res.text())
-      .then((html) => {
-        document.getElementById('navbar-container').innerHTML = html;
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+    authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+    projectId: "hamptonixwebsite-dea39",
+    storageBucket: "hamptonixwebsite-dea39.appspot.com",
+    messagingSenderId: "847673046697",
+    appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+    measurementId: "G-CBL1NL69PH",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-        const userStatus = document.getElementById('userStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const creditsBox = document.getElementById('creditsBox');
-        const creditsAmount = document.getElementById('creditsAmount');
+  fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbar-container').innerHTML = html;
+      const userStatus = document.getElementById('userStatus');
+      const loginBtn = document.getElementById('loginBtn');
+      const creditsBox = document.getElementById('creditsBox');
+      const creditsAmount = document.getElementById('creditsAmount');
 
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            userStatus.textContent = user.email || 'User';
-            if (loginBtn) loginBtn.style.display = 'none';
-            if (creditsBox) creditsBox.style.display = 'inline-flex';
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          userStatus.textContent = user.email || "User";
+          if (loginBtn) loginBtn.style.display = "none";
+          if (creditsBox) creditsBox.style.display = "inline-flex";
 
-            db.collection('users')
-              .doc(user.uid)
-              .onSnapshot((doc) => {
-                if (doc.exists) {
-                  creditsAmount.textContent = doc.data().credits ?? 0;
-                } else {
-                  creditsAmount.textContent = '0';
-                }
-              });
-          } else {
-            userStatus.textContent = 'Logged Out';
-            if (loginBtn) loginBtn.style.display = 'inline-block';
-            if (creditsBox) creditsBox.style.display = 'none';
-          }
-        });
+          db.collection("users").doc(user.uid).onSnapshot(doc => {
+            creditsAmount.textContent = doc.exists ? doc.data().credits ?? 0 : "0";
+          });
+        } else {
+          userStatus.textContent = "Logged Out";
+          if (loginBtn) loginBtn.style.display = "inline-block";
+          if (creditsBox) creditsBox.style.display = "none";
+        }
+      });
+    });
+
+  function signUp() {
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        document.getElementById('message').innerText = 'Sign up successful!';
+        db.collection('users').doc(userCredential.user.uid).set({ credits: 100 });
       })
-      .catch((err) => console.error('Failed to load navbar:', err));
+      .catch(error => {
+        document.getElementById('message').innerText = error.message;
+      });
+  }
 
-    function signUp() {
-      const email = document.getElementById('signupEmail').value;
-      const password = document.getElementById('signupPassword').value;
+  function logIn() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
 
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          document.getElementById('message').innerText = 'Sign up successful!';
-          console.log('User signed up:', userCredential.user);
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        document.getElementById('message').innerText = 'Login successful!';
+      })
+      .catch(error => {
+        document.getElementById('message').innerText = error.message;
+      });
+  }
+</script>
 
-          return db.collection('users').doc(userCredential.user.uid).set({ credits: 100 });
-        })
-        .catch((error) => {
-          document.getElementById('message').innerText = error.message;
-          console.error('Error signing up:', error);
-        });
-    }
-
-    function logIn() {
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-
-      auth
-        .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          document.getElementById('message').innerText = 'Login successful!';
-          console.log('User logged in:', userCredential.user);
-        })
-        .catch((error) => {
-          document.getElementById('message').innerText = error.message;
-          console.error('Error logging in:', error);
-        });
-    }
-  </script>
 </body>
 </html>
