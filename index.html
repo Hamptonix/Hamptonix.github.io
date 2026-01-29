@@ -17,6 +17,54 @@
   
  <style>
 
+       .navbar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 15px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      flex-wrap: wrap;
+    }
+
+    .navbar .logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .navbar .button, .navbar a.button {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+    }
+
+    .navbar .button:hover, .navbar a.button:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--violet);
+    }
+
+    .navbar .button.active, .navbar a.button.active {
+      border-color: var(--violet);
+    }
+
  /* ================= THEME VARIABLES ================= */
 :root {
   --bg: #05070f;
