@@ -1,29 +1,108 @@
 <style>
-  /* basic navbar visuals (tweak to match your site) */
-.navbar { display:flex; align-items:center; gap:10px; padding:8px 14px; background:#000; color:#fff; }
-.navbar .logo { width:45px; height:45px; object-fit:contain; }
-.navbar .brand-name { font-weight:600; margin-right:8px; }
-.navbar .button { background:transparent; color:#fff; border:1px solid #fff; padding:6px 10px; border-radius:8px; cursor:pointer; }
+ .navbar {
+  width: min(1100px, 94vw);
+  margin: 14px auto;
+  padding: 10px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow);
+  border-radius: 20px;
+}
+
+/* logo */
+.navbar .logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+/* brand */
+.navbar .brand-name {
+  font-weight: 600;
+  color: var(--title);
+  margin-right: 6px;
+}
+
+/* nav button group */
+.navbar .nav-links {
+  display: flex;
+  flex: 1;               /* fill middle */
+  gap: 10px;
+}
+
+/* buttons stretch evenly */
+.navbar .button {
+  flex: 1;
+  text-align: center;
+
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--stroke);
+  color: white;
+  padding: 8px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+
+  transition: transform .18s ease, box-shadow .18s ease, border .18s ease;
+}
+
+.navbar .button:hover {
+  transform: translateY(-2px) scale(1.04);
+  border-color: var(--violet);
+  box-shadow: 0 0 12px rgba(122,124,255,.4);
+}
+
+/* right side */
+.navbar .nav-right {
+  margin-left: auto;
+  text-align: right;
+  min-width: 120px;
+}
+
+.navbar .nav-right span {
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+/* mobile stack */
+@media (max-width: 640px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .navbar .nav-links {
+    width: 100%;
+  }
+
+  .navbar .nav-right {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 
 </style>
 
 <div class="navbar">
   <img src="/hampnew.png" alt="Hamptonix Logo" class="logo">
   <span class="brand-name">Hamptonix</span>
-  <button class="button" onclick="location.href='/'">Home</button>                                
-  <button class="button" onclick="location.href='/minecraft'">Minecraft</button>
-  <button class="button" onclick="location.href='/projects'">Projects</button>
-  <button class="button" onclick="location.href='/games/'">Games</button>
 
-  <!-- only one login button and it has a unique id -->
-  <button class="button" id="navLoginBtn" onclick="location.href='/signup'">Log In</button>
+  <div class="nav-links">
+    <button class="button" onclick="location.href='/'">Home</button>
+    <button class="button" onclick="location.href='/minecraft'">Minecraft</button>
+    <button class="button" onclick="location.href='/projects'">Projects</button>
+    <button class="button" onclick="location.href='/games/'">Games</button>
+    <button class="button" id="navLoginBtn" onclick="location.href='/signup'">Log In</button>
+  </div>
 
-  <!-- Right-side status/credits stack -->
-  <div style="margin-left:auto; text-align:right;">
-    <span id="userStatus" style="display:block; font-size:1rem; color:#ccc;">Logged Out</span>
-
-    
-      <span id="userStatus" style="color:#ccc; font-weight:600;"></span>
-    </div>
+  <div class="nav-right">
+    <span id="userStatus">Logged Out</span>
   </div>
 </div>
