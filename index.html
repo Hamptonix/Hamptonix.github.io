@@ -15,236 +15,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   
- <style>
+  <style>
+    /* ================= THEME VARIABLES ================= */
+    :root {
+      --bg: #05070f;
+      --cardTop: rgba(30, 36, 60, 0.55);
+      --cardBot: rgba(18, 22, 40, 0.55);
+      --stroke: rgba(255,255,255,0.15);
+      --title: rgba(255,255,255,0.96);
+      --text: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.65);
+      --violet: #7a7cff;
+      --teal: #3cf3ff;
+      --radius: 18px;
+      --shadow: 0 25px 80px rgba(0,0,0,0.65);
+    }
 
+    /* ================= BASE ================= */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      background:
+        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
+        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
+        linear-gradient(180deg, #05070f, #0b1022);
+      color: var(--text);
+    }
 
- /* ================= THEME VARIABLES ================= */
-:root {
-  --bg: #05070f;
-  --cardTop: rgba(30, 36, 60, 0.55);
-  --cardBot: rgba(18, 22, 40, 0.55);
-  --stroke: rgba(255,255,255,0.15);
-  --title: rgba(255,255,255,0.96);
-  --text: rgba(255,255,255,0.85);
-  --muted: rgba(255,255,255,0.65);
-  --violet: #7a7cff;
-  --teal: #3cf3ff;
-  --radius: 18px;
-  --shadow: 0 25px 80px rgba(0,0,0,0.65);
-}
-
-/* ================= BASE ================= */
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  background:
-    radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
-    radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
-    linear-gradient(180deg, #05070f, #0b1022);
-  color: var(--text);
-}
-
-/* ================= NAVBAR ================= */
-.navbar {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* ================= CARDS ================= */
-.container,
-.container2,
-.languageboxes {
-  width: 100%;
-  max-width: 500px;
-  background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
-  border: 1px solid var(--stroke);
-  backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-}
-
-/* ================= STRUCTURE ================= */
-.container {
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.container2 {
-  padding: 15px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.languageboxes {
-  padding: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
-/* ================= HEADERS ================= */
-h1 {
-  margin: 0;
-  color: var(--title);
-  text-shadow: 0 0 14px rgba(122,124,255,0.35);
-}
-
-p {
-  margin: 0;
-  color: var(--muted);
-  text-align: center;
-}
-
-/* ================= TOP ROW ================= */
-.top-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.hampimage {
-  width: 50px;
-  height: auto;
-}
-
-/* ================= LANGUAGE TITLE ================= */
-.languagetext {
-  width: 100%;
-  text-align: center;
-}
-
-/* ================= LANGUAGE CARDS ================= */
-.language-item {
-  position: relative;
-  overflow: hidden;
-  flex: 0 0 48%;
-  max-width: 180px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--stroke);
-  border-radius: 10px;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform .2s ease, box-shadow .2s ease, border .2s ease;
-  
-}
-
-.language-item:hover {
-  transform: translateY(-3px);
-  border-color: var(--violet);
-}
-
-.language-name {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* hide text tags */
-.language-item .skill-tag {
-  display: none;
-}
-
-/* ================= SKILL BAR BASE ================= */
-.language-item::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  width: 100%;
-  opacity: .9;
-}
-
-/* ================= SKILL COLORS ================= */
-.skill-adv::after {
-  background: linear-gradient(90deg, #ff5050, #ff9f9f);
-  box-shadow: 0 0 12px #ff5050;
-}
-
-.skill-dec::after {
-  background: linear-gradient(90deg, #7a7cff, #b2b4ff);
-  box-shadow: 0 0 12px #7a7cff;
-}
-
-.skill-alr::after {
-  background: linear-gradient(90deg, #ffd250, #fff2a0);
-  box-shadow: 0 0 12px #ffd250;
-}
-
-.skill-new::after {
-  background: linear-gradient(90deg, #3cf3ff, #a6f8ff);
-  box-shadow: 0 0 12px #3cf3ff;
-}
-
-.skill-non::after {
-  background: linear-gradient(90deg, #777, #aaa);
-  box-shadow: 0 0 8px #777;
-}
-
-/* ================= BUTTON GROUP ================= */
-.thebuttons {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-}
-
-.contactbutton {
-  flex: 1;
-  min-width: 0;
-}
-
-/* ================= BUTTONS ================= */
-.contactbutton,
-.secretbutton {
-  border-radius: 10px;
-  border: none;
-  font-size: 15px;
-  padding: 10px;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  border: 1px solid var(--stroke);
-  background: rgba(255,255,255,0.05);
-  color: white;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-
-.contactbutton:hover,
-.secretbutton:hover {
-  transform: translateY(-2px) scale(1.03);
-  border-color: var(--violet);
-}
-
-.button-icon {
-  width: 20px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-/* ================= SECRET BUTTON FIX ================= */
-.secretbutton {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
+    /* ================= NAVBAR ================= */
     .navbar {
       width: 100%;
       max-width: 1200px;
@@ -293,71 +96,251 @@ p {
       border-color: var(--violet);
     }
 
+    /* ================= CARDS ================= */
+    .container,
+    .container2,
+    .languageboxes {
+      width: 100%;
+      max-width: 500px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    /* ================= STRUCTURE ================= */
+    .container {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .container2 {
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .languageboxes {
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ================= HEADERS ================= */
+    h1 {
+      margin: 0;
+      color: var(--title);
+      text-shadow: 0 0 14px rgba(122,124,255,0.35);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ================= TOP ROW ================= */
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hampimage {
+      width: 50px;
+      height: auto;
+    }
+
+    /* ================= LANGUAGE CARDS ================= */
+    .language-item {
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 48%;
+      max-width: 180px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform .2s ease, box-shadow .2s ease, border .2s ease;
+    }
+
+    .language-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--violet);
+    }
+
+    .language-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .language-item .skill-tag {
+      display: none;
+    }
+
+    .language-item::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      width: 100%;
+      opacity: .9;
+    }
+
+    .skill-adv::after {
+      background: linear-gradient(90deg, #ff5050, #ff9f9f);
+      box-shadow: 0 0 12px #ff5050;
+    }
+
+    .skill-dec::after {
+      background: linear-gradient(90deg, #7a7cff, #b2b4ff);
+      box-shadow: 0 0 12px #7a7cff;
+    }
+
+    .skill-alr::after {
+      background: linear-gradient(90deg, #ffd250, #fff2a0);
+      box-shadow: 0 0 12px #ffd250;
+    }
+
+    .skill-new::after {
+      background: linear-gradient(90deg, #3cf3ff, #a6f8ff);
+      box-shadow: 0 0 12px #3cf3ff;
+    }
+
+    .skill-non::after {
+      background: linear-gradient(90deg, #777, #aaa);
+      box-shadow: 0 0 8px #777;
+    }
+
+   /* ================= HOMEPAGE BUTTONS ================= */
+.thebuttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap; /* lets them wrap on small screens */
+}
+
+.homepage-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.homepage-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: var(--violet);
+}
+
+.homepage-btn .button-icon {
+  width: 20px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 
 
+    /* ================= SECRET BUTTON ================= */
+    .secretbutton {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
 
-    </style>
-  </head>
-  <body>
+    .secretbutton:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--violet);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <div class="container">
+    <div class="top-row">
+      <img class="hampimage" onclick="location.href='/secret'" src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" alt="icon">
+      <h1 class="title">Hamptonix</h1>
+    </div>
+    <p>Hello, I'm Hamptonix and I'm a newbie developer from the United States. I develop in-browser games, macros, and programs. My dream is to one day design and build CPU's and graphics cards.</p>
     
-    <div id="navbar-container"></div>
-    
-    <div class="container">
-      <div class="top-row">
-        <img class="hampimage" onclick="href='/secret'" src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" alt="icon">
-        <h1 class="title">Hamptonix</h1>
-      </div>
-      <p>Hello, I'm Hamptonix and I'm a newbie developer from the United States. I develop in-browser games, macros, and programs. My dream is to one day design and build CPU's and graphics cards.</p>
-      
-      <div class="thebuttons">
-        <button class="contactbutton" onclick="location.href='https://guns.lol/hamptonix'"><img src="https://i.postimg.cc/XNgh6bvX/image.png" alt="icon" class="button-icon" />My Socials</button>
-        <button class="contactbutton" onclick="location.href='https://github.com/Hamptonix/Hamptonix.github.io/'"><img src="https://i.postimg.cc/50yH91Mk/image-1.png" alt="icon" class="button-icon" />Repository</button>
-      </div>
+    <div class="thebuttons">
+      <button class="homepage-btn" onclick="location.href='https://guns.lol/hamptonix'">
+        <img src="https://i.postimg.cc/XNgh6bvX/image.png" class="button-icon" />My Socials
+      </button>
+      <button class="homepage-btn" onclick="location.href='https://github.com/Hamptonix/Hamptonix.github.io/'">
+        <img src="https://i.postimg.cc/50yH91Mk/image-1.png" class="button-icon" />Repository
+      </button>
+    </div>
+  </div>
+
+  <div class="languageboxes">
+    <div class="languagetext">
+      <h1>Languages I work with</h1>
+    </div>
+
+    <div class="language-item">
+      <span class="language-name">HTML</span>
+      <span class="skill-tag skill-adv">Advanced</span>
     </div>
    
-    <div class="languageboxes">
-  <div class="languagetext">
-    <h1>Languages I work with</h1>
-  </div>
- 
-  <div class="language-item">
-    <span class="language-name">HTML</span>
-    <span class="skill-tag skill-adv">Advanced</span>
-  </div>
- 
-  <div class="language-item">
-    <span class="language-name">Skript</span>
-    <span class="skill-tag skill-dec">Decent</span>
-  </div>
- 
-  <div class="language-item">
-    <span class="language-name">Lua</span>
-    <span class="skill-tag skill-dec">Decent</span>
+    <div class="language-item">
+      <span class="language-name">Skript</span>
+      <span class="skill-tag skill-dec">Decent</span>
+    </div>
+   
+    <div class="language-item">
+      <span class="language-name">Lua</span>
+      <span class="skill-tag skill-dec">Decent</span>
+    </div>
+
+    <div class="language-item">
+      <span class="language-name">JavaScript</span>
+      <span class="skill-tag skill-alr">Alright</span>
+    </div>
+   
+    <div class="language-item">
+      <span class="language-name">CSS</span>
+      <span class="skill-tag skill-alr">Alright</span>
+    </div>
   </div>
 
-  <div class="language-item">
-    <span class="language-name">JavaScript</span>
-    <span class="skill-tag skill-alr">Alright</span>
+  <div class="container2">
+    <p>© Hamptonix. All Rights Reserved. | Version 4.0.11</p>
+    <button class="secretbutton" onclick="location.href='/secret'">?</button>
   </div>
- 
-  <div class="language-item">
-    <span class="language-name">CSS</span>
-    <span class="skill-tag skill-alr">Alright</span>
-  </div>
- 
-</div>
 
-    </div>
-    
-    <div class="container2">
-      
-      <p>© Hamptonix. All Rights Reserved. | Version 4.0</p>
-      <button class="secretbutton" onclick="location.href='/secret'">?</button>
-      
-    </div>
-      
-    
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -396,11 +379,7 @@ p {
             db.collection('users')
               .doc(user.uid)
               .onSnapshot((doc) => {
-                if (doc.exists) {
-                  creditsAmount.textContent = doc.data().credits ?? 0;
-                } else {
-                  creditsAmount.textContent = '0';
-                }
+                creditsAmount.textContent = doc.exists ? doc.data().credits ?? 0 : "0";
               });
           } else {
             userStatus.textContent = 'Logged Out';
@@ -411,5 +390,5 @@ p {
       })
       .catch((err) => console.error('Failed to load navbar:', err));
   </script>
-  </body>
+</body>
 </html>
