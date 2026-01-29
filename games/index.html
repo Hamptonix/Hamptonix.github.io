@@ -7,153 +7,181 @@
   <title>Hamptonix | Games</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/style.css">
-
-  <body>
-
-  <!-- Your page content -->
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
   <style>
-  body {
-    margin: 0;
-    background: #1f1f1f;
-    font-family: 'Poppins', sans-serif;
-    padding: 0;
-  }
+    /* ================= THEME VARIABLES ================= */
+    :root {
+      --bg: #05070f;
+      --cardTop: rgba(30,36,60,0.55);
+      --cardBot: rgba(18,22,40,0.55);
+      --stroke: rgba(255,255,255,0.15);
+      --title: rgba(255,255,255,0.96);
+      --text: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.65);
+      --violet: #7a7cff;
+      --teal: #3cf3ff;
+      --radius: 18px;
+      --shadow: 0 25px 80px rgba(0,0,0,0.65);
+    }
 
-  /* Wrap games in their own container so styles don't affect navbar */
-  .games-container {
-    display: flex;
-    justify-content: center; /* center horizontally */
-    align-items: flex-start; /* align top vertically */
-    min-height: calc(100vh - 60px); /* subtract navbar height if needed */
-    padding-top: 20px;
-  }
+    /* ================= BASE ================= */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background:
+        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
+        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
+        linear-gradient(180deg, #05070f, #0b1022);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
 
-  .games-container2 {
-    display: flex;
-    justify-content: center; /* center horizontally */
-    align-items: flex-start; /* align top vertically */
-    min-height: 160; /* subtract navbar height if needed */
-    padding-top: 20px;
-  }
+    /* ================= NAVBAR ================= */
+    .navbar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 15px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 20px;
+    }
 
-  .games-container3 {
-    display: flex;
-    justify-content: center; /* center horizontally */
-    align-items: flex-start; /* align top vertically */
-    min-height: 160; /* subtract navbar height if needed */
-    padding-top: 20px;
-  }
+    .navbar .button, .navbar a.button {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+    }
 
-  .game-panel {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
+    .navbar .button:hover, .navbar a.button:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--violet);
+    }
 
-  .game-icon {
-    display: block;
-    width: 150px;
-    height: 150px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: transform 0.2s ease;
-    cursor: pointer;
-    background: transparent;
-  }
+    .navbar .button.active, .navbar a.button.active {
+      border-color: var(--violet);
+    }
 
-  .game-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+    /* ================= PAGE TITLE ================= */
+    h1.page-title {
+      text-align: center;
+      margin: 5px auto;
+      color: var(--title);
+    }
 
-  .game-icon:hover {
-    transform: scale(1.1);
-  }
-  
-  .game-icon {
-  position: relative;
-  overflow: hidden;
-}
+    h1.page-title a {
+      color: #9a9b9c;
+      text-decoration: underline;
+    }
 
-.game-icon {
-  position: relative;
-  overflow: hidden;
-}
+    /* ================= GAMES GRID ================= */
+    .games-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      padding: 10px 20px;
+    }
 
-/* Image stays at the bottom */
-.game-icon img {
-  position: relative;
-  z-index: 1;
-}
+    .game-icon {
+      position: relative;
+      display: block;
+      width: 150px;
+      height: 150px;
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+    }
 
-/* Gradient fade (middle layer) */
-.game-icon::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.8),
-    rgba(0, 0, 0, 0)
-  );
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  border-radius: 15px;
-  pointer-events: none;
-  z-index: 2;
-}
+    .game-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      z-index: 1;
+    }
 
-/* Title text (top layer, full white) */
-.game-icon .game-title {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-  z-index: 3;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-}
+    .game-icon::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+      border-radius: 15px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 2;
+      pointer-events: none;
+    }
 
-/* Hover effects */
-.game-icon:hover::after {
-  opacity: 1;
-}
+    .game-icon .game-title {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 3;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
 
-.game-icon:hover .game-title {
-  opacity: 1;
-  transform: translateY(0);
-}
+    .game-icon:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 40px rgba(122,124,255,0.5);
+    }
 
+    .game-icon:hover::after {
+      opacity: 1;
+    }
 
-</style>
+    .game-icon:hover .game-title {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      .game-icon { width: 120px; height: 120px; }
+    }
+  </style>
 </head>
 <body>
 
-<div id="navbar-container"></div>
+  <div id="navbar-container"></div>
 
-<h1 style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px; color: #ffffff">My Games</h1>
-
-<div class="games-container2">
-  <div class="game-panel">
+  <h1 class="page-title">My Games</h1>
+  <div class="games-container" id="my-games">
+    <!-- Game links injected here -->
      <a href="/games/localgames/mining.html" class="game-icon" title="Mining Game">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Mining Game" />
     </a>
@@ -164,13 +192,11 @@
       <img src="/oldgames.jpeg" alt="My Old Games" />
     </a>
   </div>
-</div>
 
-<h1 style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px; color: #ffffff">Other Games</h1>
-
-<div class="games-container">
-  <div class="game-panel">
-    <a href="https://buckshotroulette.online/steam/" class="game-icon" title="Buckshot Roulette">
+  <h1 class="page-title">Other Games</h1>
+  <div class="games-container" id="other-games">
+    <!-- Game links injected here -->
+     <a href="https://buckshotroulette.online/steam/" class="game-icon" title="Buckshot Roulette">
       <img src="https://gcdn.thunderstore.io/live/repository/icons/fungoid-BUCKSHOT_ROULETTE-1.0.0.png.256x256_q95.png" alt="Buckshot Roulette" />
     </a>
     <a href="https://smashkarts.io/" class="game-icon" title="Smash Karts">
@@ -264,13 +290,11 @@
       <img src="https://i.postimg.cc/sD6sq8Vy/escape-road-asm-1x1-cover.png" alt="Escape Road" />
     </a>
   </div>
-</div>
 
-<h1 style="margin-top: 5px; margin-bottom: 5px; margin-left: 20px; color: #ffffff">Emulated Games (Run them <a target="_blank" rel="noopener noreferrer" style="color: #9a9b9c;" href="https://www.neilb.net/n64wasm/">Here</a>)</h1>
-
-<div class="games-container3">
-  <div class="game-panel">
-     <a href="https://www.romsgames.net/nintendo-64-rom-mario-kart-64/" class="game-icon" title="Mario Kart 64">
+  <h1 class="page-title">Emulated Games (<a target="_blank" rel="noopener noreferrer" href="https://www.neilb.net/n64wasm/">Run them Here</a>)</h1>
+  <div class="games-container" id="emulated-games">
+    <!-- Emulated games injected here -->
+      <a href="https://www.romsgames.net/nintendo-64-rom-mario-kart-64/" class="game-icon" title="Mario Kart 64">
       <img src="https://cache.downloadroms.io/static/58bfff1a84cb18d960c4d943366a60372d637010/image.jpeg" alt="Mario Kart 64" />
     </a>
     <a href="https://www.romsgames.net/nintendo-64-rom-doom-64/" class="game-icon" title="Doom 64">
@@ -283,54 +307,63 @@
       <img src="https://cache.downloadroms.io/static/176e29fcbf8caf8dfd06e7bd405e42ac3863b6f3/image.jpeg" alt="GoldenEye007 64" />
     </a>
   </div>
-</div>
 
   <br>
 
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
     const firebaseConfig = {
-  apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-  authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-  projectId: "hamptonixwebsite-dea39",
-  storageBucket: "hamptonixwebsite-dea39.appspot.com",
-  messagingSenderId: "847673046697",
-  appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-  measurementId: "G-CBL1NL69PH"
-};
-
+      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
+      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
+      projectId: "hamptonixwebsite-dea39",
+      storageBucket: "hamptonixwebsite-dea39.appspot.com",
+      messagingSenderId: "847673046697",
+      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
+      measurementId: "G-CBL1NL69PH"
+    };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Load the navbar and display user status
-  fetch('/navbar.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('navbar-container').innerHTML = html;
+    // Load navbar and set user status
+    fetch('/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
 
-      firebase.auth().onAuthStateChanged(user => {
-        const statusEl = document.getElementById("userStatus");
-        const loginBtn = document.getElementById("loginBtn");
+        const navButtons = document.querySelectorAll('.navbar .button, .navbar a.button');
+        const path = window.location.pathname;
+        navButtons.forEach(btn => {
+          const href = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+          if(href && href === path) btn.classList.add('active');
+        });
 
-        if (user && user.email) {
-          statusEl.textContent = user.email;
-          loginBtn.style.display = 'none'; // Hide Log In button
-        } else {
-          statusEl.textContent = "Logged Out";
-          loginBtn.style.display = 'inline-block'; // Show Log In button
-        }
+        auth.onAuthStateChanged(user => {
+          const statusEl = document.getElementById("userStatus");
+          const loginBtn = document.getElementById("loginBtn");
+          if (user && user.email) {
+            statusEl.textContent = user.email;
+            if(loginBtn) loginBtn.style.display = 'none';
+          } else {
+            statusEl.textContent = "Logged Out";
+            if(loginBtn) loginBtn.style.display = 'inline-block';
+          }
+        });
       });
+
+    // Auto-add game titles
+    document.querySelectorAll(".game-icon img").forEach(img => {
+      const parent = img.parentElement;
+      if(parent && !parent.querySelector(".game-title")) {
+        const title = document.createElement("span");
+        title.className = "game-title";
+        title.textContent = img.alt || "Untitled";
+        parent.appendChild(title);
+      }
     });
-    
-document.querySelectorAll(".game-icon").forEach(icon => {
-    const img = icon.querySelector("img");
-    if (!img || !img.alt) return;
-
-    const title = document.createElement("span");
-    title.className = "game-title";
-    title.textContent = img.alt;
-
-    icon.appendChild(title);
-  });
   </script>
+
 </body>
+</html>
