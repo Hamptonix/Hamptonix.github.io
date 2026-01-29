@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5285107729082317"
-     crossorigin="anonymous"></script>
-  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/png" href="/hamptonixmcsmall.png" />
@@ -13,144 +9,183 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
 
-  <!-- PAGE-SCOPED STYLES (NO NAVBAR INTERFERENCE) -->
   <style>
-
-     .navbar {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        box-sizing: border-box;
-        font-family: 'Poppins', Sans-Serif;
-        color: #ffffff;
-        margin: 0;
-        font-size: 40px;
-      }
-
-      .navbar .button {
-        font-family: 'Poppins', Sans-Serif;
-        font-size: 16px;}
-    
-    .smp-homepage * {
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+    /* ================= THEME VARIABLES ================= */
+    :root {
+      --bg: #05070f;
+      --cardTop: rgba(30, 36, 60, 0.55);
+      --cardBot: rgba(18, 22, 40, 0.55);
+      --stroke: rgba(255,255,255,0.15);
+      --title: rgba(255,255,255,0.96);
+      --text: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.65);
+      --violet: #7a7cff;
+      --teal: #3cf3ff;
+      --radius: 18px;
+      --shadow: 0 25px 80px rgba(0,0,0,0.65);
     }
 
+    /* ================= BASE ================= */
     body {
-      background-color: #1f1f1f;
       margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden;
-      height: 70%;
+      gap: 20px;
+      background:
+        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
+        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
+        linear-gradient(180deg, #05070f, #0b1022);
+      color: var(--text);
     }
 
+    /* ================= NAVBAR ================= */
     .navbar {
-      width: 100vw;
-      position: relative;
-      left: 50%;
-      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1200px;
+      margin: 15px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      flex-wrap: wrap;
     }
 
+    .navbar .logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .navbar .button, .navbar a.button {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+    }
+
+    .navbar .button:hover, .navbar a.button:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--violet);
+    }
+
+    .navbar .button.active, .navbar a.button.active {
+      box-shadow: 0 0 14px var(--violet);
+      border-color: var(--violet);
+    }
+
+    /* ================= SMP PAGE CONTAINER ================= */
     .smp-homepage {
-      width: 100%;
-      max-width: 70vh;
-      min-height: 70vh;
-      height: 70%;
-      overflow-x: none;
-      background-color: rgba(20,20,20,0.95);
+      width: 90%;
+      max-width: 600px;
+      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       padding: 30px;
-      margin-top: 25px;
-      border-radius: 20px;
       display: flex;
       flex-direction: column;
-      align-items: left;
       gap: 20px;
     }
 
     .smp-top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
 
     .smp-logo {
-      width: 100px;
-      height: 100px;
+      width: 50px;
+      height: 50px;
     }
 
     .smp-title {
-      color: #fff;
+      color: var(--title);
       font-size: 28px;
       margin: 0;
       font-weight: 600;
+      text-shadow: 0 0 14px rgba(122,124,255,0.35);
     }
 
     .smp-desc {
-      color: #ffffff;
-      text-align: left;
-      margin: 0;
+      color: var(--muted);
       line-height: 1.5;
-    }
-
-    .smp-desc.feature {
-      margin-top: 10px;
-      color: #bfbdbd;
-      font-size: 16px;
+      margin-bottom: 0px;
     }
 
     .smp-release {
-      color: #fff;
-      background-color: rgba(66,135,245,0.7);
-      border: 2px solid #4287f5;
-      padding: 8px 15px;
-      border-radius: 8px;
-      font-size: 16px;
+      color: var(--text);
+      background-color: rgba(122,124,255,0.15);
+      border: 1px solid var(--violet);
+      padding: 10px 15px;
+      border-radius: 12px;
       font-weight: 600;
-      max-width: 300px;
       text-align: center;
-      margin-left: auto;
-margin-right: auto;
-display: block;
+      max-width: 300px;
+      margin: 0 auto;
     }
 
     .smp-btn-area {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      margin-top: 10px;
     }
 
     .smp-btn {
       width: 100%;
       padding: 12px;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
-      border: none;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: white;
       cursor: pointer;
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 8px;
-      background-color: rgba(98, 98, 98, 0.8);
-      color: rgb(255, 255, 255);
-      transition: 0.3s ease;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
 
-
     .smp-btn:hover {
-      background-color: rgb(126, 126, 126);
+      transform: translateY(-2px) scale(1.02);
+      border-color: var(--violet);
+      box-shadow: 0 0 12px var(--violet);
     }
 
     .smp-btn img {
       width: 20px;
       height: 20px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 600px) {
+      .smp-homepage { padding: 20px; }
+      .smp-top { flex-direction: column; gap: 10px; }
+      .smp-title { font-size: 24px; text-align: center; }
+      .smp-logo { width: 60px; height: 60px; }
+      .smp-btn { font-size: 14px; padding: 10px; }
     }
   </style>
 </head>
@@ -161,59 +196,43 @@ display: block;
   <div class="smp-homepage">
     <div class="smp-top">
       <img class="smp-logo" src="/hamptonixmcsmall.png" alt="Hamptonix SMP Logo">
-      <h1 class="smp-title">&nbsp;&nbsp;&nbsp;Hamptonix</h1>
-    </div>
-    
-    <div class="smp-release">
-      Launching February 2026
+      <h1 class="smp-title">Hamptonix SMP</h1>
     </div>
 
-    <h3 class="smp-desc">
+    <div class="smp-release">Launching February 2026</div>
+
+    <p class="smp-desc">
       Welcome to the official homepage for <strong>Hamptonix SMP</strong> — a brand-new Minecraft survival world coming soon with community events, seasons, challenges, shops, and more!
-    </h3>
-
-    <p class="smp-desc feature">
-      <strong>Features:</strong>
-      <br>
-      • Java and Bedrock Compatible Server 1.21+
-      <br>
-      • Custom Items and Features
-      <br> 
-      • Fun Community Events and Prizes
-      <br>
-      • Active Developement Team and Support
     </p>
 
-    <p class="smp-desc feature">
-      <strong>Server Specs:</strong>
-      <br>
-      • Ryzen 9 5950X CPU
-      <br>
-      • 10 GB DDR4 RAM 
+    <p class="smp-desc">
+      <strong>Features:</strong><br>
+      • Java and Bedrock Compatible Server 1.21+<br>
+      • Custom Items and Features<br>
+      • Fun Community Events and Prizes<br>
+      • Active Development Team and Support
     </p>
 
-    <p class="smp-desc feature">Server is Odyssey Only!</p>
+    <p class="smp-desc">
+      <strong>Server Specs:</strong><br>
+      • Ryzen 9 5950X CPU<br>
+      • 10 GB DDR4 RAM
+    </p>
 
-    
+    <p class="smp-desc">Server is Odyssey Only!</p>
 
     <div class="smp-btn-area">
       <button class="smp-btn" onclick="location.href='https://forms.gle/PYjA1cKGpvLHJ378A'">
-        <img src="/hamptonixmcsmall.png"> 
-        Apply to Join!
+        <img src="/hamptonixmcsmall.png"> Apply to Join!
       </button>
       <button class="smp-btn" onclick="location.href='https://instagram.com/hamptonixdev'">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"> 
-        Get Updates on Instagram!
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"> Get Updates on Instagram!
       </button>
       <button class="smp-btn" onclick="location.href='https://docs.google.com/document/d/1-pgIX_Z66gJDpvYHrxQ0zc9lAfiLbJLoClGrnobVSwk/edit?usp=sharing'">
-        <img src="https://forge-vtt.com/images/tos.png"> 
-        Server Terms of Service
+        <img src="https://forge-vtt.com/images/tos.png"> Server Terms of Service
       </button>
-      
     </div>
   </div>
-  
-  <br>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -229,7 +248,6 @@ display: block;
       appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
       measurementId: "G-CBL1NL69PH",
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -243,6 +261,14 @@ display: block;
         const loginBtn = document.getElementById('loginBtn');
         const creditsBox = document.getElementById('creditsBox');
         const creditsAmount = document.getElementById('creditsAmount');
+
+        // Auto-active button based on URL
+        const navButtons = document.querySelectorAll('.navbar .button, .navbar a.button');
+        const path = window.location.pathname;
+        navButtons.forEach(btn => {
+          const href = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+          if(href && href === path) btn.classList.add('active');
+        });
 
         auth.onAuthStateChanged(user => {
           if (user) {
@@ -262,6 +288,5 @@ display: block;
       })
       .catch(err => console.error("Navbar load failed:", err));
   </script>
-
 </body>
 </html>
