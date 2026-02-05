@@ -173,11 +173,63 @@
     @media (max-width: 600px) {
       .game-icon { width: 120px; height: 120px; }
     }
+    
+    /* ================= SEARCH ================= */
+.search-wrapper {
+  width: 100%;
+  max-width: 1200px; /* match navbar */
+  margin: 10px auto 10px;
+  padding: 0 20px;   /* same inner spacing as navbar */
+  display: flex;
+  box-sizing: border-box;
+}
+
+
+#gameSearch {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+  color: var(--text);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#gameSearch::placeholder {
+  color: var(--muted);
+}
+
+#gameSearch:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 2px rgba(122,124,255,0.25);
+}
+
+.hidden {
+  display: none !important;
+}
+
   </style>
 </head>
 <body>
 
   <div id="navbar-container"></div>
+  
+  <div class="search-wrapper">
+  <input
+    type="text"
+    id="gameSearch"
+    placeholder="Search games..."
+    autocomplete="off"
+  />
+</div>
+
+<div class="games-container hidden" id="search-results"></div>
+
 
   <h1 class="page-title">My Games</h1>
   <div class="games-container" id="my-games">
@@ -363,7 +415,64 @@
         parent.appendChild(title);
       }
     });
-  </script>
+    
+  const searchInput = document.getElementById("gameSearch");
+  const searchResults = document.getElementById("search-results");
+
+  const sections = [
+    document.getElementById("my-games"),
+    document.getElementById("other-games"),
+    document.getElementById("emulated-games")
+  ];
+
+  const sectionTitles = document.querySelectorAll(".page-title");
+
+  // Collect ALL games
+  const allGames = Array.from(document.querySelectorAll(".game-icon"));
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
+
+    // Reset
+    if (!query) {
+      searchResults.innerHTML = "";
+      searchResults.classList.add("hidden");
+
+      sections.forEach(sec => sec.classList.remove("hidden"));
+      sectionTitles.forEach(title => title.classList.remove("hidden"));
+      return;
+    }
+
+    // Hide original layout
+    sections.forEach(sec => sec.classList.add("hidden"));
+    sectionTitles.forEach(title => title.classList.add("hidden"));
+
+    searchResults.classList.remove("hidden");
+    searchResults.innerHTML = "";
+
+    const matches = allGames.filter(game => {
+      const title =
+        game.querySelector(".game-title")?.textContent ||
+        game.title ||
+        "";
+      return title.toLowerCase().includes(query);
+    });
+
+    if (matches.length === 0) {
+      searchResults.innerHTML = `
+        <div style="opacity:.7; padding:20px;">
+          No games found
+        </div>
+      `;
+      return;
+    }
+
+    matches.forEach(game => {
+      searchResults.appendChild(game.cloneNode(true));
+    });
+  });
+</script>
+
 
 </body>
 </html>
