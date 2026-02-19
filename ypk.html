@@ -186,37 +186,43 @@
       .smp-btn { font-size: 14px; padding: 10px; }
     }
     
-    /* ================= ROLE TAGS ================= */
+   /* ================= ROLE TAGS ================= */
 .role-tag {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
-  margin-left: 8px;
-  margin-right: 6px; /* spacing from next line */
-  margin-bottom: 4px; /* prevents vertical touching */
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 4px;
   color: white;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(0,0,0,0.4); /* darker default border */
   backdrop-filter: blur(6px);
 }
 
+/* Blue - CAST */
 .role-cast {
-  background: rgba(43, 108, 255, 0.65); /* slightly transparent */
-  border-color: rgba(20, 50, 140, 0.8); /* darker outline */
+  background: rgba(43, 108, 255, 0.45); /* slightly transparent */
+  border: 1px solid #2b6cff; /* solid border */
 }
 
 /* Green - CAMERA */
 .role-camera {
-  background: rgba(25, 179, 92, 0.65);
-  border-color: rgba(10, 90, 40, 0.8);
+  background: rgba(25, 179, 92, 0.45);
+  border: 1px solid #19b35c;
 }
 
-/* Red - EDITOR */
+/* Red - MANAGER */
+.role-manager {
+  background: rgba(214, 40, 40, 0.45);
+  border: 1px solid #d62828;
+}
+
+/* Purple - EDITOR */
 .role-editor {
-  background: rgba(214, 40, 40, 0.65);
-  border-color: rgba(120, 15, 15, 0.85);
+  background: rgba(255, 0, 132, 0.5);
+  border: 1px solid #ff0084;
 }
 
 
@@ -240,7 +246,7 @@
   <span class="role-tag role-cast">CAST</span> Andrew <br>
   <span class="role-tag role-cast">CAST</span> Nick <br>
   <span class="role-tag role-camera">CAMERA</span> Jaden <br>
-  <span class="role-tag role-editor">MANAGER</span> Eli
+  <span class="role-tag role-manager">MANAGER</span><span class="role-tag role-editor">EDITOR</span> Eli
 </p>
 
 
@@ -255,6 +261,8 @@
       </button>
     </div>
   </div>
+  
+  <br>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
