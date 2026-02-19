@@ -185,6 +185,41 @@
       .smp-logo { width: 60px; height: 60px; }
       .smp-btn { font-size: 14px; padding: 10px; }
     }
+    
+    /* ================= ROLE TAGS ================= */
+.role-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+  margin-right: 6px; /* spacing from next line */
+  margin-bottom: 4px; /* prevents vertical touching */
+  color: white;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(0,0,0,0.4); /* darker default border */
+  backdrop-filter: blur(6px);
+}
+
+.role-cast {
+  background: rgba(43, 108, 255, 0.65); /* slightly transparent */
+  border-color: rgba(20, 50, 140, 0.8); /* darker outline */
+}
+
+/* Green - CAMERA */
+.role-camera {
+  background: rgba(25, 179, 92, 0.65);
+  border-color: rgba(10, 90, 40, 0.8);
+}
+
+/* Red - EDITOR */
+.role-editor {
+  background: rgba(214, 40, 40, 0.65);
+  border-color: rgba(120, 15, 15, 0.85);
+}
+
+
   </style>
 </head>
 <body>
@@ -200,13 +235,14 @@
     <p class="smp-desc">Subscribe to YPK for exclusive vlogs, subscribers have the opportunity to be in videos and get personally interviewed.</p>
 
     <p class="smp-desc">
-      <strong>Members of YPK</strong><br>
-      • Jose [Cast]<br>
-      • Andrew [Cast]<br>
-      • Nick [Cast]<br>
-      • Jaden [Cameraman]<br>
-      • Eli [Community Manager/Editor]
-    </p>
+  <strong>Members of YPK</strong><br>
+  <span class="role-tag role-cast">CAST</span> Jose <br>
+  <span class="role-tag role-cast">CAST</span> Andrew <br>
+  <span class="role-tag role-cast">CAST</span> Nick <br>
+  <span class="role-tag role-camera">CAMERA</span> Jaden <br>
+  <span class="role-tag role-editor">MANAGER</span> Eli
+</p>
+
 
     <p class="smp-desc">Watch our latest Video! </p>
 
