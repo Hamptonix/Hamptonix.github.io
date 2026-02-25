@@ -179,9 +179,10 @@
 </head>
 <body>
 
+  <!-- Navbar container -->
   <div id="navbar-container"></div>
 
-  <!-- Your existing project card replaced with the new features -->
+  <!-- Bathroom location system -->
   <div class="project-card">
     <div class="top-row">
       <img class="hampimage" src="/assets/outhouse.png" alt="icon" />
@@ -198,7 +199,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
-    // Your Firebase config
+    // Your existing Firebase config (update with your actual config)
     const firebaseConfig = {
       apiKey: "AIzaSyDgqKucX0Hs66nfEA4wXWOD1mM5ssPx4Js",
       authDomain: "outhouse-hamptonix.firebaseapp.com",
@@ -208,8 +209,6 @@
       appId: "1:23392249157:web:1042a8a874dbfd4b3d0a2c",
       measurementId: "G-GD3LZZYSLV"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
@@ -256,7 +255,7 @@
       locationButtonsContainer.appendChild(btn);
     });
 
-    // Listen and update display
+    // Function to listen and update display
     function listenToBathrooms() {
       locations.forEach(loc => {
         firebase.database().ref(`bathrooms/${loc.id}/users`).off();
@@ -288,3 +287,5 @@
 
 </body>
 </html>
+
+Let me know if you'd like me to include your exact navbar code as well or if you'd like further customization!
