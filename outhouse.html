@@ -182,14 +182,111 @@
 
   <!-- Project 1 -->
   <div class="project-card">
-    <div class="top-row">
-      <img class="hampimage" src="/assets/outhouse.png" alt="icon">
-      <h1 class="title">OutHouse</h1>
-    </div>
-    <p class="description">Coming Soon</p>
-    <div class="thebuttons">
-    </div>
+  <div class="top-row">
+    <img class="hampimage" src="/assets/outhouse.png" alt="icon" />
+    <h1 class="title">OutHouse</h1>
   </div>
+  <p class="description">Select your bathroom location to let others know where you are. You will be automatically removed after 10 minutes.</p>
+  <div class="thebuttons" id="location-buttons">
+    <!-- Buttons will be generated here -->
+  </div>
+  <div id="bathroom-status" style="margin-top: 20px; width: 100%; max-width: 500px; overflow-y: auto; max-height: 300px; padding: 10px; border: 1px solid var(--stroke); border-radius: var(--radius); background: linear-gradient(180deg, var(--cardTop), var(--cardBot));">
+    <!-- Real-time display of users will be shown here -->
+  </div>
+</div>
+
+<script>
+  // Firebase configuration - replace with your own config if needed
+  const firebaseConfig = {
+    apiKey: "AIzaSyDgqKucX0Hs66nfEA4wXWOD1mM5ssPx4Js",
+    authDomain: "outhouse-hamptonix.firebaseapp.com",
+    projectId: "outhouse-hamptonix",
+    storageBucket: "outhouse-hamptonix.firebasestorage.app",
+    messagingSenderId: "23392249157",
+    appId: "1:23392249157:web:1042a8a874dbfd4b3d0a2c",
+    measurementId: "G-GD3LZZYSLV"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  const locations = [
+    { id: 'A_Building_Left', label: 'A Building Left' },
+    { id: 'A_Building_Right', label: 'A Building Right' },
+    { id: 'G_Building', label: 'G Building' }
+  ];
+
+  const locationButtonsContainer = document.getElementById('location-buttons');
+  const bathroomStatusDiv = document.getElementById('bathroom-status');
+
+  let currentUserRef = null; // to track this user's current Firebase reference
+
+  // Create buttons dynamically
+  locations.forEach(loc => {
+    const btn = document.createElement('button');
+    btn.className = 'button';
+    btn.textContent = loc.label;
+    btn.onclick = () => {
+      const name = prompt("Enter your name:");
+      if (!name) return;
+
+      // Remove previous entry if exists
+      if (currentUserRef) {
+        currentUserRef.remove();
+      }
+
+      // Push new user to Firebase
+      currentUserRef = firebase.database().ref(`bathrooms/${loc.id}/users`).push();
+      currentUserRef.set(name);
+
+      // Set a timer to remove the user after 10 minutes
+      setTimeout(() => {
+        if (currentUserRef) {
+          currentUserRef.remove();
+          if (currentUserRef === currentUserRef) {
+            currentUserRef = null;
+          }
+        }
+      }, 600000); // 10 minutes in milliseconds
+    };
+    locationButtonsContainer.appendChild(btn);
+  });
+
+  // Function to listen to Firebase updates and display
+  function listenToBathrooms() {
+    // Clear previous listeners
+    locations.forEach(loc => {
+      firebase.database().ref(`bathrooms/${loc.id}/users`).off();
+    });
+
+    // Listen for each location
+    locations.forEach(loc => {
+      firebase.database().ref(`bathrooms/${loc.id}/users`).on('value', snapshot => {
+        const usersObj = snapshot.val() || {};
+        const users = Object.values(usersObj);
+        const header = `<h3 style="margin-top:10px;">${loc.label}</h3>`;
+        const userList = users.length ? users.join(', ') : '<em>No one here</em>';
+
+        // Check if section exists
+        const sectionId = `section-${loc.id}`;
+        let sectionDiv = document.getElementById(sectionId);
+        if (!sectionDiv) {
+          sectionDiv = document.createElement('div');
+          sectionDiv.id = sectionId;
+          sectionDiv.innerHTML = header + `<p>${userList}</p>`;
+          bathroomStatusDiv.appendChild(sectionDiv);
+        } else {
+          sectionDiv.innerHTML = header + `<p>${userList}</p>`;
+        }
+      });
+    });
+  }
+
+  // Initialize listeners
+  listenToBathrooms();
+
+</script>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
