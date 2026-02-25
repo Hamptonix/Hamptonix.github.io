@@ -138,6 +138,7 @@
       display: flex;
       gap: 10px;
       width: 100%;
+      flex-wrap: wrap;
     }
 
     .contactbutton {
@@ -180,167 +181,109 @@
 
   <div id="navbar-container"></div>
 
-  <!-- Project 1 -->
+  <!-- Your existing project card replaced with the new features -->
   <div class="project-card">
-  <div class="top-row">
-    <img class="hampimage" src="/assets/outhouse.png" alt="icon" />
-    <h1 class="title">OutHouse</h1>
+    <div class="top-row">
+      <img class="hampimage" src="/assets/outhouse.png" alt="icon" />
+      <h1 class="title">OutHouse</h1>
+    </div>
+    <p class="description">Select your bathroom location to let others know where you are. You will be automatically removed after 10 minutes.</p>
+    <div class="thebuttons" id="location-buttons"></div>
+    <div id="bathroom-status" style="margin-top:20px; width:100%; max-width:500px; overflow-y:auto; max-height:300px; padding:10px; border:1px solid var(--stroke); border-radius:var(--radius); background:linear-gradient(180deg, var(--cardTop), var(--cardBot));"></div>
   </div>
-  <p class="description">Select your bathroom location to let others know where you are. You will be automatically removed after 10 minutes.</p>
-  <div class="thebuttons" id="location-buttons">
-    <!-- Buttons will be generated here -->
-  </div>
-  <div id="bathroom-status" style="margin-top: 20px; width: 100%; max-width: 500px; overflow-y: auto; max-height: 300px; padding: 10px; border: 1px solid var(--stroke); border-radius: var(--radius); background: linear-gradient(180deg, var(--cardTop), var(--cardBot));">
-    <!-- Real-time display of users will be shown here -->
-  </div>
-</div>
 
-<script>
-  // Firebase configuration - replace with your own config if needed
-  const firebaseConfig = {
-    apiKey: "AIzaSyDgqKucX0Hs66nfEA4wXWOD1mM5ssPx4Js",
-    authDomain: "outhouse-hamptonix.firebaseapp.com",
-    projectId: "outhouse-hamptonix",
-    storageBucket: "outhouse-hamptonix.firebasestorage.app",
-    messagingSenderId: "23392249157",
-    appId: "1:23392249157:web:1042a8a874dbfd4b3d0a2c",
-    measurementId: "G-GD3LZZYSLV"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  const locations = [
-    { id: 'A_Building_Left', label: 'A Building Left' },
-    { id: 'A_Building_Right', label: 'A Building Right' },
-    { id: 'G_Building', label: 'G Building' }
-  ];
-
-  const locationButtonsContainer = document.getElementById('location-buttons');
-  const bathroomStatusDiv = document.getElementById('bathroom-status');
-
-  let currentUserRef = null; // to track this user's current Firebase reference
-
-  // Create buttons dynamically
-  locations.forEach(loc => {
-    const btn = document.createElement('button');
-    btn.className = 'button';
-    btn.textContent = loc.label;
-    btn.onclick = () => {
-      const name = prompt("Enter your name:");
-      if (!name) return;
-
-      // Remove previous entry if exists
-      if (currentUserRef) {
-        currentUserRef.remove();
-      }
-
-      // Push new user to Firebase
-      currentUserRef = firebase.database().ref(`bathrooms/${loc.id}/users`).push();
-      currentUserRef.set(name);
-
-      // Set a timer to remove the user after 10 minutes
-      setTimeout(() => {
-        if (currentUserRef) {
-          currentUserRef.remove();
-          if (currentUserRef === currentUserRef) {
-            currentUserRef = null;
-          }
-        }
-      }, 600000); // 10 minutes in milliseconds
-    };
-    locationButtonsContainer.appendChild(btn);
-  });
-
-  // Function to listen to Firebase updates and display
-  function listenToBathrooms() {
-    // Clear previous listeners
-    locations.forEach(loc => {
-      firebase.database().ref(`bathrooms/${loc.id}/users`).off();
-    });
-
-    // Listen for each location
-    locations.forEach(loc => {
-      firebase.database().ref(`bathrooms/${loc.id}/users`).on('value', snapshot => {
-        const usersObj = snapshot.val() || {};
-        const users = Object.values(usersObj);
-        const header = `<h3 style="margin-top:10px;">${loc.label}</h3>`;
-        const userList = users.length ? users.join(', ') : '<em>No one here</em>';
-
-        // Check if section exists
-        const sectionId = `section-${loc.id}`;
-        let sectionDiv = document.getElementById(sectionId);
-        if (!sectionDiv) {
-          sectionDiv = document.createElement('div');
-          sectionDiv.id = sectionId;
-          sectionDiv.innerHTML = header + `<p>${userList}</p>`;
-          bathroomStatusDiv.appendChild(sectionDiv);
-        } else {
-          sectionDiv.innerHTML = header + `<p>${userList}</p>`;
-        }
-      });
-    });
-  }
-
-  // Initialize listeners
-  listenToBathrooms();
-
-</script>
-
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
+    // Your Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-      projectId: "hamptonixwebsite-dea39",
-      storageBucket: "hamptonixwebsite-dea39.appspot.com",
-      messagingSenderId: "847673046697",
-      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH",
+      apiKey: "AIzaSyDgqKucX0Hs66nfEA4wXWOD1mM5ssPx4Js",
+      authDomain: "outhouse-hamptonix.firebaseapp.com",
+      projectId: "outhouse-hamptonix",
+      storageBucket: "outhouse-hamptonix.firebasestorage.app",
+      messagingSenderId: "23392249157",
+      appId: "1:23392249157:web:1042a8a874dbfd4b3d0a2c",
+      measurementId: "G-GD3LZZYSLV"
     };
+
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const database = firebase.database();
 
-    fetch('/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar-container').innerHTML = html;
+    // Define locations
+    const locations = [
+      { id: 'A_Building_Left', label: 'A Building Left' },
+      { id: 'A_Building_Right', label: 'A Building Right' },
+      { id: 'G_Building', label: 'G Building' }
+    ];
 
-        const userStatus = document.getElementById('userStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const creditsBox = document.getElementById('creditsBox');
-        const creditsAmount = document.getElementById('creditsAmount');
+    const locationButtonsContainer = document.getElementById('location-buttons');
+    const bathroomStatusDiv = document.getElementById('bathroom-status');
 
-        // Auto-active button
-        const navButtons = document.querySelectorAll('.navbar .button, .navbar a.button');
-        const path = window.location.pathname;
-        navButtons.forEach(btn => {
-          const href = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
-          if(href && href === path) btn.classList.add('active');
-        });
+    let currentUserRef = null; // track current user ref
 
-        auth.onAuthStateChanged(user => {
-          if (user) {
-            userStatus.textContent = user.email || "User";
-            if (loginBtn) loginBtn.style.display = "none";
-            if (creditsBox) creditsBox.style.display = "inline-flex";
+    // Generate buttons
+    locations.forEach(loc => {
+      const btn = document.createElement('button');
+      btn.className = 'button';
+      btn.textContent = loc.label;
+      btn.onclick = () => {
+        const name = prompt("Enter your name:");
+        if (!name) return;
 
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-              creditsAmount.textContent = doc.exists ? doc.data().credits ?? 0 : "0";
-            });
+        // Remove previous user if exists
+        if (currentUserRef) {
+          currentUserRef.remove();
+        }
+
+        // Push new user
+        currentUserRef = firebase.database().ref(`bathrooms/${loc.id}/users`).push();
+        currentUserRef.set(name);
+
+        // Set timer to remove after 10 mins
+        setTimeout(() => {
+          if (currentUserRef) {
+            currentUserRef.remove();
+            if (currentUserRef === currentUserRef) {
+              currentUserRef = null;
+            }
+          }
+        }, 600000);
+      };
+      locationButtonsContainer.appendChild(btn);
+    });
+
+    // Listen and update display
+    function listenToBathrooms() {
+      locations.forEach(loc => {
+        firebase.database().ref(`bathrooms/${loc.id}/users`).off();
+      });
+      locations.forEach(loc => {
+        firebase.database().ref(`bathrooms/${loc.id}/users`).on('value', snapshot => {
+          const usersObj = snapshot.val() || {};
+          const users = Object.values(usersObj);
+          const header = `<h3 style="margin-top:10px;">${loc.label}</h3>`;
+          const userList = users.length ? users.join(', ') : '<em>No one here</em>';
+
+          const sectionId = `section-${loc.id}`;
+          let sectionDiv = document.getElementById(sectionId);
+          if (!sectionDiv) {
+            sectionDiv = document.createElement('div');
+            sectionDiv.id = sectionId;
+            sectionDiv.innerHTML = header + `<p>${userList}</p>`;
+            bathroomStatusDiv.appendChild(sectionDiv);
           } else {
-            userStatus.textContent = "Logged Out";
-            if (loginBtn) loginBtn.style.display = "inline-block";
-            if (creditsBox) creditsBox.style.display = "none";
+            sectionDiv.innerHTML = header + `<p>${userList}</p>`;
           }
         });
-      })
-      .catch(err => console.error("Navbar load failed:", err));
+      });
+    }
+
+    // Start listening
+    listenToBathrooms();
   </script>
 
 </body>
