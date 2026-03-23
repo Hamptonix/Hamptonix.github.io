@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>your cooked</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111;
+      --accent: #e8ff00;
+      --accent2: #ff3c3c;
+      --text: #f0f0f0;
+      --muted: #555;
+      --border: #222;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(232,255,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,255,0,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 12vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
+    h1 span {
+      color: var(--accent);
+      display: inline-block;
+      animation: glitch 4s infinite 2s;
+    }
+
+    .subtitle {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.6s;
+    }
+
+    /* Countdown ring */
+    .ring-wrap {
+      margin: 3rem auto 1.5rem;
+      width: 140px;
+      height: 140px;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.8s;
+    }
+
+    .ring-wrap svg {
+      transform: rotate(-90deg);
+      width: 140px;
+      height: 140px;
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 6;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 6;
+      stroke-linecap: flat;
+      stroke-dasharray: 408;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.1s linear;
+      filter: drop-shadow(0 0 6px var(--accent));
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #countdown-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(232,255,0,0.4);
+      transition: transform 0.15s ease;
+    }
+
+    .ring-center small {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1s;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 1s infinite;
+    }
+
+    .dot.red { background: var(--accent2); animation: none; }
+
+    /* Tab counter */
+    .tab-count {
+      margin-top: 2.5rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.1s;
+    }
+
+    .tab-count strong {
+      color: var(--text);
+      font-size: 1.1rem;
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.1em;
+    }
+
+    /* Warning box */
+    .warning {
+      display: none;
+      margin-top: 2rem;
+      border: 1px solid var(--accent2);
+      padding: 0.75rem 1.25rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      max-width: 320px;
+      animation: flicker 0.5s infinite;
+    }
+
+    .warning.show { display: block; }
+
+    /* Launched flash */
+    .launch-flash {
+      position: fixed;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .launch-flash.fired {
+      animation: flash 0.3s ease forwards;
+    }
+
+    /* Keyframes */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.6); }
+    }
+
+    @keyframes flash {
+      0%   { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes glitch {
+      0%, 92%, 100% { transform: none; text-shadow: none; }
+      93%  { transform: skewX(-10deg) translateX(4px); text-shadow: -3px 0 var(--accent2); }
+      95%  { transform: skewX(8deg) translateX(-3px); text-shadow: 3px 0 var(--accent2); }
+      97%  { transform: none; }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.6; }
+    }
+
+    /* Popup blocked notice */
+    .blocked-notice {
+      display: none;
+      margin-top: 1.5rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--accent2);
+      max-width: 340px;
+      line-height: 1.8;
+    }
+    .blocked-notice.show { display: block; }
+    .blocked-notice a {
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="launch-flash" id="flash"></div>
+
+  <div class="container">
+    <div class="label">// autonomous tab replicator v1.0</div>
+
+    <h1>SELF<br><span>CLONE</span></h1>
+    <div class="subtitle">THIS TAB WILL REPRODUCE IN</div>
+
+    <div class="ring-wrap">
+      <svg viewBox="0 0 140 140">
+        <circle class="ring-track" cx="70" cy="70" r="65"/>
+        <circle class="ring-progress" id="ring" cx="70" cy="70" r="65"/>
+      </svg>
+      <div class="ring-center">
+        <div id="countdown-num">3</div>
+        <small>SECONDS</small>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">STANDING BY</span>
+    </div>
+
+    <div class="tab-count">
+      <strong id="tab-num">01</strong>
+      TABS SPAWNED THIS SESSION
+    </div>
+
+    <div class="warning" id="warning">
+      ⚠ EXPONENTIAL GROWTH DETECTED — USE WITH CAUTION
+    </div>
+
+    <div class="blocked-notice" id="blocked">
+      POPUP BLOCKED — allow popups for this page, then <a onclick="manualOpen()">click here to open manually</a>.
+    </div>
+  </div>
+
+  <script>
+    const INTERVAL = 1000;
+    const circumference = 2 * Math.PI * 65; // ≈ 408.4
+
+    const ring = document.getElementById('ring');
+    const numEl = document.getElementById('countdown-num');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+    const tabNum = document.getElementById('tab-num');
+    const warning = document.getElementById('warning');
+    const flash = document.getElementById('flash');
+    const blocked = document.getElementById('blocked');
+
+    ring.style.strokeDasharray = circumference;
+    ring.style.strokeDashoffset = 0;
+
+    // Track count in sessionStorage so it increments across clones
+    let count = parseInt(sessionStorage.getItem('tabCount') || '0');
+    sessionStorage.setItem('tabCount', count);
+    tabNum.textContent = String(count).padStart(2, '0');
+
+    if (count >= 5) {
+      warning.classList.add('show');
+    }
+
+    let startTime = null;
+    let animId;
+
+    function tick(ts) {
+      if (!startTime) startTime = ts;
+      const elapsed = ts - startTime;
+      const remaining = Math.max(0, INTERVAL - elapsed);
+      const secs = Math.ceil(remaining / 1000);
+      const progress = elapsed / INTERVAL; // 0 → 1
+
+      // Ring drains
+      ring.style.strokeDashoffset = circumference * progress;
+
+      // Number
+      numEl.textContent = secs;
+
+      // Status
+      if (progress < 0.33) {
+        statusText.textContent = 'STANDING BY';
+      } else if (progress < 0.66) {
+        statusText.textContent = 'PREPARING CLONE';
+      } else {
+        statusText.textContent = 'LAUNCHING SEQUENCE';
+      }
+
+      if (elapsed < INTERVAL) {
+        animId = requestAnimationFrame(tick);
+      } else {
+        launch();
+      }
+    }
+
+    function launch() {
+      // Flash
+      flash.classList.add('fired');
+      setTimeout(() => flash.classList.remove('fired'), 300);
+
+      statusText.textContent = 'CLONE LAUNCHED';
+      statusDot.classList.add('red');
+      numEl.textContent = '✓';
+
+      // Increment count for child
+      const newCount = count + 1;
+      sessionStorage.setItem('tabCount', newCount);
+
+      const newTab = window.open(window.location.href, '_blank');
+
+      if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+        blocked.classList.add('show');
+        statusText.textContent = 'POPUP BLOCKED';
+      } else {
+        count = newCount;
+        tabNum.textContent = String(count).padStart(2, '0');
+        if (count >= 5) warning.classList.add('show');
+
+        // Reset and loop
+        setTimeout(reset, 800);
+      }
+    }
+
+    function reset() {
+      startTime = null;
+      ring.style.strokeDashoffset = 0;
+      numEl.textContent = '3';
+      statusText.textContent = 'STANDING BY';
+      statusDot.classList.remove('red');
+      flash.classList.remove('fired');
+      blocked.classList.remove('show');
+      animId = requestAnimationFrame(tick);
+    }
+
+    function manualOpen() {
+      blocked.classList.remove('show');
+      window.open(window.location.href, '_blank');
+      count++;
+      sessionStorage.setItem('tabCount', count);
+      tabNum.textContent = String(count).padStart(2, '0');
+      if (count >= 5) warning.classList.add('show');
+      setTimeout(reset, 400);
+    }
+
+    // Kick off
+    animId = requestAnimationFrame(tick);
+  </script>
+</body>
+</html>
