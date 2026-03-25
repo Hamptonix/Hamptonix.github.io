@@ -1,409 +1,333 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5285107729082317"
-     crossorigin="anonymous"></script>
-  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/png" href="/assets/hamptonixlogo.jpeg" />
-  <title>Hamptonix | Home</title>
-
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hamptonix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <style>
-    /* ================= THEME VARIABLES ================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #05070f;
-      --cardTop: rgba(30, 36, 60, 0.55);
-      --cardBot: rgba(18, 22, 40, 0.55);
-      --stroke: rgba(255,255,255,0.15);
-      --title: rgba(255,255,255,0.96);
-      --text: rgba(255,255,255,0.85);
-      --muted: rgba(255,255,255,0.65);
-      --violet: #7a7cff;
-      --teal: #3cf3ff;
-      --radius: 18px;
-      --shadow: 0 25px 80px rgba(0,0,0,0.65);
+      --black: #0a0a0a;
+      --white: #f0f0f0;
+      --gray: #141414;
+      --border: #242424;
+      --accent: #7ecfea;
+      --accent-dim: #4aafcc;
+      --accent-glow: rgba(126, 207, 234, 0.15);
     }
 
-    /* ================= BASE ================= */
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      background:
-        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
-        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
-        linear-gradient(180deg, #05070f, #0b1022);
-      color: var(--text);
-    }
-
-    /* ================= NAVBAR ================= */
-    .navbar {
-      width: 100%;
-      max-width: 1200px;
-      margin: 15px;
-      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(18px) saturate(140%);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 20px;
-      flex-wrap: wrap;
-    }
-
-    .navbar .logo {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-    }
-
-    .navbar .brand-name {
-      font-weight: 600;
-      color: var(--title);
-      margin-right: 6px;
-    }
-
-    .navbar .button, .navbar a.button {
-      flex: 1;
-      min-width: 80px;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      text-decoration: none;
-      margin: 5px;
-    }
-
-    .navbar .button:hover, .navbar a.button:hover {
-      transform: translateY(-2px) scale(1.03);
-      border-color: var(--violet);
-    }
-
-    .navbar .button.active, .navbar a.button.active {
-      border-color: var(--violet);
-    }
-
-    /* ================= CARDS ================= */
-    .container,
-    .container2,
-    .languageboxes {
-      width: 100%;
-      max-width: 500px;
-      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(18px) saturate(140%);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-    }
-
-    /* ================= STRUCTURE ================= */
-    .container {
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .container2 {
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .languageboxes {
-      padding: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    /* ================= HEADERS ================= */
-    h1 {
-      margin: 0;
-      color: var(--title);
-      text-shadow: 0 0 14px rgba(122,124,255,0.35);
-    }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    /* ================= TOP ROW ================= */
-    .top-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .hampimage {
-      width: 50px;
-      height: auto;
-    }
-
-    /* ================= LANGUAGE CARDS ================= */
-    .language-item {
-      position: relative;
+    html, body {
+      width: 100%; height: 100%;
       overflow: hidden;
-      flex: 0 0 48%;
-      max-width: 180px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--stroke);
-      border-radius: 10px;
-      padding: 15px 20px;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(126,207,234,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(126,207,234,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .scene {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      transition: transform .2s ease, box-shadow .2s ease, border .2s ease;
+      justify-content: center;
+      padding: 20px;
     }
 
-    .language-item:hover {
-      transform: translateY(-3px);
-      border-color: var(--violet);
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      animation: fadeDown 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      letter-spacing: 0.22em;
+      color: var(--white);
+      text-shadow: 0 0 40px rgba(126,207,234,0.2);
+    }
+    .header-line {
+      width: 50px; height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 7px auto 0;
     }
 
-    .language-name {
-      font-size: 14px;
-      font-weight: 500;
+    .cards {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      justify-content: center;
+      animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.08s both;
     }
 
-    .language-item .skill-tag {
-      display: none;
+    .card {
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      width: clamp(190px, 20vw, 265px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(126,207,234,0.06),
+        0 12px 40px rgba(0,0,0,0.7);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .card:hover {
+      box-shadow:
+        0 0 0 1px rgba(126,207,234,0.2),
+        0 12px 50px rgba(0,0,0,0.75),
+        0 0 24px var(--accent-glow);
+      transform: translateY(-2px);
     }
 
-    .language-item::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 3px;
-      width: 100%;
-      opacity: .9;
+    .card-top {
+      padding: 16px 14px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+    }
+    .card-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      align-self: flex-start;
+      opacity: 0.8;
+    }
+    .avatar {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent);
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(126,207,234,0.25);
+    }
+    .avatar-placeholder {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .name-tag {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: 0.16em;
+      color: var(--white);
     }
 
-    .skill-adv::after {
-      background: linear-gradient(90deg, #ff5050, #ff9f9f);
-      box-shadow: 0 0 12px #ff5050;
+    .btn-list {
+      display: flex;
+      flex-direction: column;
     }
 
-    .skill-dec::after {
-      background: linear-gradient(90deg, #7a7cff, #b2b4ff);
-      box-shadow: 0 0 12px #7a7cff;
-    }
-
-    .skill-alr::after {
-      background: linear-gradient(90deg, #ffd250, #fff2a0);
-      box-shadow: 0 0 12px #ffd250;
-    }
-
-    .skill-new::after {
-      background: linear-gradient(90deg, #3cf3ff, #a6f8ff);
-      box-shadow: 0 0 12px #3cf3ff;
-    }
-
-    .skill-non::after {
-      background: linear-gradient(90deg, #777, #aaa);
-      box-shadow: 0 0 8px #777;
-    }
-
-    .title {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--title);
-  text-shadow: 0 0 14px rgba(122,124,255,0.35);
-  margin: 0;
-}
-
-   /* ================= HOMEPAGE BUTTONS ================= */
-.thebuttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap; /* lets them wrap on small screens */
-}
-
-.homepage-btn {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 12px;
-  border: 1px solid var(--stroke);
-  background: rgba(255,255,255,0.05);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-}
-
-.homepage-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  border-color: var(--violet);
-}
-
-.homepage-btn .button-icon {
-  width: 20px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-
-    /* ================= SECRET BUTTON ================= */
-    .secretbutton {
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      line-height: 1;
-      flex-shrink: 0;
-      border-radius: 10px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.05);
-      color: white;
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: rgba(240,240,240,0.75);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-decoration: none;
       cursor: pointer;
-      transition: transform .18s ease, box-shadow .18s ease;
+      transition: background 0.15s, color 0.15s, padding-left 0.2s;
+      text-transform: uppercase;
+    }
+    .social-btn:last-child { border-bottom: none; }
+    .social-btn:hover {
+      background: rgba(126,207,234,0.07);
+      color: var(--accent);
+      padding-left: 20px;
+    }
+    .social-btn img {
+      width: 14px; height: 14px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.55;
+      flex-shrink: 0;
+      transition: opacity 0.15s, filter 0.15s;
+    }
+    .social-btn:hover img {
+      filter: brightness(0) saturate(100%) invert(78%) sepia(50%) saturate(400%) hue-rotate(160deg);
+      opacity: 1;
+    }
+    .social-arrow {
+      margin-left: auto;
+      color: var(--accent);
+      opacity: 0;
+      font-size: 0.65rem;
+      transition: opacity 0.15s;
+    }
+    .social-btn:hover .social-arrow { opacity: 1; }
+
+    .old-btn-wrap {
+      padding: 16px 14px;
+    }
+    .old-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 14px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .old-btn:hover {
+      background: var(--accent);
+      color: var(--black);
+      box-shadow: 0 0 20px rgba(126,207,234,0.35);
     }
 
-    .secretbutton:hover {
-      transform: translateY(-2px) scale(1.03);
-      border-color: var(--violet);
+    /* Corner accents */
+    .corner { position: fixed; width: 26px; height: 26px; }
+    .corner.tl { top:14px; left:14px; border-top:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
+    .corner.tr { top:14px; right:14px; border-top:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
+    .corner.bl { bottom:14px; left:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
+    .corner.br { bottom:14px; right:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
+
+    @keyframes fadeDown {
+      from { opacity:0; transform: translateY(-14px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(14px); }
+      to   { opacity:1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <div id="navbar-container"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
 
-  <div class="container">
-    <div class="top-row">
-      <img class="hampimage" onclick="location.href='/secret'" src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-2.png" alt="icon">
-      <h1 class="title">Hamptonix</h1>
+  <div class="scene">
+
+    <div class="header">
+      <h1>hamptonix</h1>
+      <div class="header-line"></div>
     </div>
-    <p>Hi, I'm Hamptonix, I like computers</p>
-    
-    <div class="thebuttons">
-      <button class="homepage-btn" onclick="location.href='https://guns.lol/hamptonix'">
-        <img src="https://i.postimg.cc/XNgh6bvX/image.png" class="button-icon" />My Socials
-      </button>
-      <button class="homepage-btn" onclick="location.href='https://github.com/Hamptonix/Hamptonix.github.io/'">
-        <img src="https://i.postimg.cc/50yH91Mk/image-1.png" class="button-icon" />Repository
-      </button>
+
+    <div class="cards">
+
+      <!-- ── Profile Card ── -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Profile</span>
+          <img
+            class="avatar"
+            src="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-(2).png"
+            alt="hamptonix"
+          />
+          <span class="name-tag">hamptonix</span>
+        </div>
+
+        <div class="btn-list">
+
+          <a class="social-btn" href="https://youtube.com/@hamptonix" target="_blank">
+            <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="" />
+            YouTube
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://instagram.com/hamptonix" target="_blank">
+            <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="" />
+            Instagram
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://discord.gg/placeholder" target="_blank">
+            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="" />
+            Discord
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://github.com/hamptonix" target="_blank">
+            <img src="https://cdn.simpleicons.org/github/ffffff" alt="" />
+            GitHub
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://steamcommunity.com/id/hamptonix" target="_blank">
+            <img src="https://cdn.simpleicons.org/steam/ffffff" alt="" />
+            Steam
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://roblox.com/users/placeholder/profile" target="_blank">
+            <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="" />
+            Roblox
+            <span class="social-arrow">→</span>
+          </a>
+
+          <a class="social-btn" href="https://namemc.com/profile/hamptonix" target="_blank">
+            <img src="https://github.com/Hamptonix/Hamptonix.github.io/blob/main/assets/namemctrans.png" alt="" />
+            NameMC
+            <span class="social-arrow">→</span>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ── Old Website Card ── -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Archive</span>
+          <div class="avatar-placeholder">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4aafcc" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <span class="name-tag">Games Page</span>
+        </div>
+
+        <div class="old-btn-wrap">
+          <a class="old-btn" href="https://hamptonix.com/games" target="_blank">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Visit Games Page
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <div class="languageboxes">
-    <div class="languagetext">
-      <h1>The Languages I Use</h1>
-    </div>
-
-    <div class="language-item">
-      <span class="language-name">HTML</span>
-      <span class="skill-tag skill-adv">Advanced</span>
-    </div>
-   
-    <div class="language-item">
-      <span class="language-name">Skript</span>
-      <span class="skill-tag skill-dec">Decent</span>
-    </div>
-   
-    <div class="language-item">
-      <span class="language-name">Lua/Luau</span>
-      <span class="skill-tag skill-dec">Decent</span>
-    </div>
-
-    <div class="language-item">
-      <span class="language-name">JavaScript</span>
-      <span class="skill-tag skill-alr">Alright</span>
-    </div>
-   
-    <div class="language-item">
-      <span class="language-name">CSS/SCSS</span>
-      <span class="skill-tag skill-alr">Alright</span>
-    </div>
-  </div>
-
-  <div class="container2">
-    <p>© Hamptonix 2026. All Rights Reserved. | Version 4.4</p>
-    <button class="secretbutton" onclick="location.href='/secret'">?</button>
-  </div>
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-      projectId: "hamptonixwebsite-dea39",
-      storageBucket: "hamptonixwebsite-dea39.appspot.com",
-      messagingSenderId: "847673046697",
-      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH",
-    };
-
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    fetch('/navbar.html')
-      .then((res) => res.text())
-      .then((html) => {
-        document.getElementById('navbar-container').innerHTML = html;
-
-        const userStatus = document.getElementById('userStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const creditsBox = document.getElementById('creditsBox');
-        const creditsAmount = document.getElementById('creditsAmount');
-
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            userStatus.textContent = user.email || 'User';
-            if (loginBtn) loginBtn.style.display = 'none';
-            if (creditsBox) creditsBox.style.display = 'inline-flex';
-
-            db.collection('users')
-              .doc(user.uid)
-              .onSnapshot((doc) => {
-                creditsAmount.textContent = doc.exists ? doc.data().credits ?? 0 : "0";
-              });
-          } else {
-            userStatus.textContent = 'Logged Out';
-            if (loginBtn) loginBtn.style.display = 'inline-block';
-            if (creditsBox) creditsBox.style.display = 'none';
-          }
-        });
-      })
-      .catch((err) => console.error('Failed to load navbar:', err));
-  </script>
 </body>
 </html>
