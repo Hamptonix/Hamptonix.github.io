@@ -1,496 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="https://images.emojiterra.com/microsoft/fluent-emoji/15.1/3d/1f3ae_3d.png"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hamptonix | Games</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-(2).png" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <script src="/games/games.js"></script>
 
   <style>
-    /* ================= THEME VARIABLES ================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #05070f;
-      --cardTop: rgba(30,36,60,0.55);
-      --cardBot: rgba(18,22,40,0.55);
-      --stroke: rgba(255,255,255,0.15);
-      --title: rgba(255,255,255,0.96);
-      --text: rgba(255,255,255,0.85);
-      --muted: rgba(255,255,255,0.65);
-      --violet: #7a7cff;
-      --teal: #3cf3ff;
-      --radius: 18px;
-      --shadow: 0 25px 80px rgba(0,0,0,0.65);
+      --black: #0a0a0a;
+      --white: #f0f0f0;
+      --gray: #141414;
+      --border: #242424;
+      --accent: #7ecfea;
+      --accent-glow: rgba(126, 207, 234, 0.15);
+    }
+    html, body {
+      width: 100%; min-height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+    }
+    body { overflow-x: hidden; overflow-y: auto; }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(126,207,234,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(126,207,234,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    /* ================= BASE ================= */
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background:
-        radial-gradient(800px 500px at 15% 10%, rgba(122,124,255,.25), transparent 60%),
-        radial-gradient(700px 400px at 90% 20%, rgba(60,243,255,.18), transparent 60%),
-        linear-gradient(180deg, #05070f, #0b1022);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+    .corner { position: fixed; width: 26px; height: 26px; }
+    .corner.tl { top:14px; left:14px; border-top:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
+    .corner.tr { top:14px; right:14px; border-top:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
+    .corner.bl { bottom:14px; left:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
+    .corner.br { bottom:14px; right:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
+    @media (max-width: 360px) { .corner { display: none; } }
+
+    .scene {
+      position: relative; z-index: 1;
+      width: 100%; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 16px 60px;
     }
 
-    /* ================= NAVBAR ================= */
-    .navbar {
-      width: 100%;
-      max-width: 1200px;
-      margin: 15px;
-      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(18px) saturate(140%);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(240,240,240,0.4); text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .header { text-align: center; margin-bottom: 8px; animation: fadeDown 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.4rem);
+      letter-spacing: 0.22em; color: var(--white);
+      text-shadow: 0 0 40px rgba(126,207,234,0.2);
+    }
+    .header-sub {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem; letter-spacing: 0.3em;
+      color: var(--accent); opacity: 0.65; margin-top: 2px;
+    }
+    .header-line {
+      width: 50px; height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 7px auto 0;
+    }
+
+    .search-wrap {
+      width: 100%; max-width: 620px;
+      margin-top: 24px; margin-bottom: 20px;
+      animation: fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+    }
+    .search-box {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 3px; padding: 10px 14px;
+      box-shadow: 0 0 0 1px rgba(126,207,234,0.06);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: rgba(126,207,234,0.35);
+      box-shadow: 0 0 0 1px rgba(126,207,234,0.15), 0 0 18px var(--accent-glow);
+    }
+    .search-icon { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.4; }
+    #search {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--white); font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.08em; caret-color: var(--accent);
+    }
+    #search::placeholder { color: rgba(240,240,240,0.25); letter-spacing: 0.08em; }
+    .search-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem; letter-spacing: 0.2em;
+      color: var(--accent); opacity: 0.55; white-space: nowrap;
+    }
+
+    .filters {
+      width: 100%; max-width: 620px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 22px;
+      animation: fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+    }
+    .filter-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.2em;
+      padding: 5px 11px; background: transparent;
+      border: 1px solid var(--border); border-radius: 2px;
+      color: rgba(240,240,240,0.45); cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filter-btn:hover { color: var(--accent); border-color: rgba(126,207,234,0.25); }
+    .filter-btn.active {
+      background: rgba(126,207,234,0.1);
+      border-color: rgba(126,207,234,0.4);
+      color: var(--accent);
+    }
+
+    .grid {
+      width: 100%; max-width: 620px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      flex-wrap: wrap;
-      padding: 10px 20px;
+      animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.12s both;
+    }
+    @media (max-width: 539px) { .grid { grid-template-columns: 1fr; } }
+
+    .game-card {
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 3px; overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: 0 0 0 1px rgba(126,207,234,0.06), 0 8px 28px rgba(0,0,0,0.6);
+      transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+      min-width: 0; width: 100%;
+    }
+    .game-card:hover {
+      box-shadow: 0 0 0 1px rgba(126,207,234,0.2), 0 12px 40px rgba(0,0,0,0.7), 0 0 20px var(--accent-glow);
+      transform: translateY(-2px);
+      border-color: rgba(126,207,234,0.2);
     }
 
-    .navbar .button, .navbar a.button {
-      flex: 1;
-      min-width: 80px;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      text-decoration: none;
+    .game-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--border);
     }
-
-    .navbar .button:hover, .navbar a.button:hover {
-      transform: translateY(-2px) scale(1.03);
-      border-color: var(--violet);
-    }
-
-    .navbar .button.active, .navbar a.button.active {
-      border-color: var(--violet);
-    }
-
-    /* ================= PAGE TITLE ================= */
-    h1.page-title {
-      text-align: center;
-      margin: 5px auto;
-      color: var(--title);
-    }
-
-    h1.page-title a {
-      color: #9a9b9c;
-      text-decoration: underline;
-    }
-
-    /* ================= GAMES GRID ================= */
-    .games-container {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      max-width: 1200px;
-      width: 100%;
-      padding: 10px 20px;
-    }
-
     .game-icon {
-      position: relative;
-      display: block;
-      width: 150px;
-      height: 150px;
-      border-radius: 15px;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 6px; object-fit: cover;
+      border: 1px solid rgba(126,207,234,0.15);
+      background: rgba(255,255,255,0.04);
+    }
+    .game-icon-placeholder {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 6px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .game-title-wrap { flex: 1; min-width: 0; }
+    .game-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 0.14em; color: var(--white);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .game-tag {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.6rem; letter-spacing: 0.22em;
+      color: var(--accent); opacity: 0.65; margin-top: 1px;
+    }
+    .game-desc {
+      padding: 9px 12px 10px;
+      font-size: 0.6rem; line-height: 1.65; letter-spacing: 0.04em;
+      color: rgba(240,240,240,0.5); flex: 1;
+    }
+    .game-btn {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 9px 12px; background: transparent;
+      border-top: 1px solid var(--border);
+      border-bottom: none; border-left: none; border-right: none;
+      color: var(--accent); font-family: 'Space Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none; cursor: pointer;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+      width: 100%; min-height: 38px;
+    }
+    .game-btn:hover {
+      background: var(--accent); color: var(--black);
+      box-shadow: 0 0 18px rgba(126,207,234,0.3);
     }
 
-    .game-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      z-index: 1;
+    .empty {
+      grid-column: 1 / -1; text-align: center;
+      padding: 48px 16px; color: rgba(240,240,240,0.2);
+    }
+    .empty-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.22em; margin-top: 10px;
     }
 
-    .game-icon::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-      border-radius: 15px;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-      z-index: 2;
-      pointer-events: none;
+    @keyframes fadeDown {
+      from { opacity:0; transform: translateY(-14px); }
+      to   { opacity:1; transform: translateY(0); }
     }
-
-    .game-icon .game-title {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 3;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      pointer-events: none;
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(14px); }
+      to   { opacity:1; transform: translateY(0); }
     }
-
-    .game-icon:hover {
-      transform: scale(1.08);
-      box-shadow: 0 12px 40px rgba(122,124,255,0.5);
-    }
-
-    .game-icon:hover::after {
-      opacity: 1;
-    }
-
-    .game-icon:hover .game-title {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (max-width: 600px) {
-      .game-icon { width: 120px; height: 120px; }
-    }
-    
-    /* ================= SEARCH ================= */
-.search-wrapper {
-  width: 100%;
-  max-width: 1200px; /* match navbar */
-  margin: 10px auto 10px;
-  padding: 0 20px;   /* same inner spacing as navbar */
-  display: flex;
-  box-sizing: border-box;
-}
-
-
-#gameSearch {
-  width: 100%;
-  padding: 14px 18px;
-  font-size: 15px;
-  font-family: 'Poppins', sans-serif;
-  border-radius: 14px;
-  border: 1px solid var(--stroke);
-  background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
-  color: var(--text);
-  backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: var(--shadow);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-#gameSearch::placeholder {
-  color: var(--muted);
-}
-
-#gameSearch:focus {
-  border-color: var(--violet);
-  box-shadow: 0 0 0 2px rgba(122,124,255,0.25);
-}
-
-.hidden {
-  display: none !important;
-}
-
   </style>
 </head>
 <body>
 
-  <div id="navbar-container"></div>
-  
-  <div class="search-wrapper">
-  <input
-    type="text"
-    id="gameSearch"
-    placeholder="Search games..."
-    autocomplete="off"
-  />
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<div class="scene">
+
+  <a class="back-link" href="https://hamptonix.com">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    hamptonix.com
+  </a>
+
+  <div class="header">
+    <h1>games</h1>
+    <div class="header-sub">catalog</div>
+    <div class="header-line"></div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="search" type="text" placeholder="Search games..." autocomplete="off" spellcheck="false" />
+      <span class="search-count" id="count"></span>
+    </div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+
 </div>
 
-<div class="games-container hidden" id="search-results"></div>
+<script>
+  const games = typeof GAMES !== "undefined" ? GAMES : [];
 
+  if (!games.length) {
+    document.getElementById("grid").innerHTML =
+      '<div class="empty"><div style="font-size:1.6rem">◌</div><div class="empty-text">No games.js file found</div></div>';
+  }
 
-  <h1 class="page-title">My Games</h1>
-  <div class="games-container" id="my-games">
-    <!-- Game links injected here -->
-     <a href="/games/localgames/mining.html" class="game-icon" title="Mining Game">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s" alt="Mining Game" />
-    </a>
-    <a href="https://cube2game.itch.io/cube2" class="game-icon" title="Cube 2">
-      <img src="https://i.postimg.cc/4yd9ZYGv/cover-1.jpg" alt="Cube 2" />
-    </a>
-    <a href="/games/oldgames" class="game-icon" title="My Old Games">
-      <img src="/oldgames.jpeg" alt="My Old Games" />
-    </a>
-  </div>
+  const categories = ["All", ...new Set(games.map(g => g.category).filter(Boolean))];
+  let activeFilter = "All";
+  let query = "";
 
-  <h1 class="page-title">Other Games</h1>
-  <div class="games-container" id="other-games">
-    <!-- Game links injected here -->
-    <a href="https://www.xbox.com/en-US/play/games/rocket-league/C125W9BG2K0V" class="game-icon" title="Rocket League">
-      <img src="/assets/rocketleague.jpg" alt="Rocket League" />
-    </a>
-    <a href="https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2" class="game-icon" title="Fortnite">
-      <img src="https://i.postimg.cc/g01bPQtz/16-BP-Trello-Image.webp" alt="Fortnite" />
-    </a>
-     <a href="https://buckshotroulette.online/steam/" class="game-icon" title="Buckshot Roulette">
-      <img src="https://gcdn.thunderstore.io/live/repository/icons/fungoid-BUCKSHOT_ROULETTE-1.0.0.png.256x256_q95.png" alt="Buckshot Roulette" />
-    </a>
-    <a href="https://fivenightsatepsteins.org/fivenightsatepsteins-online/embed" class="game-icon" title="FNAE">
-      <img src="/assets/bige.jpg" alt="Five Nights at Epstiens" />
-    </a>
-    <a href="https://www.crazygames.com/game/hypper-sandbox" class="game-icon" title="Hypper Sandbox">
-      <img src="/assets/hypper.png" alt="Hypper" />
-    </a>
-    <a href="https://smashkarts.io/" class="game-icon" title="Smash Karts">
-      <img src="https://i.postimg.cc/gJp04f5C/poki-smash-karts-icon-filled-256.png" alt="Smash Karts" />
-    </a>
-    <a href="https://shellshock.io/" class="game-icon" title="Shell Shockers">
-      <img src="https://i.postimg.cc/HWcpXWVr/unnamed.png" alt="Shell Shockers" />
-    </a>
-    <a href="https://plinko-web-game.netlify.app/" class="game-icon" title="Plinko">
-      <img src="/plinko.jpeg" alt="Plinko" />
-    </a>
-    <a href="https://crazycattle3d.com/#online-game/" class="game-icon" title="Crazy Caddle 3D">
-      <img src="https://i.postimg.cc/50GxYyvS/images.jpg" alt="Crazy Caddle 3D" />
-    </a>
-    <a href="https://eaglercraft.com/play/?version=1.12.2" class="game-icon" title="Minecraft 1.12.2">
-      <img src="/assets/12.png" alt="Minecraft 1.12.2" />
-    </a>
-    <a href="https://eaglercraft.com/play/?version=1.8.8" class="game-icon" title="Minecraft 1.8.8">
-      <img src="/assets/8.png" alt="Minecraft 1.8.8" />
-    </a>
-    <a href="https://eaglercraft.com/play/?version=1.5.2" class="game-icon" title="Minecraft 1.5.2">
-      <img src="/assets/5.png" alt="Minecraft 1.5.2" />
-    </a>
-    <a href="https://nzp.gay/" class="game-icon" title="Zombies">
-      <img src="https://gcdn.thunderstore.io/live/repository/icons/Omega115-COD_Zombies_Zosig_Voicelines-1.1.0.png.256x256_q95.jpg" alt="COD Zombies" />
-    </a>
-    <a href="https://skribbl.io/" class="game-icon" title="Skribbl">
-      <img src="https://i.postimg.cc/ZnzFvRCJ/256x256bb-removebg-preview.png" alt="Skribbl" />
-    </a>
-    <a href="https://garticphone.com/draw?2" class="game-icon" title="Gartic Phone">
-      <img src="https://cdn2.steamgriddb.com/icon/92a795b46873063e419773b4f310fc29.png" alt="Gartic Phone" />
-    </a>
-    <a href="https://wiki-race.com/" class="game-icon" title="Wiki Race">
-      <img src="https://i.postimg.cc/9Q1hxw2F/Wikipedia-logo-v2-svg-removebg-preview.png" alt="Wiki Race" />
-    </a>
-    <a href="http://tanksmith.io/" class="game-icon" title="Tank Smith">
-      <img src="https://i.postimg.cc/tJwjr4zC/unnamed.jpg" alt="Tank Smith.io" />
-    </a>
-    <a href="https://bloxd.io/" class="game-icon" title="Bloxed">
-      <img src="https://i.postimg.cc/DZz3nXjw/unnamed-1.webp" alt="Bloxed.io" />
-    </a>
-    <a href="https://www.twoplayergames.org/game/basket-random" class="game-icon" title="Basket Ball Random">
-      <img src="https://1games.io/data/image/game/basket-random/banner/basket-random.png" alt="Basketball Random" />
-    </a>
-    <a href="https://player03.com/run/3/beta/" class="game-icon" title="Run 3">
-      <img src="https://funclap.com/uploads/2025/6/run-3-unblocked-funclap.png" alt="Run 3" />
-    </a>
-    <a href="https://thirtydollar.website/" class="game-icon" title="30 Dollar Website">
-      <img src="https://thirtydollar.website/icons/boowomp.png" alt="$30 Website" />
-    </a>
-    <a href="https://florr.io/" class="game-icon" title="Florr">
-      <img src="https://slope3online.io/data/image/game/florr-io-slope3online.io.png" alt="Florr.io" />
-    </a>
-    <a href="https://diep.io/" class="game-icon" title="Diep">
-      <img src="https://play.gilect.com/images/icons/diepio.webp" alt="Diep.io" />
-    </a>
-    <a href="https://survev.io/" class="game-icon" title="Survev">
-      <img src="https://play.gilect.com/images/icons/survevio.webp" alt="Survev.io" />
-    </a>
-    <a href="https://paperio.site/conflict/" class="game-icon" title="Paper">
-      <img src="https://www.speedrun.com/static/game/pdv23796/cover.png?v=06579d9" alt="Paper.io" />
-    </a>
-    <a href="https://agar.io/#ffa" class="game-icon" title="Agar">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Agar.io_Logo.png" alt="Agar.io" />
-    </a>
-    <a href="https://krunker.io/" class="game-icon" title="Krunker">
-      <img src="https://hillsofsteelgame.github.io/images/icon/krunker-io.jpg" alt="Krunker.io" />
-    </a>
-    <a href="https://totaljerkface.com/happy_wheels.tjf" class="game-icon" title="Happy Wheels">
-      <img src="https://media.abcya3.net/images/300/happy-wheels-2.jpg" alt="Happy Wheels" />
-    </a>
-    <a href="https://web-osu-mania.pages.dev/" class="game-icon" title="Osu">
-      <img src="/osu.png" alt="Osu" />
-    </a>
-    <a href="https://neal.fun/infinite-craft/" class="game-icon" title="Infinite Craft">
-      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/8f/a6/51/8fa6513d-1dd5-3976-0c3c-0a272ad08584/AppIcon-0-0-1x_U007epad-0-85-220.png/256x256bb.jpg" alt="Infinite Craft" />
-    </a>
-    <a href="https://neal.fun/password-game/" class="game-icon" title="Password Game">
-      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/38/72/4f/38724f19-df8a-872e-2162-8bc2ba88faf0/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/256x256bb.jpg" alt="Password Game" />
-    </a>
-    <a href="https://neal.fun/stimulation-clicker/" class="game-icon" title="Sim Clicker">
-      <img src="https://i.postimg.cc/yNpY3Lft/images.png" alt="Simulation Clicker" />
-    </a>
-    <a href="https://www.crazygames.com/game/traffic-rider-vvq" class="game-icon" title="Traffic Rider">
-      <img src="https://i.postimg.cc/MZYdf7bF/256x256baaaaaaaaaaaaaaab-1.jpg" alt="Traffic Rider" />
-    </a>
-    <a href="https://makeitmeme.com/en/" class="game-icon" title="Make It Meme">
-      <img src="https://cdn-1.webcatalog.io/catalog/poki-make-it-meme/poki-make-it-meme-icon-filled-256.png?v=1714780006458" alt="Make it Meme" />
-    </a>
-    <a href="https://slither.io/en/" class="game-icon" title="Slither">
-      <img src="https://i.postimg.cc/y8kprSjC/images.jpg" alt="Slither.io" />
-    </a>
-    <a href="https://www.crazygames.com/game/escape-road-asm" class="game-icon" title="Escape Road">
-      <img src="https://i.postimg.cc/sD6sq8Vy/escape-road-asm-1x1-cover.png" alt="Escape Road" />
-    </a>
-    <a href="https://snowrider3d.com/" class="game-icon" title="Snow Rider 3D">
-      <img src="https://www.hoodamath.com/large/1024/snowrider3d_1024.png" alt="Snow Rider 3D" />
-    </a>
-  </div>
+  const filtersEl = document.getElementById("filters");
+  const gridEl    = document.getElementById("grid");
+  const countEl   = document.getElementById("count");
+  const searchEl  = document.getElementById("search");
 
-  <h1 class="page-title">Emulated <a target="_blank" rel="noopener noreferrer" href="https://www.neilb.net/n64wasm/">Games</a></h1>
-  <div class="games-container" id="emulated-games">
-    <!-- Emulated games injected here -->
-      <a href="https://www.romsgames.net/nintendo-64-rom-mario-kart-64/" class="game-icon" title="Mario Kart 64">
-      <img src="https://cache.downloadroms.io/static/58bfff1a84cb18d960c4d943366a60372d637010/image.jpeg" alt="Mario Kart 64" />
-    </a>
-    <a href="https://www.romsgames.net/nintendo-64-rom-doom-64/" class="game-icon" title="Doom 64">
-      <img src="https://cache.downloadroms.io/static/2b6df8742e55b1bc7c696b334bbdc1f5e902df54/image.jpeg" alt="Doom 64" />
-    </a>
-    <a href="https://www.romsgames.net/nintendo-64-rom-paper-mario/" class="game-icon" title="Paper Mario 64">
-      <img src="https://cache.downloadroms.io/static/eb04a3390439dae4380a2aac731065dc191a0646/image.jpeg" alt="Paper Mario 64" />
-    </a>
-    <a href="https://www.romsgames.net/nintendo-64-rom-goldeneye-007/" class="game-icon" title="Goldeneye 64">
-      <img src="https://cache.downloadroms.io/static/176e29fcbf8caf8dfd06e7bd405e42ac3863b6f3/image.jpeg" alt="GoldenEye007 64" />
-    </a>
-  </div>
-
-  <br>
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCxscgTATE4IUgB7pGX01lP3Wr8pdU1B_8",
-      authDomain: "hamptonixwebsite-dea39.firebaseapp.com",
-      projectId: "hamptonixwebsite-dea39",
-      storageBucket: "hamptonixwebsite-dea39.appspot.com",
-      messagingSenderId: "847673046697",
-      appId: "1:847673046697:web:99d1de90522f1545cd5bb8",
-      measurementId: "G-CBL1NL69PH"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Load navbar and set user status
-    fetch('/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar-container').innerHTML = html;
-
-        const navButtons = document.querySelectorAll('.navbar .button, .navbar a.button');
-        const path = window.location.pathname;
-        navButtons.forEach(btn => {
-          const href = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
-          if(href && href === path) btn.classList.add('active');
-        });
-
-        auth.onAuthStateChanged(user => {
-          const statusEl = document.getElementById("userStatus");
-          const loginBtn = document.getElementById("loginBtn");
-          if (user && user.email) {
-            statusEl.textContent = user.email;
-            if(loginBtn) loginBtn.style.display = 'none';
-          } else {
-            statusEl.textContent = "Logged Out";
-            if(loginBtn) loginBtn.style.display = 'inline-block';
-          }
-        });
-      });
-
-    // Auto-add game titles
-    document.querySelectorAll(".game-icon img").forEach(img => {
-      const parent = img.parentElement;
-      if(parent && !parent.querySelector(".game-title")) {
-        const title = document.createElement("span");
-        title.className = "game-title";
-        title.textContent = img.alt || "Untitled";
-        parent.appendChild(title);
-      }
+  function renderFilters() {
+    filtersEl.innerHTML = "";
+    categories.forEach(c => {
+      const btn = document.createElement("button");
+      btn.className = "filter-btn" + (c === activeFilter ? " active" : "");
+      btn.textContent = c;
+      btn.onclick = () => { activeFilter = c; renderFilters(); renderGrid(); };
+      filtersEl.appendChild(btn);
     });
-    
-  const searchInput = document.getElementById("gameSearch");
-  const searchResults = document.getElementById("search-results");
+  }
 
-  const sections = [
-    document.getElementById("my-games"),
-    document.getElementById("other-games"),
-    document.getElementById("emulated-games")
-  ];
+  function buildIcon(g) {
+    if (g.icon && g.icon.includes("simpleicons.org")) {
+      return `<div class="game-icon-placeholder"><img src="${g.icon}" style="width:18px;height:18px;opacity:0.5;" /></div>`;
+    }
+    if (g.icon) {
+      return `<img class="game-icon" src="${g.icon}" onerror="this.outerHTML='<div class=\\'game-icon-placeholder\\'></div>'" />`;
+    }
+    return `<div class="game-icon-placeholder"></div>`;
+  }
 
-  const sectionTitles = document.querySelectorAll(".page-title");
+  function renderGrid() {
+    const q = query.toLowerCase();
+    const filtered = games.filter(g => {
+      const matchSearch = !q ||
+        (g.title  || "").toLowerCase().includes(q) ||
+        (g.desc   || "").toLowerCase().includes(q) ||
+        (g.tag    || "").toLowerCase().includes(q);
+      const matchFilter = activeFilter === "All" || g.category === activeFilter;
+      return matchSearch && matchFilter;
+    });
 
-  // Collect ALL games
-  const allGames = Array.from(document.querySelectorAll(".game-icon"));
+    countEl.textContent = filtered.length + " GAMES";
+    gridEl.innerHTML = "";
 
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.trim().toLowerCase();
-
-    // Reset
-    if (!query) {
-      searchResults.innerHTML = "";
-      searchResults.classList.add("hidden");
-
-      sections.forEach(sec => sec.classList.remove("hidden"));
-      sectionTitles.forEach(title => title.classList.remove("hidden"));
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.innerHTML = '<div style="font-size:1.6rem">◌</div><div class="empty-text">No games found</div>';
+      gridEl.appendChild(empty);
       return;
     }
 
-    // Hide original layout
-    sections.forEach(sec => sec.classList.add("hidden"));
-    sectionTitles.forEach(title => title.classList.add("hidden"));
-
-    searchResults.classList.remove("hidden");
-    searchResults.innerHTML = "";
-
-    const matches = allGames.filter(game => {
-      const title =
-        game.querySelector(".game-title")?.textContent ||
-        game.title ||
-        "";
-      return title.toLowerCase().includes(query);
-    });
-
-    if (matches.length === 0) {
-      searchResults.innerHTML = `
-        <div style="opacity:.7; padding:20px;">
-          No games found
+    filtered.forEach(g => {
+      const card = document.createElement("div");
+      card.className = "game-card";
+      card.innerHTML = `
+        <div class="game-header">
+          ${buildIcon(g)}
+          <div class="game-title-wrap">
+            <div class="game-title">${g.title || "Untitled"}</div>
+            <div class="game-tag">${g.tag || ""}</div>
+          </div>
         </div>
+        <div class="game-desc">${g.desc || ""}</div>
+        <a class="game-btn" href="${g.url || "#"}" target="_blank">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Play
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;opacity:0.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
       `;
-      return;
-    }
-
-    matches.forEach(game => {
-      searchResults.appendChild(game.cloneNode(true));
+      gridEl.appendChild(card);
     });
-  });
+  }
+
+  searchEl.addEventListener("input", e => { query = e.target.value; renderGrid(); });
+  renderFilters();
+  renderGrid();
 </script>
-
-
 </body>
 </html>
