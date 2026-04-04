@@ -27,7 +27,6 @@
       font-family: 'Space Mono', monospace;
     }
 
-    /* Allow scrolling on small screens */
     body {
       overflow-x: hidden;
       overflow-y: auto;
@@ -52,7 +51,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 16px;
+      padding: 40px 16px 60px;
     }
 
     .header {
@@ -88,7 +87,6 @@
       background: var(--gray);
       border: 1px solid var(--border);
       border-radius: 3px;
-      /* Fluid width: fills container on small screens, fixed on large */
       width: clamp(190px, 100%, 265px);
       flex: 1 1 190px;
       max-width: 265px;
@@ -108,7 +106,6 @@
       transform: translateY(-2px);
     }
 
-    /* On very small screens, cards go full width and stack */
     @media (max-width: 480px) {
       .cards {
         flex-direction: column;
@@ -179,7 +176,6 @@
       cursor: pointer;
       transition: background 0.15s, color 0.15s, padding-left 0.2s;
       text-transform: uppercase;
-      /* Ensure links are tappable on mobile */
       min-height: 40px;
     }
     .social-btn:last-child { border-bottom: none; }
@@ -238,6 +234,22 @@
       box-shadow: 0 0 20px rgba(126,207,234,0.35);
     }
 
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 10px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(240,240,240,0.28);
+      z-index: 10;
+      pointer-events: none;
+    }
+
     /* Corner accents */
     .corner { position: fixed; width: 26px; height: 26px; }
     .corner.tl { top:14px; left:14px; border-top:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
@@ -245,7 +257,6 @@
     .corner.bl { bottom:14px; left:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
     .corner.br { bottom:14px; right:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
 
-    /* Hide corners on very small screens to avoid overlap */
     @media (max-width: 360px) {
       .corner { display: none; }
     }
@@ -333,7 +344,7 @@
           </a>
 
           <a class="social-btn" href="https://www.rolimons.com/player/1806308043" target="_blank">
-            <img src="/assets/rolimons.jpg" alt="" />
+            <img src="/assets/rolimons.png" alt="" />
             Rolimons
             <span class="social-arrow">→</span>
           </a>
@@ -375,6 +386,9 @@
 
     </div>
   </div>
+
+  <!-- Fixed Footer -->
+  <div class="footer">Ⓒ 2026 Hamptonix | support@hamptonix.com</div>
 
 </body>
 </html>
