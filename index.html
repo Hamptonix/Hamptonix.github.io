@@ -72,6 +72,7 @@
       margin: 7px auto 0;
     }
 
+    /* Outer flex row: profile | card-stack */
     .cards {
       display: flex;
       flex-wrap: wrap;
@@ -87,9 +88,6 @@
       background: var(--gray);
       border: 1px solid var(--border);
       border-radius: 3px;
-      width: clamp(190px, 100%, 265px);
-      flex: 1 1 190px;
-      max-width: 265px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -106,12 +104,30 @@
       transform: translateY(-2px);
     }
 
+    /* Profile card fills left column */
+    .card-profile {
+      flex: 1 1 190px;
+      max-width: 265px;
+      width: clamp(190px, 100%, 265px);
+    }
+
+    /* Right column wrapper — Games stacked above Directory */
+    .card-stack {
+      flex: 1 1 190px;
+      max-width: 265px;
+      width: clamp(190px, 100%, 265px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
     @media (max-width: 480px) {
       .cards {
         flex-direction: column;
         align-items: stretch;
       }
-      .card {
+      .card-profile,
+      .card-stack {
         width: 100%;
         max-width: 100%;
         flex: none;
@@ -234,11 +250,9 @@
       box-shadow: 0 0 20px rgba(126,207,234,0.35);
     }
 
-    /* Footer */
     .footer {
       position: fixed;
-      bottom: 0;
-      left: 0;
+      bottom: 0; left: 0;
       width: 100%;
       text-align: center;
       padding: 10px 16px;
@@ -250,16 +264,13 @@
       pointer-events: none;
     }
 
-    /* Corner accents */
     .corner { position: fixed; width: 26px; height: 26px; }
     .corner.tl { top:14px; left:14px; border-top:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
     .corner.tr { top:14px; right:14px; border-top:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
     .corner.bl { bottom:14px; left:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
     .corner.br { bottom:14px; right:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
 
-    @media (max-width: 360px) {
-      .corner { display: none; }
-    }
+    @media (max-width: 360px) { .corner { display: none; } }
 
     @keyframes fadeDown {
       from { opacity:0; transform: translateY(-14px); }
@@ -287,8 +298,8 @@
 
     <div class="cards">
 
-      <!-- ── Profile Card ── -->
-      <div class="card">
+      <!-- ── Profile Card (left column) ── -->
+      <div class="card card-profile">
         <div class="card-top">
           <span class="card-label">Profile</span>
           <img
@@ -300,94 +311,112 @@
         </div>
 
         <div class="btn-list">
-
           <a class="social-btn" href="https://youtube.com/@hamptonix" target="_blank">
             <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="" />
             YouTube
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://instagram.com/eliahamp" target="_blank">
             <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="" />
             Instagram
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://discord.gg/862493254272286730" target="_blank">
             <img src="https://cdn.simpleicons.org/discord/ffffff" alt="" />
             Discord
             <span class="social-arrow">→</span>
           </a>
-
-           <a class="social-btn" href="https://kloak.app/invite/GHX8Z3ZV" target="_blank">
+          <a class="social-btn" href="https://kloak.app/invite/GHX8Z3ZV" target="_blank">
             <img src="https://r2.guns.lol/d5ebd606-b3b4-4789-bdb5-4b2c59a0e012.webp" alt="" />
             Kloak
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://github.com/hamptonix" target="_blank">
             <img src="https://cdn.simpleicons.org/github/ffffff" alt="" />
             GitHub
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://steamcommunity.com/profiles/76561199373335121/" target="_blank">
             <img src="https://cdn.simpleicons.org/steam/ffffff" alt="" />
             Steam
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://roblox.com/users/1806308043/profile" target="_blank">
             <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="" />
             Roblox
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://www.rolimons.com/player/1806308043" target="_blank">
             <img src="/assets/rolimons.png" alt="" />
             Rolimons
             <span class="social-arrow">→</span>
           </a>
-
           <a class="social-btn" href="https://namemc.com/profile/hamptonix" target="_blank">
             <img src="/assets/namemctrans.png" alt="" />
             Minecraft
             <span class="social-arrow">→</span>
           </a>
-
         </div>
       </div>
 
-      <!-- ── Old Website Card ── -->
-      <div class="card">
-        <div class="card-top">
-          <span class="card-label">Games</span>
-          <div class="avatar-placeholder">
-            <img
-            class="avatar"
-            src="https://images.emojiterra.com/microsoft/fluent-emoji/15.1/3d/1f3ae_3d.png"
-            alt="hamptonix"
-          />
+      <!-- ── Right column: Games on top, Directory below ── -->
+      <div class="card-stack">
+
+        <!-- Games Card -->
+        <div class="card">
+          <div class="card-top">
+            <span class="card-label">Games</span>
+            <div class="avatar-placeholder">
+              <img
+                class="avatar"
+                src="https://images.emojiterra.com/microsoft/fluent-emoji/15.1/3d/1f3ae_3d.png"
+                alt="games"
+              />
+            </div>
+            <span class="name-tag">Games Page</span>
           </div>
-          <span class="name-tag">Games Page</span>
+          <div class="old-btn-wrap">
+            <a class="old-btn" href="https://hamptonix.com/games" target="_blank">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              Visit Games Page
+            </a>
+          </div>
         </div>
 
-        <div class="old-btn-wrap">
-          <a class="old-btn" href="https://hamptonix.com/games" target="_blank">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Visit Games Page
-          </a>
+        <!-- Directory Card -->
+        <div class="card">
+          <div class="card-top">
+            <span class="card-label">Directory</span>
+            <div class="avatar-placeholder">
+              <img
+                class="avatar"
+                src="https://images.emojiterra.com/microsoft/fluent-emoji/15.1/3d/1f4c1_3d.png"
+                alt="directory"
+              />
+            </div>
+            <span class="name-tag">Directory</span>
+          </div>
+          <div class="old-btn-wrap">
+            <a class="old-btn" href="https://hamptonix.com/directory" target="_blank">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              Visit Directory
+            </a>
+          </div>
         </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- Fixed Footer -->
   <div class="footer">Ⓒ 2026 Hamptonix | support@hamptonix.com</div>
 
 </body>
