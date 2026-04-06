@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hamptonix | Directory</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-(2).png" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  html, body {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0a;
+}
+  
+  .dir-root {
+    background: #0a0a0a;
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .dir-root::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(126,207,234,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(126,207,234,0.03) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dir-inner {
+    position: relative; z-index: 1;
+    padding: 28px 20px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .dir-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #242424;
+  }
+  .dir-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.22em;
+    color: #f0f0f0;
+  }
+  .dir-path-root {
+    font-size: 0.7rem;
+    color: #7ecfea;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+  .dir-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .dir-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #1a1a1a;
+    text-decoration: none;
+    transition: background 0.13s, padding-left 0.15s;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .dir-row:first-child { border-top: 1px solid #1a1a1a; }
+  .dir-row:hover { background: rgba(126,207,234,0.06); }
+  .dir-row:hover .dir-name { color: #7ecfea; padding-left: 6px; }
+  .dir-row:hover .dir-arrow { opacity: 1; color: #7ecfea; }
+  .dir-row:hover .dir-icon { filter: brightness(0) saturate(100%) invert(78%) sepia(50%) saturate(400%) hue-rotate(160deg); opacity: 1; }
+
+  .dir-icon-cell {
+    width: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px 0 12px;
+  }
+  .dir-icon {
+    width: 13px; height: 13px;
+    filter: brightness(0) invert(1);
+    opacity: 0.4;
+    flex-shrink: 0;
+    transition: filter 0.13s, opacity 0.13s;
+  }
+  .dir-name {
+    flex: 1;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: #c8c8c8;
+    transition: color 0.13s, padding-left 0.15s;
+    padding: 12px 8px 12px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dir-name .dir-slash { color: #7ecfea; opacity: 0.6; }
+  .dir-name .dir-segment { color: #f0f0f0; }
+  .dir-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: rgba(126,207,234,0.45);
+    padding: 0 14px 0 8px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .dir-arrow {
+    font-size: 0.65rem;
+    padding-right: 14px;
+    opacity: 0;
+    transition: opacity 0.13s;
+    flex-shrink: 0;
+  }
+  .dir-section-header {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    color: rgba(126,207,234,0.45);
+    padding: 22px 12px 6px;
+    display: block;
+  }
+  .dir-section-header:first-of-type { padding-top: 0; }
+</style>
+
+<div class="dir-root">
+  <div class="dir-inner">
+
+    <div class="dir-header">
+      <span class="dir-title">hamptonix</span>
+      <span class="dir-path-root">~/hamptonix.com</span>
+    </div>
+
+    <div id="dir-list"></div>
+
+  </div>
+</div>
+
+<script>
+const PAGES = [
+  { section: "Root" },
+  { path: "/", label: "Root", href: "https://hamptonix.com/" },
+  { path: "/games", label: "Games", href: "https://hamptonix.com/games" },
+
+];
+
+const FILE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+
+const container = document.getElementById('dir-list');
+
+PAGES.forEach(p => {
+  if (p.section) {
+    const s = document.createElement('span');
+    s.className = 'dir-section-header';
+    s.textContent = p.section;
+    container.appendChild(s);
+    return;
+  }
+
+  const a = document.createElement('a');
+  a.className = 'dir-row';
+  a.href = p.href;
+  a.target = '_blank';
+
+  const segs = p.path === '/' ? [''] : p.path.split('/').filter(Boolean);
+  const pathHtml = p.path === '/'
+    ? `<span class="dir-slash">/</span><span class="dir-segment"> (root)</span>`
+    : segs.map((s, i) =>
+        `<span class="dir-slash">/</span><span class="dir-segment">${s}</span>`
+      ).join('');
+
+  a.innerHTML = `
+    <span class="dir-icon-cell">
+      <svg class="dir-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </span>
+    <span class="dir-name">${pathHtml}</span>
+    <span class="dir-label">${p.label}</span>
+    <span class="dir-arrow">→</span>
+  `;
+
+  container.appendChild(a);
+});
+</script>
