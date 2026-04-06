@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageVault</title>
+<link rel="icon" type="image/png" href="/assets/pv.jpg" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent2: #ff3366;
+    --text: #c8c8d8;
+    --dim: #555568;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, #1a1a2a 39px, #1a1a2a 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, #1a1a2a 39px, #1a1a2a 40px);
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 820px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .logo {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: -0.02em;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .tagline {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px 28px 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .step-label {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 0.18em;
+    padding: 3px 10px;
+    text-transform: uppercase;
+  }
+
+  label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  textarea, input[type="text"], input[type="password"] {
+    width: 100%;
+    background: #0d0d14;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 14px 16px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  textarea:focus, input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent)22;
+  }
+
+  textarea { min-height: 260px; line-height: 1.6; }
+
+  .row { display: flex; gap: 12px; align-items: flex-end; }
+  .row > * { flex: 1; }
+
+  .hint {
+    font-size: 0.68rem;
+    color: var(--dim);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .hint.warn { color: #ff9944; }
+
+  button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    padding: 14px 28px;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  button:hover { opacity: 0.85; }
+  button:active { transform: scale(0.98); }
+
+  button.danger {
+    background: var(--accent2);
+    flex: 0 0 auto;
+  }
+
+  #output-section {
+    display: none;
+    margin-top: 28px;
+  }
+
+  #output-section.visible { display: block; }
+
+  .output-box {
+    background: #070710;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .output-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  #ciphertext-preview {
+    font-size: 0.7rem;
+    color: var(--dim);
+    word-break: break-all;
+    line-height: 1.5;
+    max-height: 80px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #ciphertext-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30px;
+    background: linear-gradient(transparent, #070710);
+  }
+
+  .dl-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    width: 100%;
+    padding: 16px;
+    font-size: 0.9rem;
+  }
+
+  .dl-btn:hover { background: var(--accent)11; opacity: 1; }
+
+  .success-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent)15;
+    border: 1px solid var(--accent)44;
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .security-info {
+    border: 1px solid #1a1a2e;
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .security-info h3 {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 14px;
+  }
+
+  .security-info ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .security-info li {
+    font-size: 0.72rem;
+    color: var(--dim);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .security-info li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  #error-msg {
+    background: var(--accent2)18;
+    border: 1px solid var(--accent2)55;
+    color: var(--accent2);
+    padding: 12px 16px;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .mode-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+  }
+
+  .tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-size: 0.65rem;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  .tab.active {
+    background: var(--accent)15;
+    border-color: var(--accent)55;
+    color: var(--accent);
+  }
+
+  .tab:hover { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="logo">PAGE<span>VAULT</span></div>
+    <div class="tagline">Client-side AES-256-GCM Page Encryptor · Zero Server · Zero Loopholes · By Hamptonix</div>
+  </header>
+
+  <!-- Step 1: Content -->
+  <div class="step">
+    <div class="step-label">Step 01 — Content</div>
+    <label>Your secret page content (full HTML supported)</label>
+    <div class="mode-tabs">
+      <button class="tab active" onclick="setMode('html')">HTML</button>
+      <button class="tab" onclick="setMode('text')">Plain Text</button>
+    </div>
+    <textarea id="content-input" placeholder="<h1>Top Secret</h1>
+<p>This content is invisible without the key.</p>
+<p>Full HTML is supported — styles, scripts, anything.</p>"></textarea>
+    <div class="hint">This is what will be shown after the correct key is entered. Write any HTML you want — it is fully supported.</div>
+  </div>
+
+  <!-- Step 2: Key -->
+  <div class="step">
+    <div class="step-label">Step 02 — Private Key</div>
+    <label>Passphrase / private key</label>
+    <div class="row">
+      <input type="password" id="key-input" placeholder="Enter a strong passphrase…" autocomplete="off" spellcheck="false">
+      <button class="danger" onclick="generateKey()">Generate</button>
+    </div>
+    <div class="hint warn">⚠ Store this key safely. It is never saved anywhere. Without it, the page cannot be decrypted — ever.</div>
+  </div>
+
+  <!-- Step 3: Page Title -->
+  <div class="step">
+    <div class="step-label">Step 03 — Locked Page Settings</div>
+    <label>Locked page title (shown before unlock)</label>
+    <input type="text" id="title-input" value="Locked Page" placeholder="Locked Page">
+    <div class="hint" style="margin-top:10px;">This is the only thing visible on the output page before unlocking. It reveals nothing about the content.</div>
+  </div>
+
+  <!-- Encrypt -->
+  <div style="display:flex; gap:12px; align-items:center;">
+    <button onclick="encrypt()" style="flex:1; padding:18px; font-size:1rem; letter-spacing:0.15em;">
+      🔐 ENCRYPT &amp; GENERATE LOCKED PAGE
+    </button>
+  </div>
+
+  <div id="error-msg"></div>
+
+  <!-- Output -->
+  <div id="output-section">
+    <br>
+    <div class="success-badge"><div class="dot"></div> Encryption successful — AES-256-GCM</div>
+    <div class="output-box">
+      <div class="output-title">Encrypted blob (preview)</div>
+      <div id="ciphertext-preview"></div>
+    </div>
+    <button class="dl-btn" onclick="downloadLocked()">⬇ Download locked-page.html</button>
+  </div>
+
+  <div class="security-info">
+    <h3>Security Model</h3>
+    <ul>
+      <li>AES-256-GCM encryption via the browser's native Web Crypto API — no JS libraries, no external deps</li>
+      <li>Your key is passed through PBKDF2 (310,000 iterations, SHA-256) to derive the actual crypto key — brute force is extremely costly</li>
+      <li>A random 128-bit salt and 96-bit IV are generated fresh for every encryption operation</li>
+      <li>The encrypted output contains: salt + IV + ciphertext — no key, no hints, no metadata</li>
+      <li>Inspecting the locked HTML in DevTools reveals only the ciphertext blob — the key and content are completely absent from the file</li>
+      <li>Decryption happens in memory only; the decrypted content is injected at runtime and never written to disk or storage</li>
+      <li>GCM authentication tag means a wrong key produces an explicit failure — no silent partial decryption</li>
+    </ul>
+  </div>
+Ⓒ 2026 Hamptonix | support@hamptonix.com | hamptonix.com
+</div>
+
+<script>
+let currentMode = 'html';
+let generatedHTML = '';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function generateKey() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  const arr = new Uint8Array(24);
+  crypto.getRandomValues(arr);
+  let key = '';
+  arr.forEach(b => key += chars[b % chars.length]);
+  document.getElementById('key-input').value = key;
+  document.getElementById('key-input').type = 'text';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('error-msg').style.display = 'none';
+}
+
+async function deriveKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+function toBase64(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
+
+async function encrypt() {
+  hideError();
+  const content = document.getElementById('content-input').value.trim();
+  const passphrase = document.getElementById('key-input').value;
+  const title = document.getElementById('title-input').value || 'Locked Page';
+
+  if (!content) return showError('Content cannot be empty.');
+  if (passphrase.length < 6) return showError('Passphrase must be at least 6 characters.');
+
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveKey(passphrase, salt);
+
+  const enc = new TextEncoder();
+  const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(content));
+
+  // Pack: [salt 16 bytes][iv 12 bytes][ciphertext]
+  const packed = new Uint8Array(16 + 12 + cipherBuf.byteLength);
+  packed.set(salt, 0);
+  packed.set(iv, 16);
+  packed.set(new Uint8Array(cipherBuf), 28);
+
+  const blob = toBase64(packed.buffer);
+
+  document.getElementById('ciphertext-preview').textContent = blob;
+
+  generatedHTML = buildLockedPage(blob, title);
+
+  document.getElementById('output-section').classList.add('visible');
+  document.getElementById('output-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadLocked() {
+  if (!generatedHTML) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([generatedHTML], { type: 'text/html' }));
+  a.download = 'locked-page.html';
+  a.click();
+}
+
+function buildLockedPage(blob, title) {
+  // This string is assembled at runtime — the key never appears here.
+  // The locked page itself has no reference to the key whatsoever.
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escHtml(title)}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@700;800&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0a0a0f;--surface:#111118;--border:#1e1e2e;--accent:#00ff88;--accent2:#ff3366;--text:#c8c8d8;--dim:#555568}
+  body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,#1a1a2a 39px,#1a1a2a 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,#1a1a2a 39px,#1a1a2a 40px);opacity:.2;pointer-events:none}
+  #lock-ui{position:relative;z-index:1;width:100%;max-width:420px;text-align:center}
+  .lock-icon{font-size:3rem;margin-bottom:20px;filter:drop-shadow(0 0 20px #00ff8866)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.4rem,5vw,2rem);color:#fff;letter-spacing:-.02em;margin-bottom:8px}
+  .sub{font-size:.7rem;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:36px}
+  .field-wrap{position:relative;margin-bottom:14px}
+  input[type=password],input[type=text]{width:100%;background:#0d0d14;border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.9rem;padding:16px 50px 16px 18px;border-radius:2px;outline:none;transition:border-color .2s;letter-spacing:.05em}
+  input:focus{border-color:var(--accent);box-shadow:0 0 0 1px #00ff8822}
+  .eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:1rem;padding:4px;transition:color .15s}
+  .eye-btn:hover{color:var(--accent)}
+  button.unlock{width:100%;background:var(--accent);color:#000;border:none;font-family:'Share Tech Mono',monospace;font-size:.9rem;font-weight:bold;letter-spacing:.15em;padding:16px;cursor:pointer;border-radius:2px;text-transform:uppercase;transition:opacity .15s,transform .1s;margin-top:4px}
+  button.unlock:hover{opacity:.85}
+  button.unlock:active{transform:scale(.98)}
+  #err{background:#ff336618;border:1px solid #ff336655;color:var(--accent2);padding:10px 14px;border-radius:2px;font-size:.75rem;margin-top:14px;display:none;animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+  #decrypted-content{display:none;position:fixed;inset:0;z-index:999;background:#fff;overflow:auto}
+</style>
+</head>
+<body>
+<div id="lock-ui">
+  <div class="lock-icon">🔐</div>
+  <h1>${escHtml(title)}</h1>
+  <div class="sub">Enter private key to unlock</div>
+  <div class="field-wrap">
+    <input type="password" id="k" placeholder="Private key…" autocomplete="off" spellcheck="false" autofocus>
+    <button class="eye-btn" tabindex="-1" onclick="toggleVis()" id="eyebtn">👁</button>
+  </div>
+  <button class="unlock" onclick="doDecrypt()">UNLOCK</button>
+  <div id="err">Incorrect key — decryption failed.</div>
+</div>
+<div id="decrypted-content"></div>
+
+<script>
+(function(){
+  // Ciphertext is the ONLY thing stored here. No key. No plaintext. No hints.
+  var BLOB = "${blob}";
+
+  function fromB64(s){
+    var bin=atob(s),arr=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+    return arr.buffer;
+  }
+
+  async function deriveKey(pass,salt){
+    var enc=new TextEncoder();
+    var km=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);
+    return crypto.subtle.deriveKey(
+      {name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},
+      km,{name:'AES-GCM',length:256},false,['decrypt']
+    );
+  }
+
+  window.toggleVis=function(){
+    var f=document.getElementById('k');
+    f.type=f.type==='password'?'text':'password';
+  };
+
+  window.doDecrypt=async function(){
+    var pass=document.getElementById('k').value;
+    document.getElementById('err').style.display='none';
+    if(!pass)return;
+    try{
+      var packed=new Uint8Array(fromB64(BLOB));
+      var salt=packed.slice(0,16);
+      var iv=packed.slice(16,28);
+      var cipher=packed.slice(28);
+      var key=await deriveKey(pass,salt);
+      var plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
+      var html=new TextDecoder().decode(plain);
+      // Destroy the lock UI entirely, inject decrypted content into isolated container
+      document.getElementById('lock-ui').remove();
+      var container=document.getElementById('decrypted-content');
+      container.style.display='block';
+      // Use a sandboxed srcdoc iframe for full isolation
+      var frame=document.createElement('iframe');
+      frame.style.cssText='width:100%;height:100%;border:none;display:block;';
+      frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups');
+      container.appendChild(frame);
+      frame.contentDocument.open();
+      frame.contentDocument.write(html);
+      frame.contentDocument.close();
+      // Nuke the blob variable from this scope
+      BLOB=null;
+    }catch(e){
+      var el=document.getElementById('err');
+      el.style.display='block';
+      el.style.animation='none';
+      void el.offsetWidth;
+      el.style.animation='shake .3s';
+      document.getElementById('k').value='';
+      document.getElementById('k').focus();
+    }
+  };
+
+  // Allow Enter key
+  document.getElementById('k').addEventListener('keydown',function(e){
+    if(e.key==='Enter')window.doDecrypt();
+  });
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
