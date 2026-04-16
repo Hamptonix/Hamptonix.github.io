@@ -14,13 +14,29 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
 #topRight{flex:1;padding:12px;overflow-y:auto;border-bottom:1px solid rgba(255,255,255,0.15);min-height:0}
 #bottomRight{height:50%;display:flex;flex-direction:column}
 .coin-bar{background:rgba(0,0,0,0.4);border-radius:10px;padding:8px 16px;margin-bottom:6px;font-size:1.1rem;font-weight:600;letter-spacing:.5px;border:1px solid rgba(255,215,0,0.3);color:#ffd700;width:100%;text-align:center}
+.rebirth-bar{background:rgba(0,0,0,0.4);border-radius:10px;padding:5px 16px;margin-bottom:6px;font-size:.82rem;font-weight:600;border:1px solid rgba(255,100,255,0.35);color:#e879f9;width:100%;text-align:center;display:none}
 .pickaxe-info{background:rgba(0,0,0,0.3);border-radius:8px;padding:5px 12px;margin-bottom:10px;font-size:.78rem;color:rgba(255,255,255,.7);width:100%;text-align:center;border:1px solid rgba(255,255,255,0.08)}
 #clickBtn{width:140px;height:140px;background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KnpT71djaTBPjBUpL6qGCUxsvOFMB9xNUg&s') no-repeat center;background-size:contain;border:none;cursor:pointer;animation:pulse 2s infinite;transition:transform .1s;margin:6px 0;flex-shrink:0}
 #clickBtn:active{transform:scale(.93)!important;animation:none}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-#upgradeBtn{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;border:none;padding:10px 22px;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;box-shadow:0 2px 8px rgba(39,174,96,.3);flex-shrink:0;width:100%}
+#upgradeBtn{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;border:none;padding:10px 22px;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;box-shadow:0 2px 8px rgba(39,174,96,.3);flex-shrink:0;width:100%;margin-bottom:6px}
 #upgradeBtn:hover:not(:disabled){transform:translateY(-1px)}
 #upgradeBtn:disabled{background:linear-gradient(135deg,#555,#444);cursor:not-allowed;box-shadow:none}
+
+#rebirthSection{width:100%;display:none;flex-direction:column;gap:6px}
+#rebirthBtn{background:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899);color:#fff;border:none;padding:10px 22px;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:700;transition:all .2s;box-shadow:0 2px 16px rgba(168,85,247,.4);width:100%;position:relative;overflow:hidden}
+#rebirthBtn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .4s}
+#rebirthBtn:hover::before{transform:translateX(100%)}
+#rebirthBtn:disabled{background:linear-gradient(135deg,#555,#444);box-shadow:none;cursor:not-allowed}
+#rebirthBtn:disabled::before{display:none}
+.rebirth-reqs{background:rgba(0,0,0,0.35);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:8px 12px;width:100%;font-size:.74rem}
+.rebirth-reqs p{color:rgba(255,255,255,.55);margin-bottom:4px;font-weight:600;letter-spacing:.3px}
+.req-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0}
+.req-label{color:rgba(255,255,255,.6);font-size:.72rem}
+.req-val{font-size:.72rem;font-weight:700}
+.req-val.met{color:#2ecc71}
+.req-val.unmet{color:#e74c3c}
+
 .miner-container{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:4px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;border:1px solid rgba(255,255,255,0.1);width:100%;margin-top:10px;flex-shrink:0;max-height:120px;overflow-y:auto}
 .miner-container img{width:38px;height:38px;object-fit:cover;border-radius:5px;border:1px solid rgba(255,255,255,0.2)}
 .float-text{position:fixed;animation:floatUp 1.4s ease-out forwards;pointer-events:none;font-weight:700;z-index:9999}
@@ -74,23 +90,45 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
 #resetConfirm input::placeholder{color:rgba(255,255,255,.35);letter-spacing:0}
 .reset-confirm-btns{display:flex;gap:6px}
 .reset-confirm-btns button{flex:1;padding:6px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.8rem}
-#adminPanel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a2332;color:#ecf0f1;padding:20px;border-radius:12px;z-index:9999;box-shadow:0 0 30px rgba(0,0,0,.8);width:300px;border:1px solid rgba(255,255,255,.2)}
+#adminPanel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a2332;color:#ecf0f1;padding:20px;border-radius:12px;z-index:9999;box-shadow:0 0 30px rgba(0,0,0,.8);width:320px;border:1px solid rgba(255,255,255,.2);max-height:90vh;overflow-y:auto}
 #adminPanel h3{margin-bottom:14px;font-size:1rem}
 #adminPanel label{font-size:.82rem;display:block;margin-bottom:8px}
 #adminPanel input,#adminPanel select{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);border-radius:5px;color:#fff;padding:4px 8px;width:100%}
 .admin-btns{display:flex;gap:8px;margin-top:14px}
 .admin-btns button{flex:1;padding:7px;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.82rem}
 .miner-tier-label{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;padding:6px 4px 2px;margin-top:4px}
+#adminPasswordSection{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15)}
+#adminPasswordSection p{font-size:.78rem;color:rgba(255,200,100,.8);margin-bottom:6px;font-weight:600}
+#adminPasswordInput{width:100%;padding:6px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(255,165,0,.4);border-radius:6px;color:#fff;font-size:.85rem;margin-bottom:6px}
+#adminPasswordInput::placeholder{color:rgba(255,255,255,.35)}
+#adminPasswordError{font-size:.76rem;color:#e74c3c;display:none;margin-bottom:4px}
+
+#rebirthOverlay{display:none;position:fixed;inset:0;z-index:99999;pointer-events:none;background:radial-gradient(ellipse at center,rgba(168,85,247,.7) 0%,rgba(236,72,153,.4) 50%,transparent 80%);animation:rebirthFlash 1.2s ease-out forwards}
+@keyframes rebirthFlash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
 </style>
 </head>
 <body>
 
+<div id="rebirthOverlay"></div>
+
 <div id="root">
 <div id="leftCol">
   <div class="coin-bar" id="coinDisplay">⛏ Coins: 0</div>
+  <div class="rebirth-bar" id="rebirthBar">✨ Rebirths: 0 &nbsp;·&nbsp; Multiplier: 1.00×</div>
   <div class="pickaxe-info" id="pickaxeInfo">Pickaxe Lv 1 — Mining: Stone</div>
   <button id="clickBtn" title="Click to mine!"></button>
   <button id="upgradeBtn" onclick="upgradePickaxe()">Upgrade Pickaxe — 10 Coins</button>
+
+  <div id="rebirthSection">
+    <div class="rebirth-reqs" id="rebirthReqs">
+      <p>⚡ REBIRTH REQUIREMENTS</p>
+      <div class="req-row"><span class="req-label">🪓 Max Pickaxe (Lv 18)</span><span class="req-val" id="req-pickaxe">❌ No</span></div>
+      <div class="req-row"><span class="req-label">💎 500 Quintanite</span><span class="req-val" id="req-ore">0 / 500</span></div>
+      <div class="req-row"><span class="req-label">💰 5 Trillion Coins</span><span class="req-val" id="req-coins">0 / 5T</span></div>
+    </div>
+    <button id="rebirthBtn" onclick="doRebirth()" disabled>✨ REBIRTH</button>
+  </div>
+
   <div class="miner-container" id="minerContainer"></div>
 </div>
 
@@ -121,7 +159,7 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
         <div class="gamble-result" id="coinFlipResult"></div>
       </div>
       <div class="gamble-section">
-        <h4>🎲 Dice Roll (guess = 10× payout)</h4>
+        <h4>🎲 Dice Roll (guess = 3× payout)</h4>
         <input class="gamble-input" type="number" id="diceBet" placeholder="Bet amount" />
         <input class="gamble-input" type="number" id="diceSide" placeholder="Pick 1–6" min="1" max="6" />
         <button class="gamble-btn" onclick="rollDice()">Roll Dice</button>
@@ -149,7 +187,7 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
           </div>
         </div>
       </div>
-      <p class="version-tag">Mining Tycoon v2.2 | Ⓒ 2026 Hamptonix | support@hamptonix.com</p>
+      <p class="version-tag">Mining Tycoon v2.3 | Ⓒ 2026 Hamptonix | support@hamptonix.com</p>
     </div>
   </div>
 </div>
@@ -159,10 +197,16 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
   <h3>⚡ Admin Panel</h3>
   <label>Set Coins: <input id="adminCoins" type="number" /></label>
   <label style="margin-top:8px">Pickaxe Level (1–18): <input id="adminPickaxe" type="number" /></label>
+  <label style="margin-top:8px">Rebirths: <input id="adminRebirths" type="number" min="0" /></label>
   <label style="margin-top:8px">Add Miner:
     <select id="adminMinerType" style="margin-top:4px"></select>
     <input id="adminMinerAmount" type="number" min="1" value="1" placeholder="Amount" style="margin-top:4px" />
   </label>
+  <div id="adminPasswordSection">
+    <p>🔒 Enter admin password to apply:</p>
+    <input type="password" id="adminPasswordInput" placeholder="Password" />
+    <div id="adminPasswordError">❌ Incorrect password.</div>
+  </div>
   <div class="admin-btns">
     <button style="background:#27ae60;color:#fff" onclick="applyAdminChanges()">Apply</button>
     <button style="background:#c0392b;color:#fff" onclick="document.getElementById('adminPanel').style.display='none'">Close</button>
@@ -172,148 +216,120 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a2332
 <script>
 let coins = 0, pickaxeLevel = 1, oreInventory = {}, floatTextEnabled = {};
 let resetCode = "";
+let rebirths = 0;
 const minersOwned = [];
 
-// ═══════════════════════════════════════════════════════════
-// ORES — 18 total
-// Pickaxe Lv N mines ores[N-1] exclusively (1:1 mapping)
-// value = coins per ore when sold
-// ═══════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = "ashtonsmells";
+
+const REBIRTH_QUINTANITE = 500;
+const REBIRTH_COINS = 5e12;
+
+function getRebirthMultiplier(){
+  return 1 + rebirths * 0.25;
+}
+
 const ores = [
-  /* 0  Lv1  */ { name:"Stone",       value:1,          color:"#b0b0b0", size:"12px" },
-  /* 1  Lv2  */ { name:"Coal",        value:2,          color:"#888",    size:"12px" },
-  /* 2  Lv3  */ { name:"Copper",      value:5,          color:"darkorange", size:"13px" },
-  /* 3  Lv4  */ { name:"Iron",        value:10,         color:"#ffcc99", size:"13px" },
-  /* 4  Lv5  */ { name:"Gold",        value:22,         color:"gold",    size:"14px" },
-  /* 5  Lv6  */ { name:"Platinum",    value:55,         color:"silver",  size:"14px" },
-  /* 6  Lv7  */ { name:"Emerald",     value:130,        color:"#2ecc71", size:"15px" },
-  /* 7  Lv8  */ { name:"Diamond",     value:320,        color:"#85c1e9", size:"15px" },
-  /* 8  Lv9  */ { name:"Ruby",        value:800,        color:"#e74c3c", size:"16px" },
-  /* 9  Lv10 */ { name:"Titanium",    value:2200,       color:"#aab7c4", size:"18px" },
-  /* 10 Lv11 */ { name:"Tungsten",    value:7000,       color:"#d5d8dc", size:"22px" },
-  /* 11 Lv12 */ { name:"Hamptonite",  value:25000,      color:"#a855f7", size:"26px" },
-  /* 12 Lv13 */ { name:"Brodrickate", value:95000,      color:"#ff6b35", size:"26px" },
-  /* 13 Lv14 */ { name:"Osmium",      value:380000,     color:"#5dade2", size:"27px" },
-  /* 14 Lv15 */ { name:"Obsidian",    value:1500000,    color:"#7d3c98", size:"27px", glow:"#7d3c98" },
-  /* 15 Lv16 */ { name:"Grantavium",  value:6000000,    color:"#f4d03f", size:"28px" },
-  /* 16 Lv17 */ { name:"TungTungite", value:25000000,   color:"#52be80", size:"28px" },
-  /* 17 Lv18 */ { name:"Quintanite",  value:100000000,  color:"#f1948a", size:"30px", glow:"#ff4757" },
+  { name:"Stone",       value:1,          color:"#b0b0b0", size:"12px" },
+  { name:"Coal",        value:2,          color:"#888",    size:"12px" },
+  { name:"Copper",      value:5,          color:"darkorange", size:"13px" },
+  { name:"Iron",        value:10,         color:"#ffcc99", size:"13px" },
+  { name:"Gold",        value:22,         color:"gold",    size:"14px" },
+  { name:"Platinum",    value:55,         color:"silver",  size:"14px" },
+  { name:"Emerald",     value:130,        color:"#2ecc71", size:"15px" },
+  { name:"Diamond",     value:320,        color:"#85c1e9", size:"15px" },
+  { name:"Ruby",        value:800,        color:"#e74c3c", size:"16px" },
+  { name:"Titanium",    value:2200,       color:"#aab7c4", size:"18px" },
+  { name:"Tungsten",    value:7000,       color:"#d5d8dc", size:"22px" },
+  { name:"Hamptonite",  value:25000,      color:"#a855f7", size:"26px" },
+  { name:"Brodrickate", value:95000,      color:"#ff6b35", size:"26px" },
+  { name:"Osmium",      value:380000,     color:"#5dade2", size:"27px" },
+  { name:"Obsidian",    value:1500000,    color:"#7d3c98", size:"27px", glow:"#7d3c98" },
+  { name:"Grantavium",  value:6000000,    color:"#f4d03f", size:"28px" },
+  { name:"TungTungite", value:25000000,   color:"#52be80", size:"28px" },
+  { name:"Quintanite",  value:100000000,  color:"#f1948a", size:"30px", glow:"#ff4757" },
 ];
 
-// ═══════════════════════════════════════════════════════════
-// PICKAXE UPGRADE COSTS
-// pickaxeCosts[i] = cost to go from Lv(i+1) → Lv(i+2)
-// Requires meaningful grind at each tier
-// ═══════════════════════════════════════════════════════════
 const pickaxeCosts = [
-  /* Lv1→2  unlock Coal        */   12,
-  /* Lv2→3  unlock Copper      */   55,
-  /* Lv3→4  unlock Iron        */   200,
-  /* Lv4→5  unlock Gold        */   800,
-  /* Lv5→6  unlock Platinum    */   3500,
-  /* Lv6→7  unlock Emerald     */   15000,
-  /* Lv7→8  unlock Diamond     */   65000,
-  /* Lv8→9  unlock Ruby        */   280000,
-  /* Lv9→10 unlock Titanium    */   1200000,
-  /* Lv10→11 unlock Tungsten   */   6000000,
-  /* Lv11→12 unlock Hamptonite */   28000000,
-  /* Lv12→13 unlock Brodrickate*/   130000000,
-  /* Lv13→14 unlock Osmium     */   700000000,
-  /* Lv14→15 unlock Obsidian   */   4000000000,
-  /* Lv15→16 unlock Grantavium */   22000000000,
-  /* Lv16→17 unlock TungTungite*/   130000000000,
-  /* Lv17→18 unlock Quintanite */   800000000000,
-  // Level 18 = MAX
+  12, 55, 200, 800, 3500, 15000, 65000, 280000,
+  1200000, 6000000, 28000000, 130000000, 700000000,
+  4000000000, 22000000000, 130000000000, 800000000000,
 ];
 
-// ═══════════════════════════════════════════════════════════
-// MINER TYPES
-// chances[i] matches ores[i] — must have at least some weight
-// Miners mine their focused tier; tiny peek at next tier
-// ═══════════════════════════════════════════════════════════
 const minerTypes = [
-  // ─── STARTER ───
   {
     name:"Basic Miner", rate:1, cost:80, tier:"Starter",
     image:"https://www.sptoolsusa.com/product-images/SP83213BU_1.jpg?resizeid=3&resizeh=600&resizew=600",
     desc:"Mines Stone & Coal",
-    //        0    1    2   3  4  5  6  7  8  9 10 11 12 13 14 15 16 17
-    chances:[55,  42,   3,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    chances:[55,42,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   },
   {
     name:"Decent Miner", rate:2, cost:700, tier:"Starter",
     image:"https://dm0qx8t0i9gc9.cloudfront.net/watermarks/image/rDtN98Qoishumwih/construction-worker-jackhammer-pneumatic-drill_MkJo08Iu_SB_PM.jpg",
     desc:"Mines Coal → Iron",
-    chances:[ 5,  40,  37, 16,  2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    chances:[5,40,37,16,2,0,0,0,0,0,0,0,0,0,0,0,0,0]
   },
-  // ─── INTERMEDIATE ───
   {
     name:"Good Miner", rate:3, cost:5000, tier:"Intermediate",
     image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8h19Hv0DGq1XeJKdiNwT8fqa3Zih2xismmQ&s",
     desc:"Mines Copper → Platinum",
-    chances:[ 0,   0,  24, 34, 26, 13,  3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    chances:[0,0,24,34,26,13,3,0,0,0,0,0,0,0,0,0,0,0]
   },
   {
     name:"Advanced Miner", rate:4, cost:35000, tier:"Intermediate",
     image:"https://geoprobe.com/sites/default/files/styles/large/public/articles/Kelly.jpg?itok=kJZluNio",
     desc:"Mines Iron → Diamond",
-    chances:[ 0,   0,   0,  18, 28, 27, 16,  9,  2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    chances:[0,0,0,18,28,27,16,9,2,0,0,0,0,0,0,0,0,0]
   },
-  // ─── ADVANCED ───
   {
     name:"Superior Miner", rate:5, cost:320000, tier:"Advanced",
     image:"https://img.amiami.com/images/product/main/124/TOY-RBT-2935.jpg",
     desc:"Mines Emerald → Titanium",
-    chances:[ 0,   0,   0,   0,  0, 12, 28, 30, 21,  8,  1, 0, 0, 0, 0, 0, 0, 0]
+    chances:[0,0,0,0,0,12,28,30,21,8,1,0,0,0,0,0,0,0]
   },
   {
     name:"Hamptonite Miner", rate:6, cost:4500000, tier:"Advanced",
     image:"https://i.postimg.cc/s2MTPscQ/image0.jpg",
     desc:"Mines Ruby → Hamptonite",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  9, 27, 35, 20,  8,  1, 0, 0, 0, 0, 0]
+    chances:[0,0,0,0,0,0,0,9,27,35,20,8,1,0,0,0,0,0]
   },
-  // ─── ELITE ───
   {
     name:"Brodrickate Miner", rate:8, cost:50000000, tier:"Elite",
     image:"/assets/drb.png",
     desc:"Mines Tungsten → Brodrickate",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0, 14, 37, 30, 16,  3,  0, 0, 0, 0]
+    chances:[0,0,0,0,0,0,0,0,0,14,37,30,16,3,0,0,0,0]
   },
   {
     name:"Osmium Miner", rate:10, cost:450000000, tier:"Elite",
     image:"/assets/osmium.jpeg",
     desc:"Mines Hamptonite → Osmium",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0,  0, 10, 28, 36, 22,  4, 0, 0, 0]
+    chances:[0,0,0,0,0,0,0,0,0,0,10,28,36,22,4,0,0,0]
   },
-  // ─── LEGENDARY ───
   {
     name:"Obsidian Miner", rate:12, cost:4000000000, tier:"Legendary",
     image:"/assets/obsidian.webp",
     desc:"Mines Brodrickate → Obsidian",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0,  0,  0,  0, 20, 37, 30, 11,  2, 0]
+    chances:[0,0,0,0,0,0,0,0,0,0,0,0,20,37,30,11,2,0]
   },
   {
     name:"Grantavium Miner", rate:15, cost:32000000000, tier:"Legendary",
     image:"/assets/drill.webp",
     desc:"Mines Osmium → Grantavium",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 20, 40, 28,  6,  2]
+    chances:[0,0,0,0,0,0,0,0,0,0,0,0,4,20,40,28,6,2]
   },
-  // ─── MYTHIC ───
   {
     name:"TungTungite Miner", rate:20, cost:250000000000, tier:"Mythic",
     image:"/assets/tung.jpg",
     desc:"Mines Obsidian → TungTungite",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 21, 40, 30,  5]
+    chances:[0,0,0,0,0,0,0,0,0,0,0,0,0,4,21,40,30,5]
   },
   {
     name:"Quintanite Miner", rate:30, cost:2500000000000, tier:"Mythic",
     image:"/assets/quin.avif",
     desc:"Mines Grantavium → Quintanite",
-    chances:[ 0,   0,   0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  9, 30, 41, 20]
+    chances:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,30,41,20]
   },
 ];
 
-// ─── Number formatting ───
 const SUFFIXES=[
   [1e3,"K"],[1e6,"M"],[1e9,"B"],[1e12,"T"],
   [1e15,"Qu"],[1e18,"Qi"],[1e21,"Sx"],[1e24,"Sp"],
@@ -339,9 +355,24 @@ function fmt(v){
 function getLeftColRect(){ return document.getElementById('leftCol').getBoundingClientRect(); }
 function getCurrentOre(){ return ores[Math.min(pickaxeLevel-1, ores.length-1)]; }
 function getUpgradeCost(){ return pickaxeLevel<=pickaxeCosts.length ? pickaxeCosts[pickaxeLevel-1] : null; }
+function isMaxPickaxe(){ return pickaxeLevel >= ores.length; }
+
+function rebirthRequirementsMet(){
+  const quintanite = oreInventory["Quintanite"] || 0;
+  return isMaxPickaxe() && quintanite >= REBIRTH_QUINTANITE && coins >= REBIRTH_COINS;
+}
 
 function updateDisplay(){
-  document.getElementById("coinDisplay").textContent = `⛏ Coins: ${fmt(coins)}`;
+  const mult = getRebirthMultiplier();
+  document.getElementById("coinDisplay").textContent = `⛏ Coins: ${fmt(coins)}` + (mult > 1 ? ` (${mult.toFixed(2)}×)` : '');
+
+  const rebirthBar = document.getElementById("rebirthBar");
+  if(rebirths > 0){
+    rebirthBar.style.display = "block";
+    rebirthBar.textContent = `✨ Rebirths: ${rebirths} · Multiplier: ${mult.toFixed(2)}×`;
+  } else {
+    rebirthBar.style.display = "none";
+  }
 
   const ore = getCurrentOre();
   const cost = getUpgradeCost();
@@ -361,7 +392,28 @@ function updateDisplay(){
     btn.disabled = false;
   }
 
-  // Inventory — only show ores that player can mine OR has some of
+  const rebirthSection = document.getElementById("rebirthSection");
+  if(isMax){
+    rebirthSection.style.display = "flex";
+    const quintanite = oreInventory["Quintanite"] || 0;
+    const pickaxeMet = isMaxPickaxe();
+    const oreMet = quintanite >= REBIRTH_QUINTANITE;
+    const coinsMet = coins >= REBIRTH_COINS;
+
+    document.getElementById("req-pickaxe").textContent = pickaxeMet ? "✅ Yes" : "❌ No";
+    document.getElementById("req-pickaxe").className = "req-val " + (pickaxeMet ? "met" : "unmet");
+
+    document.getElementById("req-ore").textContent = `${fmt(quintanite)} / ${fmt(REBIRTH_QUINTANITE)}`;
+    document.getElementById("req-ore").className = "req-val " + (oreMet ? "met" : "unmet");
+
+    document.getElementById("req-coins").textContent = `${fmt(coins)} / 5T`;
+    document.getElementById("req-coins").className = "req-val " + (coinsMet ? "met" : "unmet");
+
+    document.getElementById("rebirthBtn").disabled = !rebirthRequirementsMet();
+  } else {
+    rebirthSection.style.display = "none";
+  }
+
   const allHidden = ores.every(o => floatTextEnabled[o.name] === false);
   const tBtn = document.getElementById("toggleAllBtn");
   tBtn.textContent = allHidden ? "Show All" : "Hide All";
@@ -369,8 +421,8 @@ function updateDisplay(){
 
   const list = ores.map((o, i) => {
     const amt = oreInventory[o.name] || 0;
-    const canMine = i < pickaxeLevel; // unlocked by pickaxe level
-    if(!canMine && !amt) return ''; // hide fully locked ores
+    const canMine = i < pickaxeLevel;
+    if(!canMine && !amt) return '';
     const enabled = floatTextEnabled[o.name] !== false;
     const glowStyle = o.glow ? `;text-shadow:0 0 8px ${o.glow}` : "";
     return `<div class="ore-row">
@@ -410,7 +462,6 @@ function spawnFloatInLeftCol(ore){
   setTimeout(() => el.remove(), 1400);
 }
 
-// Player click — mines exactly the one ore for their pickaxe level
 function mineOre(){
   const ore = getCurrentOre();
   oreInventory[ore.name] = (oreInventory[ore.name]||0) + 1;
@@ -427,15 +478,39 @@ function upgradePickaxe(){
 }
 
 function sellOres(){
+  const mult = getRebirthMultiplier();
   for(const [k,q] of Object.entries(oreInventory)){
     const ore = ores.find(o => o.name===k);
-    if(ore) coins += q * ore.value;
+    if(ore) coins += q * ore.value * mult;
   }
   oreInventory = {};
   updateDisplay();
 }
 
-// Miner auto-mine uses weighted chance table
+// FIXED: Full reset on rebirth — coins, pickaxe, ore, miners, floatText all wiped
+function doRebirth(){
+  if(!rebirthRequirementsMet()) return;
+
+  // Increment rebirth counter BEFORE resetting
+  rebirths++;
+
+  // Reset EVERYTHING — coins, pickaxe, ore, miners, settings
+  coins = 0;
+  pickaxeLevel = 1;
+  oreInventory = {};
+  floatTextEnabled = {};
+  minersOwned.length = 0;
+  document.getElementById("minerContainer").innerHTML = "";
+
+  // Flash effect
+  const overlay = document.getElementById("rebirthOverlay");
+  overlay.style.display = "block";
+  setTimeout(() => { overlay.style.display = "none"; }, 1200);
+
+  updateDisplay();
+  saveGame();
+}
+
 function getRandomOreFromChances(chances){
   let total = chances.reduce((a,b)=>a+b, 0), r = Math.random()*total;
   for(let i=0;i<chances.length;i++){ if(r<chances[i]) return ores[i]; r-=chances[i]; }
@@ -476,7 +551,7 @@ function rollDice(){
   const res = document.getElementById("diceResult");
   if(isNaN(bet)||isNaN(guess)||bet<=0||bet>coins||guess<1||guess>6){ res.textContent="Invalid bet or number."; return; }
   const roll = Math.floor(Math.random()*6)+1;
-  if(roll===guess){ const w=bet*10; coins+=w; res.textContent=`🎲 Rolled ${roll} — Won ${fmt(w)} coins!`; }
+  if(roll===guess){ const w=bet*3; coins+=w; res.textContent=`🎲 Rolled ${roll} — Won ${fmt(w)} coins! (3×)`; }
   else{ coins-=bet; res.textContent=`🎲 Rolled ${roll} — Lost ${fmt(bet)} coins.`; }
   updateDisplay();
 }
@@ -495,7 +570,7 @@ function doReset(){
   const input = document.getElementById("resetCodeInput").value.trim();
   if(input===resetCode){
     localStorage.removeItem("mineTycoonSave");
-    coins=0; pickaxeLevel=1; oreInventory={}; floatTextEnabled={};
+    coins=0; pickaxeLevel=1; oreInventory={}; floatTextEnabled={}; rebirths=0;
     minersOwned.length=0;
     document.getElementById("minerContainer").innerHTML="";
     hideResetConfirm();
@@ -534,7 +609,7 @@ function renderShop(){
 }
 
 function saveGameToFile(){
-  const d={coins,pickaxeLevel,oreInventory,floatTextEnabled,minersOwned:minersOwned.map(m=>m.name)};
+  const d={coins,pickaxeLevel,oreInventory,floatTextEnabled,rebirths,minersOwned:minersOwned.map(m=>m.name)};
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));
   a.download="mine_tycoon_save.json"; a.click();
@@ -548,6 +623,7 @@ function loadGameFromFile(e){
 function applyState(d){
   coins=d.coins??0; pickaxeLevel=d.pickaxeLevel??1;
   oreInventory=d.oreInventory??{}; floatTextEnabled=d.floatTextEnabled??{};
+  rebirths=d.rebirths??0;
   minersOwned.length=0;
   document.getElementById("minerContainer").innerHTML="";
   (d.minersOwned||[]).forEach(name=>{
@@ -562,7 +638,7 @@ function applyState(d){
   updateDisplay();
 }
 function saveGame(){
-  const d={coins,pickaxeLevel,oreInventory,floatTextEnabled,minersOwned:minersOwned.map(m=>m.name)};
+  const d={coins,pickaxeLevel,oreInventory,floatTextEnabled,rebirths,minersOwned:minersOwned.map(m=>m.name)};
   localStorage.setItem("mineTycoonSave", JSON.stringify(d));
 }
 function loadGame(){
@@ -570,7 +646,7 @@ function loadGame(){
   if(s) try{ applyState(JSON.parse(s)); } catch(e){}
 }
 
-// Admin panel
+// Admin panel — password protected
 let adminInput="", adminActive=false;
 document.addEventListener("keydown", e=>{
   if(e.shiftKey && e.key.toLowerCase()==="m"){ adminActive=true; adminInput=""; }
@@ -581,16 +657,31 @@ document.addEventListener("keydown", e=>{
   }
   if(e.key===' '){ e.preventDefault(); sellOres(); }
 });
+
 function showAdminPanel(){
   document.getElementById("adminCoins").value=coins;
   document.getElementById("adminPickaxe").value=pickaxeLevel;
+  document.getElementById("adminRebirths").value=rebirths;
+  document.getElementById("adminPasswordInput").value="";
+  document.getElementById("adminPasswordError").style.display="none";
   const sel=document.getElementById("adminMinerType"); sel.innerHTML="";
   minerTypes.forEach((m,i)=>{ const o=document.createElement("option"); o.value=i; o.textContent=m.name; sel.appendChild(o); });
   document.getElementById("adminPanel").style.display="block"; adminActive=false;
 }
+
 function applyAdminChanges(){
+  const pwd = document.getElementById("adminPasswordInput").value;
+  const errEl = document.getElementById("adminPasswordError");
+  if(pwd !== ADMIN_PASSWORD){
+    errEl.style.display="block";
+    document.getElementById("adminPasswordInput").style.border="1px solid #e74c3c";
+    setTimeout(()=>{ document.getElementById("adminPasswordInput").style.border=""; }, 800);
+    return;
+  }
+  errEl.style.display="none";
   coins=parseInt(document.getElementById("adminCoins").value)||coins;
   pickaxeLevel=Math.max(1,Math.min(parseInt(document.getElementById("adminPickaxe").value)||pickaxeLevel, ores.length));
+  rebirths=Math.max(0,parseInt(document.getElementById("adminRebirths").value)||0);
   const ti=parseInt(document.getElementById("adminMinerType").value);
   const amt=parseInt(document.getElementById("adminMinerAmount").value)||0;
   for(let i=0;i<amt;i++){
@@ -605,7 +696,6 @@ function applyAdminChanges(){
 document.getElementById("clickBtn").addEventListener("click", mineOre);
 document.querySelector('span.import-btn').addEventListener('click', ()=>document.getElementById('importFile').click());
 
-// Auto-mine tick
 setInterval(()=>{
   minersOwned.forEach(m=>{
     for(let i=0;i<m.rate;i++){
