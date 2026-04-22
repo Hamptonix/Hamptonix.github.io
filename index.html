@@ -72,7 +72,7 @@
       margin: 7px auto 0;
     }
 
-    /* Outer flex row: profile | card-stack */
+    /* Outer flex row: profile | card-stack | odycraft */
     .cards {
       display: flex;
       flex-wrap: wrap;
@@ -81,7 +81,7 @@
       justify-content: center;
       animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.08s both;
       width: 100%;
-      max-width: 600px;
+      max-width: 900px;
     }
 
     .card {
@@ -111,7 +111,7 @@
       width: clamp(190px, 100%, 265px);
     }
 
-    /* Right column wrapper — Games stacked above Directory */
+    /* Middle column wrapper — Games stacked above Directory */
     .card-stack {
       flex: 1 1 190px;
       max-width: 265px;
@@ -121,16 +121,27 @@
       gap: 18px;
     }
 
-    @media (max-width: 480px) {
+    /* OdyCraft card — right column, 1.5x taller than the Games card */
+    .card-odycraft {
+      flex: 1 1 190px;
+      max-width: 265px;
+      width: clamp(190px, 100%, 265px);
+      /* Stretch to match siblings naturally; min-height creates the 1.5x feel */
+      min-height: calc(1.5 * 180px); /* approx 1.5× the games card height */
+    }
+
+    @media (max-width: 600px) {
       .cards {
         flex-direction: column;
         align-items: stretch;
       }
       .card-profile,
-      .card-stack {
+      .card-stack,
+      .card-odycraft {
         width: 100%;
         max-width: 100%;
         flex: none;
+        min-height: unset;
       }
     }
 
@@ -151,23 +162,36 @@
       opacity: 0.8;
     }
     .avatar {
-  width: 68px; height: 68px;
-  border-radius: 6px;
-  border: 1.5px solid var(--accent);
-  object-fit: cover;
-  box-shadow: 0 0 20px rgba(126,207,234,0.25);
-}
-.avatar-placeholder {
-  width: 68px; height: 68px;
-  border-radius: 6px;
-  border: 1.5px solid var(--border);
-  background: rgba(255,255,255,0.03);
-  display: flex; align-items: center; justify-content: center;
-}
+      width: 68px; height: 68px;
+      border-radius: 6px;
+      border: 1.5px solid var(--accent);
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(126,207,234,0.25);
+    }
+    .avatar-lg {
+      width: 102px; height: 102px;
+      border-radius: 6px;
+      border: 1.5px solid var(--accent);
+      object-fit: cover;
+      box-shadow: 0 0 28px rgba(126,207,234,0.3);
+    }
+    .avatar-placeholder {
+      width: 68px; height: 68px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      display: flex; align-items: center; justify-content: center;
+    }
     .name-tag {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.35rem;
       letter-spacing: 0.16em;
+      color: var(--white);
+    }
+    .name-tag-lg {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.18em;
       color: var(--white);
     }
 
@@ -248,6 +272,25 @@
       background: var(--accent);
       color: var(--black);
       box-shadow: 0 0 20px rgba(126,207,234,0.35);
+    }
+
+    /* OdyCraft description text */
+    .card-desc {
+      padding: 0 14px 14px;
+      font-size: 0.64rem;
+      line-height: 1.6;
+      letter-spacing: 0.06em;
+      color: rgba(240,240,240,0.45);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* Spacer to push button toward bottom in OdyCraft card */
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
     .footer {
@@ -359,7 +402,7 @@
         </div>
       </div>
 
-      <!-- ── Right column: Games on top, Directory below ── -->
+      <!-- ── Middle column: Games on top, Directory below ── -->
       <div class="card-stack">
 
         <!-- Games Card -->
@@ -412,6 +455,32 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ── OdyCraft Card (right column) ── -->
+      <div class="card card-odycraft">
+        <div class="card-top">
+          <span class="card-label">OdyCraft</span>
+          <img
+            class="avatar-lg"
+            src="/assets/ODYCRAFT.png"
+            alt="OdyCraft"
+          />
+          <span class="name-tag-lg">OdyCraft</span>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">The Official Odyssey Anarchy Server</p>
+          <div class="old-btn-wrap">
+            <a class="old-btn" href="https://hamptonix.com/odycraft" target="_blank">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              Visit OdyCraft
+            </a>
+          </div>
+        </div>
       </div>
 
     </div>
