@@ -17,6 +17,14 @@ const GAMES = [
     category: "Platformer"
   },
   {
+    title: "Geometry Dash",
+    tag: "Platformer",
+    desc: "This game is really hard.",
+    icon: "/assets/gdicon.svg",
+    url: "https://lasokar.github.io/geometrydashdotcom/",
+    category: "Platformer"
+  },
+  {
     title: "Rocket League",
     tag: "Battle Royale",
     desc: "Fast-paced soccer with rocket-powered cars and insane aerial plays.",
