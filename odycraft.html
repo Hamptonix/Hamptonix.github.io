@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OdyCraft SMP</title>
+  <link rel="icon" type="image/png" href="ODYCRAFT.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --mc-green:    #5d9e32;
+      --mc-green-lt: #7ec850;
+      --mc-green-dk: #3a6b1a;
+      --mc-dirt:     #866043;
+      --mc-stone:    #7a7a7a;
+      --mc-white:    #f0f0f0;
+      --mc-shadow:   #3f3f3f;
+      --glass-bg:    rgba(12, 28, 12, 0.52);
+      --glass-border:rgba(93, 158, 50, 0.45);
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'VT323', monospace;
+      color: var(--mc-white);
+      overflow-x: hidden;
+    }
+
+    body {
+      background: url('minecraftbg.png') center center / cover no-repeat fixed;
+      background-color: #1a1a2e;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.55) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Page centering ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    /* ══════════════════════════════════════
+       LIQUID GLASS CARD
+    ══════════════════════════════════════ */
+    .glass-card {
+      width: 100%;
+      max-width: 780px;
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px) saturate(1.7) brightness(1.1);
+      -webkit-backdrop-filter: blur(24px) saturate(1.7) brightness(1.1);
+      border: 3px solid var(--glass-border);
+      border-radius: 4px;
+      outline: 3px solid rgba(0,0,0,0.75);
+      outline-offset: -1px;
+      box-shadow:
+        inset 2px 2px 0 rgba(126,200,80,0.22),
+        inset -2px -2px 0 rgba(0,0,0,0.5),
+        0 0 70px rgba(93,158,50,0.18),
+        0 24px 80px rgba(0,0,0,0.75);
+      overflow: hidden;
+    }
+
+    /* Animated glass shine sweep */
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -60%;
+      width: 75%; height: 220%;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(126,200,80,0.07) 50%,
+        transparent 70%
+      );
+      transform: rotate(25deg);
+      animation: shineSweep 7s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes shineSweep {
+      0%   { left: -70%; }
+      50%  { left: 130%; }
+      100% { left: 130%; }
+    }
+
+    /* ── Grass strip top ── */
+    .grass-strip {
+      height: 10px;
+      background: linear-gradient(180deg, var(--mc-green-lt) 0%, var(--mc-green) 55%, var(--mc-green-dk) 100%);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .grass-strip::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(to right,
+        transparent 0px, transparent 14px,
+        rgba(0,0,0,0.12) 14px, rgba(0,0,0,0.12) 16px);
+    }
+
+    /* ── Dirt strip bottom ── */
+    .dirt-strip {
+      height: 8px;
+      background: linear-gradient(180deg, var(--mc-dirt) 0%, #6b4c35 100%);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .dirt-strip::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(to right,
+        transparent 0px, transparent 10px,
+        rgba(0,0,0,0.15) 10px, rgba(0,0,0,0.15) 12px);
+    }
+
+    /* ── Content stack ── */
+    .card-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══════════════════════════════════════
+       HERO SECTION
+    ══════════════════════════════════════ */
+    .section-hero {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 34px 36px 26px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .server-icon {
+      width: 108px;
+      height: 108px;
+      image-rendering: pixelated;
+      border: 3px solid var(--mc-green-dk);
+      outline: 3px solid rgba(0,0,0,0.8);
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.15),
+        0 0 28px rgba(93,158,50,0.45),
+        0 6px 24px rgba(0,0,0,0.7);
+      border-radius: 2px;
+      flex-shrink: 0;
+      animation: iconFloat 3.2s ease-in-out infinite;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-7px); }
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .title-main {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.45rem, 5vw, 2.5rem);
+      color: var(--mc-white);
+      line-height: 1.2;
+      letter-spacing: 0.04em;
+      text-shadow:
+        3px 3px 0 var(--mc-shadow),
+        0 0 24px rgba(126,200,80,0.35);
+    }
+    .title-main span { color: var(--mc-green-lt); }
+
+    .title-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      letter-spacing: 0.06em;
+      padding: 5px 9px;
+      border: 2px solid;
+      border-radius: 2px;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .badge-green {
+      color: var(--mc-green-lt);
+      border-color: var(--mc-green-dk);
+      background: rgba(58,107,26,0.35);
+    }
+    .badge-version {
+      color: #aad4ff;
+      border-color: #336699;
+      background: rgba(30,60,100,0.35);
+    }
+
+    /* ══════════════════════════════════════
+       PIXEL DIVIDER
+    ══════════════════════════════════════ */
+    .pixel-divider {
+      height: 3px;
+      margin: 0 36px;
+      background: repeating-linear-gradient(
+        to right,
+        var(--mc-green-dk) 0px, var(--mc-green-dk) 8px,
+        transparent 8px, transparent 12px
+      );
+      opacity: 0.65;
+    }
+
+    /* ══════════════════════════════════════
+       DESCRIPTION SECTION
+    ══════════════════════════════════════ */
+    .section-desc {
+      padding: 26px 36px;
+      background: rgba(0,0,0,0.18);
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mc-green-lt);
+      text-shadow: 1px 1px 0 #000;
+      margin-bottom: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::before {
+      content: '▶';
+      font-size: 0.48rem;
+      color: var(--mc-green);
+    }
+
+    .desc-text {
+      font-family: 'VT323', monospace;
+      font-size: 1.42rem;
+      line-height: 1.75;
+      color: #d4edbc;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+    }
+    .desc-text strong {
+      color: var(--mc-green-lt);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.88rem;
+    }
+
+    /* ══════════════════════════════════════
+       DISCORD SECTION
+    ══════════════════════════════════════ */
+    .section-discord {
+      padding: 20px 36px;
+      background: rgba(0,0,0,0.14);
+      display: flex;
+      justify-content: center;
+    }
+
+    .discord-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 22px;
+      background: rgba(88, 101, 242, 0.25);
+      border-top: 2px solid rgba(180,185,255,0.3);
+      border-left: 2px solid rgba(180,185,255,0.2);
+      border-right: 2px solid rgba(0,0,0,0.7);
+      border-bottom: 2px solid rgba(0,0,0,0.7);
+      border-radius: 2px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+      box-shadow: 0 0 18px rgba(88,101,242,0.2), 0 4px 14px rgba(0,0,0,0.5);
+      transition: background 0.15s, filter 0.15s, box-shadow 0.15s;
+    }
+
+    .discord-btn:hover {
+      background: rgba(88, 101, 242, 0.45);
+      filter: brightness(1.12);
+      box-shadow: 0 0 30px rgba(88,101,242,0.4), 0 4px 14px rgba(0,0,0,0.5);
+    }
+
+    .discord-icon {
+      width: 18px;
+      height: 18px;
+      color: #bbc0ff;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       IP SECTION
+    ══════════════════════════════════════ */
+    .section-ip {
+      display: grid;
+      grid-template-columns: 1fr 3px 1fr;
+    }
+
+    .ip-vline {
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--mc-green-dk) 0px, var(--mc-green-dk) 8px,
+        transparent 8px, transparent 12px
+      );
+      opacity: 0.6;
+    }
+
+    .ip-side {
+      padding: 26px 26px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 13px;
+      background: rgba(0,0,0,0.1);
+    }
+    .ip-side:first-child {
+      background: linear-gradient(135deg, rgba(58,107,26,0.1) 0%, transparent 70%);
+    }
+    .ip-side:last-child {
+      background: linear-gradient(225deg, rgba(30,70,120,0.13) 0%, transparent 70%);
+    }
+
+    .ip-platform {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.08em;
+      color: var(--mc-green-lt);
+      text-shadow: 2px 2px 0 #000;
+      text-align: center;
+    }
+
+    /* Minecraft GUI input/button style */
+    .mc-box {
+      width: 100%;
+      font-family: 'VT323', monospace;
+      font-size: 1.32rem;
+      color: #fff;
+      text-align: center;
+      padding: 9px 14px;
+      cursor: context-menu;
+      user-select: all;
+      background: rgba(0,0,0,0.55);
+      border-top: 2px solid rgba(255,255,255,0.17);
+      border-left: 2px solid rgba(255,255,255,0.11);
+      border-right: 2px solid rgba(0,0,0,0.8);
+      border-bottom: 2px solid rgba(0,0,0,0.8);
+      border-radius: 2px;
+      box-shadow: inset 1px 1px 0 rgba(126,200,80,0.07), 0 2px 8px rgba(0,0,0,0.5);
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.9);
+      transition: background 0.15s, filter 0.15s;
+    }
+    .mc-box:hover {
+      background: rgba(93,158,50,0.18);
+      border-top-color: rgba(126,200,80,0.5);
+      filter: brightness(1.1);
+    }
+
+    .copy-hint {
+      font-family: 'VT323', monospace;
+      font-size: 0.98rem;
+      color: rgba(200,230,180,0.5);
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .port-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .port-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      color: rgba(200,230,180,0.65);
+      text-shadow: 1px 1px 0 #000;
+    }
+    .mc-port {
+      font-family: 'VT323', monospace;
+      font-size: 1.28rem;
+      color: #aad4ff;
+      cursor: context-menu;
+      user-select: all;
+      padding: 5px 13px;
+      background: rgba(0,0,0,0.5);
+      border-top: 2px solid rgba(255,255,255,0.14);
+      border-left: 2px solid rgba(255,255,255,0.09);
+      border-right: 2px solid rgba(0,0,0,0.8);
+      border-bottom: 2px solid rgba(0,0,0,0.8);
+      border-radius: 2px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.9);
+      transition: background 0.15s, filter 0.15s;
+    }
+    .mc-port:hover {
+      background: rgba(51,102,153,0.28);
+      filter: brightness(1.12);
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .section-footer {
+      padding: 13px 36px;
+      background: rgba(0,0,0,0.28);
+      border-top: 2px solid rgba(93,158,50,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.36rem;
+      color: rgba(200,230,180,0.38);
+      letter-spacing: 0.1em;
+      text-shadow: 1px 1px 0 #000;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: rgba(8,30,8,0.94);
+      border: 2px solid var(--mc-green);
+      border-radius: 2px;
+      outline: 2px solid rgba(0,0,0,0.8);
+      color: var(--mc-green-lt);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      padding: 12px 22px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 999;
+      text-shadow: 2px 2px 0 #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 20px rgba(93,158,50,0.28);
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 540px) {
+      .section-hero  { padding: 22px 18px 20px; gap: 16px; }
+      .pixel-divider { margin: 0 18px; }
+      .section-desc  { padding: 20px 18px; }
+      .section-ip    {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 3px 1fr;
+      }
+      .ip-vline {
+        width: 100%; height: 3px;
+        background: repeating-linear-gradient(
+          to right,
+          var(--mc-green-dk) 0px, var(--mc-green-dk) 8px,
+          transparent 8px, transparent 12px
+        );
+      }
+      .ip-side { padding: 20px 18px; }
+      .section-footer { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="glass-card">
+
+    <div class="grass-strip"></div>
+
+    <div class="card-inner">
+
+      <!-- HERO -->
+      <div class="section-hero">
+        <img src="ODYCRAFT.png" alt="OdyCraft Logo" class="server-icon"/>
+        <div class="title-block">
+          <div class="title-main"><span>Ody</span>Craft</div>
+          <div class="title-badges">
+            <span class="badge badge-green">Semi-Anarchy SMP</span>
+            <span class="badge badge-version">v26.1.2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="pixel-divider"></div>
+
+      <!-- DESCRIPTION -->
+      <div class="section-desc">
+        <div class="section-label">About the Server</div>
+        <p class="desc-text">
+          OdyCraft is a <strong>semi-anarchy</strong> server — the world is yours.
+          Build, destroy, survive, or conquer however you choose.
+          The only rules: <strong>no hacking</strong>, <strong>no exploiting</strong>,
+          and no use of <strong>free-cam</strong>, <strong>minimaps</strong>, or any other
+          <strong>player-tracking</strong> methods. Beyond that? The odyssey is entirely your own.
+        </p>
+      </div>
+
+      <!-- DISCORD -->
+      <div class="section-discord">
+        <a class="discord-btn" href="https://discord.gg/sqYKPByba4" target="_blank" rel="noopener">
+          <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+          </svg>
+          Join our Discord
+        </a>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="pixel-divider"></div>
+
+      <!-- IP SECTION -->
+      <div class="section-ip">
+
+        <!-- Java -->
+        <div class="ip-side">
+          <div class="ip-platform">☕ Java Edition</div>
+          <div class="mc-box"
+               title="Right-click to copy"
+               oncontextmenu="copyText('play.hamptonix.com', event)">
+            play.hamptonix.com
+          </div>
+          <div class="copy-hint">▷ right-click to copy</div>
+        </div>
+
+        <div class="ip-vline"></div>
+
+        <!-- Bedrock -->
+        <div class="ip-side">
+          <div class="ip-platform">📱 Bedrock Edition</div>
+          <div class="mc-box"
+               title="Right-click to copy"
+               oncontextmenu="copyText('play.hamptonix.com', event)">
+            play.hamptonix.com
+          </div>
+          <div class="port-wrap">
+            <span class="port-label">Port</span>
+            <span class="mc-port"
+                  title="Right-click to copy"
+                  oncontextmenu="copyText('25616', event)">25616</span>
+          </div>
+          <div class="copy-hint">▷ right-click to copy</div>
+        </div>
+
+      </div><!-- /section-ip -->
+
+      <!-- FOOTER -->
+      <div class="section-footer">
+        <div class="footer-text">© OdyCraft SMP &nbsp;·&nbsp; All Rights Reserved &nbsp;·&nbsp; The Odyssey Awaits</div>
+      </div>
+
+    </div><!-- /card-inner -->
+
+    <div class="dirt-strip"></div>
+
+  </div><!-- /glass-card -->
+</div><!-- /page -->
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+  function copyText(text, e) {
+    e.preventDefault();
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      toast.textContent = '"' + text + '" copied!';
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+    });
+  }
+</script>
+
+</body>
+</html>
