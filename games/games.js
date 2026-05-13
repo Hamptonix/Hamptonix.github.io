@@ -17,6 +17,14 @@ const GAMES = [
     category: "Platformer"
   },
   {
+    title: "Blob Cards",
+    tag: "Loot Boxes",
+    desc: "gamble :P",
+    icon: "https://i.postimg.cc/4yd9ZYGv/cover-(1).jpg",
+    url: "https://hamptonix.com/blobcard",
+    category: "Loot Boxes"
+  },
+  {
     title: "Geometry Dash",
     tag: "Platformer",
     desc: "This game is really hard.",
