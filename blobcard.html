@@ -1,0 +1,272 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a;
+    outline: none; /* Remove white outline */
+  }
+
+  #ap-root * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  #ap-root {
+    --blk: #0a0a0a;
+    --gray: #141414;
+    --border: #242424;
+    --accent: #7ecfea;
+    --white: #f0f0f0;
+    --white2: rgba(240,240,240,0.55);
+    font-family: 'Space Mono', monospace;
+    background: var(--blk);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  #ap-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(126,207,234,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(126,207,234,0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #ap-splash {
+    position: absolute; inset: 0;
+    background: var(--blk);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    z-index: 99;
+    transition: opacity 0.7s ease;
+  }
+  #ap-splash.hidden { opacity: 0; pointer-events: none; }
+
+  .splash-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    letter-spacing: 0.22em;
+  }
+
+  .splash-sub {
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .splash-bar-wrap {
+    width: 200px; height: 2px;
+    background: var(--border);
+    margin-top: 8px;
+  }
+
+  .splash-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  #ap-layout {
+    display: flex;
+    flex: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    position: relative;
+    z-index: 1;
+  }
+  #ap-layout.visible { opacity: 1; }
+
+  #ap-sidebar {
+    width: 260px;
+    background: rgba(20,20,20,0.97);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 0 32px;
+  }
+
+  .ap-avatar-wrap {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(126,207,234,0.07);
+  }
+
+  .ap-role {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    margin-top: 40px; /* increased spacing */
+    margin-bottom: 60px; /* more space before divider */
+  }
+
+  .ap-divider {
+    width: 100%; height: 1px;
+    background: var(--border);
+    margin-bottom: 36px; /* more space before directory */
+  }
+
+  .ap-nav-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--white2);
+    text-transform: uppercase;
+    align-self: flex-start;
+    padding-left: 28px;
+    margin-bottom: 24px; /* more space before buttons */
+  }
+
+  .ap-nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* increased spacing between buttons */
+    padding: 0 16px;
+  }
+
+  .ap-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: none;
+    color: var(--white2);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .ap-nav-btn.active {
+    background: rgba(126,207,234,0.13);
+    color: var(--accent);
+  }
+
+  #ap-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+  }
+
+  .ap-page { display: none; }
+  .ap-page.active { display: flex; }
+
+  #page-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ap-home-msg {
+    text-align: center;
+    max-width: 540px;
+    margin-top: 20px; /* optional for spacing */
+  }
+
+  .ap-home-msg strong {
+    display: block;
+    font-family: 'Bebas Neue';
+    font-size: 1.8rem;
+    margin-bottom: 14px;
+  }
+
+  /* Additional styles for spacing between elements in script and image boxes */
+  .ap-script-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid var(--border);
+    padding: 18px 24px;
+    margin-left: 8px; /* space from left */
+    margin-right: 8px; /* space from right */
+  }
+
+  .ap-script-icon {
+    margin-left: 10px; /* spacing from left edge */
+  }
+
+  .ap-copy-btn {
+    margin-right: 10px; /* spacing from right edge */
+  }
+
+  /* Margins for placeholders and other elements can be added as needed */
+</style>
+
+<div id="ap-root">
+
+  <div id="ap-grid-bg"></div>
+
+  <div id="ap-splash">
+    <div class="splash-title">hamptonix</div>
+    <div class="splash-sub">Admin Panel — Authenticating</div>
+    <div class="splash-bar-wrap"><div class="splash-bar" id="splashBar"></div></div>
+  </div>
+
+  <div id="ap-layout">
+
+    <div id="ap-sidebar">
+      <div class="ap-avatar-wrap"></div>
+      <div class="ap-role">Administrator</div>
+      <div class="ap-divider"></div>
+
+      <div class="ap-nav-label">Directory</div>
+
+      <div class="ap-nav">
+        <button class="ap-nav-btn active" onclick="apNav(this,'home')">Homepage</button>
+        <button class="ap-nav-btn" onclick="apNav(this,'scripts')">Scripts</button>
+      </div>
+    </div>
+
+    <div id="ap-content">
+
+      <!-- DEFAULT ACTIVE PAGE -->
+      <div class="ap-page active" id="page-home">
+        <div class="ap-home-msg">
+          <strong>Welcome to the Hamptonix Administrator Homepage</strong>
+          You can find admin tools here.
+        </div>
+      </div>
+
+      <div class="ap-page" id="page-scripts">
+        <div id="scriptsList"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+
+  window.apNav = function(btn, page) {
+    document.querySelectorAll('.ap-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.ap-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+  };
+
+  // splash
+  var bar = document.getElementById('splashBar');
+  var splash = document.getElementById('ap-splash');
+  var layout = document.getElementById('ap-layout');
+
+  setTimeout(() => bar.style.width = '100%', 80);
+  setTimeout(() => {
+    splash.classList.add('hidden');
+    layout.classList.add('visible');
+  }, 1800);
+
+})();
+</script>
