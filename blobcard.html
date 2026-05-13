@@ -1,272 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blob Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    margin: 0;
-    padding: 0;
-    background: #0a0a0a;
-    outline: none; /* Remove white outline */
-  }
-
-  #ap-root * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  #ap-root {
-    --blk: #0a0a0a;
-    --gray: #141414;
-    --border: #242424;
-    --accent: #7ecfea;
-    --white: #f0f0f0;
-    --white2: rgba(240,240,240,0.55);
-    font-family: 'Space Mono', monospace;
-    background: var(--blk);
-    color: var(--white);
+    background: #0a0a14;
+    background-image: radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, transparent 50%),
+                      radial-gradient(ellipse at 80% 20%, #0a1a2e 0%, transparent 50%);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    font-family: 'Nunito', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
   }
 
-  #ap-grid-bg {
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    text-shadow: none;
+  }
+
+  .logo-sub {
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-top: 0.3rem;
+  }
+
+  .collection-count {
+    display: inline-block;
+    margin-top: 0.8rem;
+    padding: 0.3rem 1rem;
+    background: rgba(255,255,255,0.07);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .packs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .pack-card {
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .pack-card::before {
+    content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(126,207,234,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(126,207,234,0.04) 1px, transparent 1px);
-    background-size: 44px 44px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .pack-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .pack-card:active { transform: translateY(-2px) scale(0.99); }
+
+  .pack-cat { background: linear-gradient(135deg, #1e1035 0%, #2d1b69 100%); }
+  .pack-color { background: linear-gradient(135deg, #0f1e35 0%, #1b3a69 100%); }
+
+  .pack-icon {
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .pack-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.3rem;
+  }
+
+  .pack-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  .pack-odds {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .rarity-pip {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .open-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .open-btn:hover { opacity: 0.85; }
+  .pack-cat .open-btn { background: linear-gradient(90deg, #7c3aed, #a855f7); color: #fff; }
+  .pack-color .open-btn { background: linear-gradient(90deg, #1d4ed8, #3b82f6); color: #fff; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    width: min(700px, 95vw);
+    background: #0f0f1e;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .modal-header {
+    padding: 1.2rem 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
+
+  .phase-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .reel-wrapper {
+    padding: 1.5rem;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.1s;
+  }
+
+  /* Single center indicator line */
+  .reel-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    background: rgba(255,255,255,0.9);
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(255,255,255,0.6), 0 0 24px rgba(255,255,255,0.3);
+  }
+
+  .reel-wrapper::after { display: none; }
+
+  /* Cinematic edge fade */
+  .reel-wrapper .reel-fade-left,
+  .reel-wrapper .reel-fade-right {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 9;
+    pointer-events: none;
+  }
+
+  /* Flash overlay */
+  .reel-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.05s;
+  }
+
+  /* Vignette overlay on modal */
+  .modal-vignette {
+    position: absolute;
+    inset: 0;
     pointer-events: none;
     z-index: 0;
-  }
-
-  #ap-splash {
-    position: absolute; inset: 0;
-    background: var(--blk);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 16px;
-    z-index: 99;
-    transition: opacity 0.7s ease;
-  }
-  #ap-splash.hidden { opacity: 0; pointer-events: none; }
-
-  .splash-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3.2rem;
-    letter-spacing: 0.22em;
-  }
-
-  .splash-sub {
-    font-size: 0.85rem;
-    letter-spacing: 0.25em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-
-  .splash-bar-wrap {
-    width: 200px; height: 2px;
-    background: var(--border);
-    margin-top: 8px;
-  }
-
-  .splash-bar {
-    height: 100%;
-    background: var(--accent);
-    width: 0%;
-    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  #ap-layout {
-    display: flex;
-    flex: 1;
+    border-radius: 20px;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
     opacity: 0;
-    transition: opacity 0.5s ease;
-    position: relative;
-    z-index: 1;
+    transition: opacity 0.4s;
   }
-  #ap-layout.visible { opacity: 1; }
 
-  #ap-sidebar {
-    width: 260px;
-    background: rgba(20,20,20,0.97);
-    border-right: 1px solid var(--border);
+  .reel-track {
+    display: flex;
+    gap: 8px;
+    will-change: transform;
+    user-select: none;
+  }
+
+  .reel-item {
+    flex-shrink: 0;
+    width: 110px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 60px 0 32px;
+    background: rgba(255,255,255,0.03);
+    transition: border-color 0.3s;
   }
 
-  .ap-avatar-wrap {
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(126,207,234,0.07);
-  }
-
-  .ap-role {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.15rem;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    margin-top: 40px; /* increased spacing */
-    margin-bottom: 60px; /* more space before divider */
-  }
-
-  .ap-divider {
-    width: 100%; height: 1px;
-    background: var(--border);
-    margin-bottom: 36px; /* more space before directory */
-  }
-
-  .ap-nav-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
-    color: var(--white2);
-    text-transform: uppercase;
-    align-self: flex-start;
-    padding-left: 28px;
-    margin-bottom: 24px; /* more space before buttons */
-  }
-
-  .ap-nav {
+  .reel-item img {
     width: 100%;
-    display: flex;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .reel-item-name {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 4px 4px 5px;
+    line-height: 1.3;
+  }
+
+  .rarity-tag {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+
+  /* Result */
+  .result-area {
+    display: none;
     flex-direction: column;
-    gap: 8px; /* increased spacing between buttons */
-    padding: 0 16px;
-  }
-
-  .ap-nav-btn {
-    display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border: none;
-    color: var(--white2);
-    background: transparent;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .result-area.visible { display: flex; }
+
+  @keyframes cardSlam {
+    0%   { opacity: 0; transform: scale(2.5) rotate(-8deg); }
+    60%  { opacity: 1; transform: scale(0.92) rotate(1deg); }
+    80%  { transform: scale(1.06) rotate(-0.5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  @keyframes rarityPulse {
+    0%   { box-shadow: 0 0 0px var(--rarity-glow); }
+    50%  { box-shadow: 0 0 60px var(--rarity-glow), 0 0 120px var(--rarity-glow); }
+    100% { box-shadow: 0 0 30px var(--rarity-glow); }
+  }
+
+  @keyframes shakeModal {
+    0%,100% { transform: translate(0,0) rotate(0deg); }
+    15%  { transform: translate(-6px,3px) rotate(-1deg); }
+    30%  { transform: translate(6px,-2px) rotate(1deg); }
+    45%  { transform: translate(-4px,4px) rotate(-0.5deg); }
+    60%  { transform: translate(4px,-3px) rotate(0.5deg); }
+    75%  { transform: translate(-2px,2px) rotate(-0.3deg); }
+  }
+
+  @keyframes zoomPulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes particleBurst {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+  }
+
+  .result-card {
+    width: 180px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid;
+    margin-bottom: 1rem;
+    animation: cardSlam 0.6s cubic-bezier(0.22,1,0.36,1) forwards, rarityPulse 1.5s ease 0.6s infinite;
+  }
+
+  .result-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Particle canvas */
+  #particleCanvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    border-radius: 20px;
+  }
+
+  .result-card-footer {
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .result-rarity {
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .result-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+
+  .btn-open-again, .btn-close {
+    padding: 0.6rem 1.4rem;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
     cursor: pointer;
+    border: none;
+    transition: opacity 0.15s;
   }
 
-  .ap-nav-btn.active {
-    background: rgba(126,207,234,0.13);
-    color: var(--accent);
+  .btn-open-again:hover, .btn-close:hover { opacity: 0.85; }
+  .btn-open-again { background: linear-gradient(90deg, #7c3aed, #3b82f6); color: #fff; }
+  .btn-close { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+
+  /* Collection */
+  .collection-section {
+    margin-top: 2rem;
   }
 
-  #ap-content {
-    flex: 1;
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+  }
+
+  .coll-card {
+    border-radius: 10px;
+    border: 2px solid;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.15s;
+  }
+
+  .coll-card:hover { transform: scale(1.05); }
+  .coll-card.locked { filter: grayscale(1) brightness(0.3); }
+  .coll-card.locked::after {
+    content: '?';
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.3);
   }
 
-  .ap-page { display: none; }
-  .ap-page.active { display: flex; }
+  .coll-card img { width: 100%; height: 65px; object-fit: cover; display: block; }
 
-  #page-home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .ap-home-msg {
+  .coll-card-label {
+    font-size: 0.55rem;
+    font-weight: 700;
     text-align: center;
-    max-width: 540px;
-    margin-top: 20px; /* optional for spacing */
+    padding: 3px 3px 4px;
+    background: rgba(0,0,0,0.5);
+    line-height: 1.3;
   }
 
-  .ap-home-msg strong {
-    display: block;
-    font-family: 'Bebas Neue';
-    font-size: 1.8rem;
-    margin-bottom: 14px;
+  .coll-count {
+    position: absolute;
+    top: 3px; right: 3px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 8px;
   }
 
-  /* Additional styles for spacing between elements in script and image boxes */
-  .ap-script-row {
+  .tab-row {
     display: flex;
-    align-items: center;
-    gap: 18px;
-    border: 1px solid var(--border);
-    padding: 18px 24px;
-    margin-left: 8px; /* space from left */
-    margin-right: 8px; /* space from right */
+    gap: 8px;
+    margin-bottom: 1rem;
   }
 
-  .ap-script-icon {
-    margin-left: 10px; /* spacing from left edge */
+  .tab-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.5);
+    transition: all 0.15s;
   }
 
-  .ap-copy-btn {
-    margin-right: 10px; /* spacing from right edge */
+  .tab-btn.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.3);
   }
 
-  /* Margins for placeholders and other elements can be added as needed */
+  /* Rarity colors */
+  .r-common    { color: #9ca3af; border-color: #4b5563; background: rgba(75,85,99,0.2); }
+  .r-uncommon  { color: #34d399; border-color: #059669; background: rgba(5,150,105,0.2); }
+  .r-rare      { color: #60a5fa; border-color: #2563eb; background: rgba(37,99,235,0.2); }
+  .r-epic      { color: #c084fc; border-color: #9333ea; background: rgba(147,51,234,0.2); }
+  .r-legendary { color: #fbbf24; border-color: #d97706; background: rgba(217,119,6,0.2); }
+  .r-mythic    { color: #f87171; border-color: #dc2626; background: rgba(220,38,38,0.2); }
+
+  .r-common-bg    { background: #374151; }
+  .r-uncommon-bg  { background: #065f46; }
+  .r-rare-bg      { background: #1e3a8a; }
+  .r-epic-bg      { background: #581c87; }
+  .r-legendary-bg { background: #78350f; }
+  .r-mythic-bg    { background: #7f1d1d; }
 </style>
+</head>
+<body>
 
-<div id="ap-root">
+<div class="stars"></div>
 
-  <div id="ap-grid-bg"></div>
+<div class="container">
+  <header>
+    <div class="logo">Blob Cards</div>
+    <div class="logo-sub">Collect Every Blob</div>
+    <div class="collection-count" id="collectionCount">0 / 0 collected</div>
+  </header>
 
-  <div id="ap-splash">
-    <div class="splash-title">hamptonix</div>
-    <div class="splash-sub">Admin Panel — Authenticating</div>
-    <div class="splash-bar-wrap"><div class="splash-bar" id="splashBar"></div></div>
-  </div>
-
-  <div id="ap-layout">
-
-    <div id="ap-sidebar">
-      <div class="ap-avatar-wrap"></div>
-      <div class="ap-role">Administrator</div>
-      <div class="ap-divider"></div>
-
-      <div class="ap-nav-label">Directory</div>
-
-      <div class="ap-nav">
-        <button class="ap-nav-btn active" onclick="apNav(this,'home')">Homepage</button>
-        <button class="ap-nav-btn" onclick="apNav(this,'scripts')">Scripts</button>
+  <div class="packs-grid">
+    <div class="pack-card pack-cat">
+      <span class="pack-icon">🐱</span>
+      <div class="pack-name">Cat Pack</div>
+      <div class="pack-desc">22 unique cat blobs across 6 rarities. Can you find the legendary Maine Coon?</div>
+      <div class="pack-odds">
+        <span class="rarity-pip r-common">Common 35%</span>
+        <span class="rarity-pip r-uncommon">Uncommon 25%</span>
+        <span class="rarity-pip r-rare">Rare 20%</span>
+        <span class="rarity-pip r-epic">Epic 10%</span>
+        <span class="rarity-pip r-legendary">Legendary 7.5%</span>
+        <span class="rarity-pip r-mythic">Mythic 2.5%</span>
       </div>
+      <button class="open-btn" onclick="openPack('cat')">Open Cat Pack</button>
     </div>
 
-    <div id="ap-content">
+    <div class="pack-card pack-color">
+      <span class="pack-icon">🎨</span>
+      <div class="pack-name">Color Pack</div>
+      <div class="pack-desc">18 colorful blobs from plain white to shimmering sapphire. Collect them all!</div>
+      <div class="pack-odds">
+        <span class="rarity-pip r-common">Common 35%</span>
+        <span class="rarity-pip r-uncommon">Uncommon 25%</span>
+        <span class="rarity-pip r-rare">Rare 20%</span>
+        <span class="rarity-pip r-epic">Epic 10%</span>
+        <span class="rarity-pip r-legendary">Legendary 7.5%</span>
+        <span class="rarity-pip r-mythic">Mythic 2.5%</span>
+      </div>
+      <button class="open-btn" onclick="openPack('color')">Open Color Pack</button>
+    </div>
+  </div>
 
-      <!-- DEFAULT ACTIVE PAGE -->
-      <div class="ap-page active" id="page-home">
-        <div class="ap-home-msg">
-          <strong>Welcome to the Hamptonix Administrator Homepage</strong>
-          You can find admin tools here.
+  <div class="collection-section">
+    <div class="section-title">Your Collection</div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('cat', this)">🐱 Cat Blobs</button>
+      <button class="tab-btn" onclick="switchTab('color', this)">🎨 Color Blobs</button>
+    </div>
+    <div class="collection-grid" id="collectionGrid"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <div class="modal-vignette" id="modalVignette"></div>
+    <canvas id="particleCanvas"></canvas>
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Opening Pack...</div>
+        <div class="phase-label" id="phaseLabel">Rolling rarity...</div>
+      </div>
+      <div id="rarityDisplay" style="font-size:1rem;font-weight:900;letter-spacing:1px;"></div>
+    </div>
+
+    <div class="reel-wrapper" id="reelWrapper">
+      <div class="reel-fade-left" id="reelFadeLeft" style="position:absolute;top:0;bottom:0;left:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to right,#0f0f1e,transparent);"></div>
+      <div class="reel-fade-right" id="reelFadeRight" style="position:absolute;top:0;bottom:0;right:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to left,#0f0f1e,transparent);"></div>
+      <div class="reel-flash" id="reelFlash"></div>
+      <div class="reel-track" id="reelTrack"></div>
+    </div>
+
+    <div class="result-area" id="resultArea">
+      <div class="result-card" id="resultCard">
+        <img id="resultImg" src="" alt="">
+        <div class="result-card-footer">
+          <div class="result-rarity" id="resultRarity"></div>
+          <div class="result-name" id="resultName"></div>
         </div>
       </div>
-
-      <div class="ap-page" id="page-scripts">
-        <div id="scriptsList"></div>
+      <div class="result-actions">
+        <button class="btn-open-again" id="openAgainBtn">Open Another</button>
+        <button class="btn-close" onclick="closeModal()">Close</button>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
-(function() {
+const BLOB_IMG = 'https://www.sveedy.com/thumbs/blob-opera.jpg';
 
-  window.apNav = function(btn, page) {
-    document.querySelectorAll('.ap-nav-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+const RARITY_COLORS = {
+  common:    { glow: 'rgba(156,163,175,0.8)', flash: 'rgba(156,163,175,0.15)', particles: '#9ca3af' },
+  uncommon:  { glow: 'rgba(52,211,153,0.9)',  flash: 'rgba(52,211,153,0.18)', particles: '#34d399' },
+  rare:      { glow: 'rgba(96,165,250,0.9)',  flash: 'rgba(96,165,250,0.18)', particles: '#60a5fa' },
+  epic:      { glow: 'rgba(192,132,252,0.9)', flash: 'rgba(192,132,252,0.18)',particles: '#c084fc' },
+  legendary: { glow: 'rgba(251,191,36,1.0)',  flash: 'rgba(251,191,36,0.22)', particles: '#fbbf24' },
+  mythic:    { glow: 'rgba(248,113,113,1.0)', flash: 'rgba(248,113,113,0.25)',particles: '#f87171' }
+};
 
-    document.querySelectorAll('.ap-page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-  };
+const PACKS = {
+  cat: {
+    name: 'Cat Pack',
+    cards: {
+      common:    ['Tabby Blob','Scottish Fold Blob','Ragdoll Blob','Black Tabby Blob','British Longhair Blob','American Curl Blob'],
+      uncommon:  ['Exotic Shorthair Blob','Siamese Blob','Sphynx Blob','Japanese Shorthair Blob','Gray Shorthair Blob'],
+      rare:      ['Bobcat Blob','Manx Blob','Oriental Blob','Russian Blue Blob'],
+      epic:      ['Birmam Blob','Egyptian Cat Blob','Munchkin Blob','Tonkinese Blob','Ocicat Blob'],
+      legendary: ['Havana Blob','Snowshoe Blob','Khao Manee Blob'],
+      mythic:    ['Maine Coon Blob','Lykoi Blob']
+    }
+  },
+  color: {
+    name: 'Color Pack',
+    cards: {
+      common:    ['White Blob','Gray Blob','Black Blob'],
+      uncommon:  ['Green Blob','Blue Blob','Red Blob'],
+      rare:      ['Yellow Blob','Orange Blob','Brown Blob'],
+      epic:      ['Pink Blob','Turquoise Blob','Purple Blob'],
+      legendary: ['Copper Blob','Silver Blob','Gold Blob'],
+      mythic:    ['Diamond Blob','Emerald Blob','Ruby Blob','Sapphire Blob']
+    }
+  }
+};
 
-  // splash
-  var bar = document.getElementById('splashBar');
-  var splash = document.getElementById('ap-splash');
-  var layout = document.getElementById('ap-layout');
+const RARITIES = [
+  { key: 'common',    label: 'Common',    weight: 35,  cls: 'r-common' },
+  { key: 'uncommon',  label: 'Uncommon',  weight: 25,  cls: 'r-uncommon' },
+  { key: 'rare',      label: 'Rare',      weight: 20,  cls: 'r-rare' },
+  { key: 'epic',      label: 'Epic',      weight: 10,  cls: 'r-epic' },
+  { key: 'legendary', label: 'Legendary', weight: 7.5, cls: 'r-legendary' },
+  { key: 'mythic',    label: 'Mythic',    weight: 2.5, cls: 'r-mythic' }
+];
 
-  setTimeout(() => bar.style.width = '100%', 80);
-  setTimeout(() => {
-    splash.classList.add('hidden');
-    layout.classList.add('visible');
-  }, 1800);
+const RARITY_MAP = Object.fromEntries(RARITIES.map(r => [r.key, r]));
 
-})();
+// Collection stored as { packKey: { cardName: count } }
+let collection = JSON.parse(localStorage.getItem('blobCards') || '{}');
+let currentPack = null;
+let currentTab = 'cat';
+
+function saveCollection() {
+  localStorage.setItem('blobCards', JSON.stringify(collection));
+}
+
+function rollRarity() {
+  const total = RARITIES.reduce((a, r) => a + r.weight, 0);
+  let rand = Math.random() * total;
+  for (const r of RARITIES) {
+    rand -= r.weight;
+    if (rand <= 0) return r;
+  }
+  return RARITIES[0];
+}
+
+function rollCard(packKey, rarityKey) {
+  const cards = PACKS[packKey].cards[rarityKey];
+  return cards[Math.floor(Math.random() * cards.length)];
+}
+
+function makeReelItem(name, rarityKey) {
+  const r = RARITY_MAP[rarityKey];
+  const el = document.createElement('div');
+  el.className = `reel-item ${r.cls}`;
+  el.innerHTML = `
+    <img src="${BLOB_IMG}" alt="${name}" loading="lazy">
+    <span class="rarity-tag ${r.cls}">${r.label}</span>
+    <span class="reel-item-name">${name}</span>
+  `;
+  return el;
+}
+
+function buildReel(items) {
+  const track = document.getElementById('reelTrack');
+  track.innerHTML = '';
+  track.style.transform = 'translateX(0)';
+  items.forEach(({ name, rarityKey }) => {
+    track.appendChild(makeReelItem(name, rarityKey));
+  });
+}
+
+function animateReel(track, targetIndex, itemWidth, gap, duration, rarityKey) {
+  return new Promise(resolve => {
+    const wrapperEl = document.getElementById('reelWrapper');
+    const wrapperWidth = wrapperEl.clientWidth;
+    const centerOffset = wrapperWidth / 2 - itemWidth / 2 - 24; // minus padding
+    const targetX = -(targetIndex * (itemWidth + gap)) + centerOffset;
+    const flash = document.getElementById('reelFlash');
+    const rc = rarityKey ? RARITY_COLORS[rarityKey] : null;
+
+    const start = performance.now();
+
+    function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+    let lastFlash = 0;
+    let flashCount = 0;
+    const maxFlashes = rarityKey === 'mythic' ? 8 : rarityKey === 'legendary' ? 6 : rarityKey === 'epic' ? 4 : 2;
+
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutQuint(progress);
+      const currentX = targetX * eased;
+      track.style.transform = `translateX(${currentX}px)`;
+
+      // Camera zoom pulse as it slows down
+      if (progress > 0.75 && progress < 0.95) {
+        const zoomPhase = (progress - 0.75) / 0.2;
+        const zoom = 1 + Math.sin(zoomPhase * Math.PI) * 0.03;
+        wrapperEl.style.transform = `scale(${zoom.toFixed(4)})`;
+      } else if (progress >= 0.95) {
+        wrapperEl.style.transform = 'scale(1)';
+      }
+
+      // Speed-based flash flickers when fast
+      if (rc && progress < 0.5 && now - lastFlash > 180 && flashCount < maxFlashes) {
+        const speed = 1 - progress;
+        if (Math.random() < speed * 0.4) {
+          flash.style.background = rc.flash;
+          flash.style.opacity = '1';
+          setTimeout(() => { flash.style.opacity = '0'; }, 60);
+          lastFlash = now;
+          flashCount++;
+        }
+      }
+
+      // Final lock-in: big flash + shake
+      if (progress >= 0.999) {
+        wrapperEl.style.transform = 'scale(1)';
+        if (rc) {
+          flash.style.background = rc.flash;
+          flash.style.opacity = '1';
+          setTimeout(() => { flash.style.opacity = '0'; }, 120);
+          // Shake the modal
+          const box = document.getElementById('modalBox');
+          box.style.animation = 'shakeModal 0.35s ease';
+          setTimeout(() => { box.style.animation = ''; }, 350);
+        }
+        resolve();
+        return;
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  });
+}
+
+function spawnParticles(rarityKey) {
+  const canvas = document.getElementById('particleCanvas');
+  const box = document.getElementById('modalBox');
+  canvas.width = box.offsetWidth;
+  canvas.height = box.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  const color = RARITY_COLORS[rarityKey]?.particles || '#fff';
+  const cx = canvas.width / 2;
+  const cy = canvas.height * 0.45;
+  const count = rarityKey === 'mythic' ? 60 : rarityKey === 'legendary' ? 45 : rarityKey === 'epic' ? 30 : 18;
+
+  const particles = Array.from({ length: count }, () => {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 5;
+    return { x: cx, y: cy, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2,
+             size: 2 + Math.random() * 4, life: 1, decay: 0.015 + Math.random() * 0.02 };
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life -= p.decay;
+      if (p.life <= 0) continue;
+      alive = true;
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (alive) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(draw);
+}
+
+function setVignette(on, rarityKey) {
+  const v = document.getElementById('modalVignette');
+  if (on && rarityKey) {
+    const c = RARITY_COLORS[rarityKey];
+    v.style.background = `radial-gradient(ellipse at center, transparent 30%, ${c.glow.replace('0.8','0.35').replace('0.9','0.35').replace('1.0','0.35')} 100%)`;
+    v.style.opacity = '1';
+  } else {
+    v.style.opacity = '0';
+  }
+}
+
+async function openPack(packKey) {
+  currentPack = packKey;
+  const pack = PACKS[packKey];
+  const overlay = document.getElementById('modalOverlay');
+  const reelWrapper = document.getElementById('reelWrapper');
+  const resultArea = document.getElementById('resultArea');
+  const phaseLabel = document.getElementById('phaseLabel');
+  const rarityDisplay = document.getElementById('rarityDisplay');
+
+  document.getElementById('modalTitle').textContent = pack.name;
+  resultArea.classList.remove('visible');
+  reelWrapper.style.display = 'block';
+  reelWrapper.style.transform = 'scale(1)';
+  setVignette(false);
+  overlay.classList.add('active');
+
+  // ---- PHASE 1: Roll rarity via reel ----
+  phaseLabel.textContent = 'Rolling rarity...';
+  rarityDisplay.textContent = '';
+
+  const reelRarities = [...RARITIES, ...RARITIES, ...RARITIES];
+  const totalItems = 36;
+  const targetRarity = rollRarity();
+  const targetIndex = 28;
+
+  const rarityItems = [];
+  for (let i = 0; i < totalItems; i++) {
+    if (i === targetIndex) {
+      rarityItems.push({ name: targetRarity.label, rarityKey: targetRarity.key });
+    } else {
+      const r = reelRarities[i % reelRarities.length];
+      rarityItems.push({ name: r.label, rarityKey: r.key });
+    }
+  }
+
+  buildReel(rarityItems);
+  const itemWidth = 110, gap = 8;
+  await animateReel(document.getElementById('reelTrack'), targetIndex, itemWidth, gap, 3500, targetRarity.key);
+
+  // Zoom pulse on winner reveal
+  reelWrapper.style.transition = 'transform 0.2s ease';
+  reelWrapper.style.transform = 'scale(1.06)';
+  setTimeout(() => { reelWrapper.style.transform = 'scale(1)'; }, 300);
+
+  // Rarity color the center line
+  const reelEl = document.getElementById('reelWrapper');
+  const glowColor = RARITY_COLORS[targetRarity.key].glow;
+  reelEl.style.setProperty('--line-glow', glowColor);
+
+  rarityDisplay.innerHTML = `<span class="${targetRarity.cls}" style="font-size:1rem;font-weight:900;">${targetRarity.label}!</span>`;
+  setVignette(true, targetRarity.key);
+
+  await new Promise(r => setTimeout(r, 900));
+
+  // ---- PHASE 2: Roll card ----
+  phaseLabel.textContent = `Rolling ${targetRarity.label} card...`;
+  setVignette(false);
+
+  const cards = pack.cards[targetRarity.key];
+  const totalCardItems = Math.max(30, cards.length * 5);
+  const cardTargetIndex = totalCardItems - 4;
+  const wonCard = rollCard(packKey, targetRarity.key);
+
+  const cardItems = [];
+  for (let i = 0; i < totalCardItems; i++) {
+    if (i === cardTargetIndex) {
+      cardItems.push({ name: wonCard, rarityKey: targetRarity.key });
+    } else {
+      cardItems.push({ name: cards[i % cards.length], rarityKey: targetRarity.key });
+    }
+  }
+
+  buildReel(cardItems);
+  await animateReel(document.getElementById('reelTrack'), cardTargetIndex, itemWidth, gap, 3200, targetRarity.key);
+
+  // Final zoom burst
+  reelWrapper.style.transition = 'transform 0.15s ease';
+  reelWrapper.style.transform = 'scale(1.1)';
+  setVignette(true, targetRarity.key);
+  await new Promise(r => setTimeout(r, 180));
+  reelWrapper.style.transform = 'scale(1)';
+  await new Promise(r => setTimeout(r, 400));
+
+  reelWrapper.style.display = 'none';
+  showResult(wonCard, targetRarity, packKey);
+}
+
+function showResult(cardName, rarity, packKey) {
+  const resultArea = document.getElementById('resultArea');
+  const resultCard = document.getElementById('resultCard');
+  const resultImg = document.getElementById('resultImg');
+  const resultRarityEl = document.getElementById('resultRarity');
+  const resultNameEl = document.getElementById('resultName');
+
+  resultImg.src = BLOB_IMG;
+  resultImg.alt = cardName;
+  resultRarityEl.textContent = rarity.label;
+  resultRarityEl.className = `result-rarity ${rarity.cls}`;
+  resultNameEl.textContent = cardName;
+
+  const glowColor = RARITY_COLORS[rarity.key].glow;
+  resultCard.className = `result-card ${rarity.cls}`;
+  resultCard.style.setProperty('--rarity-glow', glowColor);
+
+  document.getElementById('phaseLabel').textContent = 'You got:';
+  setVignette(true, rarity.key);
+
+  if (!collection[packKey]) collection[packKey] = {};
+  collection[packKey][cardName] = (collection[packKey][cardName] || 0) + 1;
+  saveCollection();
+  renderCollection();
+  updateCount();
+
+  document.getElementById('openAgainBtn').onclick = () => openPack(packKey);
+  resultArea.classList.add('visible');
+
+  // Trigger particles after card animation
+  setTimeout(() => spawnParticles(rarity.key), 300);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('reelWrapper').style.display = 'block';
+  document.getElementById('reelWrapper').style.transform = 'scale(1)';
+  document.getElementById('resultArea').classList.remove('visible');
+  document.getElementById('rarityDisplay').textContent = '';
+  setVignette(false);
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function updateCount() {
+  const allCards = [];
+  for (const packKey of Object.keys(PACKS)) {
+    for (const cards of Object.values(PACKS[packKey].cards)) {
+      allCards.push(...cards);
+    }
+  }
+  const total = allCards.length;
+  let collected = 0;
+  for (const packKey of Object.keys(PACKS)) {
+    for (const cards of Object.values(PACKS[packKey].cards)) {
+      for (const c of cards) {
+        if (collection[packKey]?.[c]) collected++;
+      }
+    }
+  }
+  document.getElementById('collectionCount').textContent = `${collected} / ${total} collected`;
+}
+
+function renderCollection() {
+  const grid = document.getElementById('collectionGrid');
+  grid.innerHTML = '';
+  const pack = PACKS[currentTab];
+
+  for (const [rarityKey, cards] of Object.entries(pack.cards)) {
+    const r = RARITY_MAP[rarityKey];
+    for (const cardName of cards) {
+      const count = collection[currentTab]?.[cardName] || 0;
+      const locked = count === 0;
+      const div = document.createElement('div');
+      div.className = `coll-card ${r.cls}${locked ? ' locked' : ''}`;
+      div.title = cardName;
+      div.innerHTML = `
+        <img src="${BLOB_IMG}" alt="${cardName}">
+        ${count > 1 ? `<div class="coll-count">x${count}</div>` : ''}
+        <div class="coll-card-label">${cardName}</div>
+      `;
+      grid.appendChild(div);
+    }
+  }
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCollection();
+}
+
+// Init
+renderCollection();
+updateCount();
 </script>
+</body>
+</html>
