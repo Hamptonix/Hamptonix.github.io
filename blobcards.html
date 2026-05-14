@@ -331,12 +331,30 @@
   .tab-btn.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3); }
 
   /* Rarity palette */
-  .r-common    { color: #9ca3af; border-color: #4b5563; background: rgba(75,85,99,0.2); }
-  .r-uncommon  { color: #34d399; border-color: #059669; background: rgba(5,150,105,0.2); }
-  .r-rare      { color: #60a5fa; border-color: #2563eb; background: rgba(37,99,235,0.2); }
-  .r-epic      { color: #c084fc; border-color: #9333ea; background: rgba(147,51,234,0.2); }
-  .r-legendary { color: #fbbf24; border-color: #d97706; background: rgba(217,119,6,0.2); }
-  .r-mythic    { color: #f87171; border-color: #dc2626; background: rgba(220,38,38,0.2); }
+  .r-common     { color: #9ca3af; border-color: #4b5563; background: rgba(75,85,99,0.2); }
+  .r-uncommon   { color: #34d399; border-color: #059669; background: rgba(5,150,105,0.2); }
+  .r-rare       { color: #60a5fa; border-color: #2563eb; background: rgba(37,99,235,0.2); }
+  .r-epic       { color: #c084fc; border-color: #9333ea; background: rgba(147,51,234,0.2); }
+  .r-legendary  { color: #fbbf24; border-color: #d97706; background: rgba(217,119,6,0.2); }
+  .r-mythic     { color: #f87171; border-color: #dc2626; background: rgba(220,38,38,0.2); }
+  .r-exotic     { color: #fb923c; border-color: #ea580c; background: rgba(234,88,12,0.2); }
+  .r-impossible { color: #e2e8f0; border-color: #334155; background: rgba(15,15,25,0.7); }
+
+  /* Impossible pack card — dark void aesthetic */
+  .pack-impossible {
+    background: linear-gradient(135deg, #050508 0%, #0f0f18 60%, #150808 100%);
+    border-color: rgba(255,255,255,0.06) !important;
+  }
+  .pack-impossible .open-btn {
+    background: linear-gradient(90deg, #1a0a2e, #0a0a14, #0a1a1a);
+    color: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  @keyframes voidPulse {
+    0%,100% { box-shadow: 0 0 8px rgba(255,255,255,0.03); }
+    50%      { box-shadow: 0 0 20px rgba(255,255,255,0.07); }
+  }
+  .pack-impossible { animation: voidPulse 4s ease-in-out infinite; }
 
   /* hidden file input */
   #importFileInput { display: none; }
@@ -385,6 +403,18 @@
       </div>
       <button class="open-btn" onclick="openPack('color')">Open Color Pack</button>
     </div>
+
+    <div class="pack-card pack-impossible">
+      <span class="pack-icon">😎</span>
+      <div class="pack-name">Impossible Pack</div>
+      <div class="pack-desc">3 blobs. Almost certainly nothing. Almost.</div>
+      <div class="pack-odds">
+        <span class="rarity-pip r-common">Common 99.49%</span>
+        <span class="rarity-pip r-exotic">Exotic 0.5%</span>
+        <span class="rarity-pip r-impossible">Impossible 0.01%</span>
+      </div>
+      <button class="open-btn" onclick="openPack('impossible')">Open Impossible Pack</button>
+    </div>
   </div>
 
   <div class="collection-section">
@@ -392,8 +422,8 @@
 
     <!-- Import / Export bar -->
     <div class="io-bar">
-      <button class="io-btn io-export" onclick="exportSave()">⬇ Export Save</button>
-      <button class="io-btn io-import" onclick="document.getElementById('importFileInput').click()">⬆ Import Save</button>
+      <button class="io-btn io-export" onclick="exportSave()">⬆ Export Save</button>
+      <button class="io-btn io-import" onclick="document.getElementById('importFileInput').click()">⬇ Import Save</button>
       <button class="io-btn io-reset" onclick="resetSave()">✕ Reset</button>
       <span class="io-spacer"></span>
       <span class="io-status" id="ioStatus"></span>
@@ -403,6 +433,7 @@
       <button class="tab-btn active" onclick="switchTab('all', this)">✨ All Cards</button>
       <button class="tab-btn" onclick="switchTab('cat', this)">🐱 Cat Blobs</button>
       <button class="tab-btn" onclick="switchTab('color', this)">🎨 Color Blobs</button>
+      <button class="tab-btn" onclick="switchTab('impossible', this)">😎 Impossible</button>
     </div>
     <div id="collectionContainer"></div>
   </div>
@@ -662,7 +693,7 @@ function soundLand(rarityKey) {
     rare:      { freqs:[587,740,880],        g:0.38, sparks:5 },
     epic:      { freqs:[622,830,1046],       g:0.43, sparks:7 },
     legendary: { freqs:[740,988,1174,1480],  g:0.48, sparks:12 },
-    mythic:    { freqs:[880,1108,1318,1760,2093], g:0.53, sparks:20 },
+    impossible:{ freqs:[880,1108,1318,1760,2093,2637], g:0.6, sparks:40 },
   }[rarityKey] || { freqs:[440], g:0.28, sparks:0 };
 
   cfg.freqs.forEach((freq, i) => {
@@ -749,6 +780,10 @@ const CARD_IMAGES = {
   // Cat blobs — mythic
   'Maine Coon Blob':'/bassets/mainecoonblob.png',
   'Lykoi Blob':'/bassets/lykoiblob.png',
+  // Impossible pack
+  'Empty Blob':'/bassets/emptyblob.png',
+  'Cool Blob':'/bassets/coolblob.png',
+  'Hamptonix Blob':'/bassets/hamptonixblob.png',
 };
 const img = n => CARD_IMAGES[n] || DEFAULT_IMG;
 
@@ -759,6 +794,8 @@ const RC = {
   epic:      { glow:'rgba(192,132,252,0.9)', flash:'rgba(192,132,252,0.18)', particles:'#c084fc', bg:'#9333ea' },
   legendary: { glow:'rgba(251,191,36,1.0)',  flash:'rgba(251,191,36,0.22)',  particles:'#fbbf24', bg:'#d97706' },
   mythic:    { glow:'rgba(248,113,113,1.0)', flash:'rgba(248,113,113,0.25)', particles:'#f87171', bg:'#dc2626' },
+  exotic:    { glow:'rgba(251,146,60,1.0)',  flash:'rgba(251,146,60,0.25)',  particles:'#fb923c', bg:'#ea580c' },
+  impossible:{ glow:'rgba(226,232,240,1.0)', flash:'rgba(226,232,240,0.3)', particles:'#e2e8f0', bg:'#1e293b' },
 };
 
 const PACKS = {
@@ -778,6 +815,11 @@ const PACKS = {
     legendary:['Copper Blob','Silver Blob','Gold Blob'],
     mythic:   ['Diamond Blob','Emerald Blob','Ruby Blob','Sapphire Blob'],
   }},
+  impossible: { name:'Impossible Pack', cards:{
+    common:    ['Empty Blob'],
+    exotic:    ['Cool Blob'],
+    impossible:['Hamptonix Blob'],
+  }},
 };
 
 const RARITIES = [
@@ -787,6 +829,8 @@ const RARITIES = [
   {key:'epic',     label:'Epic',     weight:10,  cls:'r-epic'},
   {key:'legendary',label:'Legendary',weight:7.5, cls:'r-legendary'},
   {key:'mythic',   label:'Mythic',   weight:2.5, cls:'r-mythic'},
+  {key:'exotic',   label:'Exotic',   weight:0.5, cls:'r-exotic'},
+  {key:'impossible',label:'Impossible',weight:0.01,cls:'r-impossible'},
 ];
 const RM = Object.fromEntries(RARITIES.map(r=>[r.key,r]));
 
@@ -813,11 +857,14 @@ const save = () => localStorage.setItem(SAVE_KEY, encodeCollection(collection));
 /* ═══════════════════════════════════
    REEL
 ═══════════════════════════════════ */
-function rollRarity() {
-  const tot = RARITIES.reduce((a,r)=>a+r.weight,0);
+function rollRarity(packKey) {
+  // Only roll rarities that exist in this pack
+  const packRarityKeys = Object.keys(PACKS[packKey].cards);
+  const pool = RARITIES.filter(r => packRarityKeys.includes(r.key));
+  const tot = pool.reduce((a,r)=>a+r.weight,0);
   let rand = Math.random()*tot;
-  for (const r of RARITIES) { rand -= r.weight; if (rand<=0) return r; }
-  return RARITIES[0];
+  for (const r of pool) { rand -= r.weight; if (rand<=0) return r; }
+  return pool[0];
 }
 function rollCard(pk, rk) {
   const c = PACKS[pk].cards[rk];
@@ -900,7 +947,7 @@ function spawnParticles(rk) {
   const ctx = canvas.getContext('2d');
   const color = RC[rk]?.particles || '#fff';
   const cx=canvas.width/2, cy=canvas.height*0.45;
-  const count = rk==='mythic'?60:rk==='legendary'?45:rk==='epic'?30:18;
+  const count = rk==='impossible'?90:rk==='mythic'?60:rk==='legendary'?45:rk==='epic'?30:18;
   const ps = Array.from({length:count},()=>{
     const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
     return {x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,sz:2+Math.random()*4,life:1,decay:0.015+Math.random()*0.02};
@@ -949,9 +996,11 @@ async function openPack(packKey) {
   document.getElementById('phaseLabel').textContent = 'Rolling rarity...';
   document.getElementById('rarityDisplay').textContent = '';
 
-  const targetRarity = rollRarity();
+  const targetRarity = rollRarity(packKey);
   const totalItems = 36, targetIndex = 28;
-  const reelRarities = [...RARITIES,...RARITIES,...RARITIES];
+  const packRarityKeys = Object.keys(PACKS[packKey].cards);
+  const reelPool = RARITIES.filter(r => packRarityKeys.includes(r.key));
+  const reelRarities = [...reelPool,...reelPool,...reelPool,...reelPool];
   const rarityItems = Array.from({length:totalItems},(_,i) =>
     i===targetIndex ? {name:targetRarity.label,rarityKey:targetRarity.key}
                     : {name:reelRarities[i%reelRarities.length].label, rarityKey:reelRarities[i%reelRarities.length].key}
