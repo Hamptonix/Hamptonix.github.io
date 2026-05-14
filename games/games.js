@@ -20,7 +20,7 @@ const GAMES = [
     title: "Blob Cards",
     tag: "Loot Boxes",
     desc: "gamble :P",
-    icon: "https://i.postimg.cc/4yd9ZYGv/cover-(1).jpg",
+    icon: "/bassets/redblob.png",
     url: "https://hamptonix.com/blobcard",
     category: "Loot Boxes"
   },
