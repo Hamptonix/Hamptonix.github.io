@@ -1243,10 +1243,11 @@ const PACK_COSTS = { cat: 10, color: 10, impossible: 1 };
 
 function updateAffordability() {
   for (const [pk, cost] of Object.entries(PACK_COSTS)) {
-    const canAfford = coins >= cost;
     const btnMap = { cat:'openCatBtn', color:'openColorBtn', impossible:'openImpossibleBtn' };
     const btn = document.getElementById(btnMap[pk]);
-    if (btn) btn.disabled = !canAfford || packOpenLocked;
+    // Only disable during an active pack animation, never because of cost
+    // (openPack itself handles the broke → calculus challenge flow)
+    if (btn) btn.disabled = packOpenLocked;
   }
 }
 
