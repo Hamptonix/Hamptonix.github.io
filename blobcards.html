@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blob Cards</title>
- <link rel="icon" type="image/png" href="/bassets/redblob.png" />
+<link rel="icon" type="image/png" href="/bassets/redblob.png" />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,15 +60,31 @@
     margin-top: 0.3rem;
   }
 
-  .collection-count {
-    display: inline-block;
+  .header-stats {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
     margin-top: 0.8rem;
+  }
+
+  .collection-count, .blobcoin-display {
+    display: inline-flex; align-items: center; gap: 6px;
     padding: 0.3rem 1rem;
     background: rgba(255,255,255,0.07);
     border-radius: 20px;
     font-size: 0.8rem;
     color: rgba(255,255,255,0.5);
   }
+
+  .blobcoin-display {
+    background: rgba(251,191,36,0.12);
+    border: 1px solid rgba(251,191,36,0.25);
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .blobcoin-display img {
+    width: 18px; height: 18px; object-fit: contain;
+  }
+  .blobcoin-display span { color: #fbbf24; }
 
   .packs-grid {
     display: grid;
@@ -109,7 +125,8 @@
     font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.9rem;
     letter-spacing: 1px; cursor: pointer; transition: opacity 0.15s;
   }
-  .open-btn:hover { opacity: 0.85; }
+  .open-btn:hover:not(:disabled) { opacity: 0.85; }
+  .open-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .pack-cat .open-btn   { background: linear-gradient(90deg, #7c3aed, #a855f7); color: #fff; }
   .pack-color .open-btn { background: linear-gradient(90deg, #1d4ed8, #3b82f6); color: #fff; }
 
@@ -148,6 +165,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.success { border-color: rgba(52,211,153,0.5); color: #34d399; }
   .toast.error   { border-color: rgba(248,113,113,0.5); color: #f87171; }
+  .toast.coin    { border-color: rgba(251,191,36,0.5); color: #fbbf24; }
 
   /* ── MODAL ── */
   .modal-overlay {
@@ -183,7 +201,6 @@
     background: rgba(255,255,255,0.9); z-index: 10; pointer-events: none;
     box-shadow: 0 0 12px rgba(255,255,255,0.6), 0 0 24px rgba(255,255,255,0.3);
   }
-  .reel-wrapper::after { display: none; }
   .reel-flash { position: absolute; inset: 0; z-index: 20; pointer-events: none; opacity: 0; transition: opacity 0.05s; }
 
   .modal-vignette {
@@ -252,30 +269,28 @@
   .result-card-footer { padding: 8px 10px; background: rgba(0,0,0,0.5); }
   .result-rarity { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
   .result-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; }
+  .result-sell-value {
+    margin-top: 0.4rem; font-size: 0.75rem; font-weight: 700;
+    color: rgba(251,191,36,0.8); display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .result-sell-value img { width: 14px; height: 14px; object-fit: contain; }
 
-  .result-actions { display: flex; gap: 10px; margin-top: 1rem; }
-  .btn-open-again, .btn-close {
+  .result-actions { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; justify-content: center; }
+  .btn-open-again, .btn-close, .btn-sell-result {
     padding: 0.6rem 1.4rem; border-radius: 10px;
     font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.85rem;
     letter-spacing: 0.5px; cursor: pointer; border: none; transition: opacity 0.15s;
   }
-  .btn-open-again:hover, .btn-close:hover { opacity: 0.85; }
+  .btn-open-again:hover, .btn-close:hover, .btn-sell-result:hover { opacity: 0.85; }
   .btn-open-again { background: linear-gradient(90deg, #7c3aed, #3b82f6); color: #fff; }
   .btn-close { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .btn-sell-result { background: linear-gradient(90deg, #d97706, #fbbf24); color: #1a0a00; }
 
   /* ── COLLECTION ── */
   .collection-section { margin-top: 2rem; }
   .section-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
     letter-spacing: 3px; margin-bottom: 1rem; color: rgba(255,255,255,0.7);
-  }
-
-  .pack-section-header {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
-    letter-spacing: 3px; color: rgba(255,255,255,0.5);
-    margin: 1.5rem 0 0.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding-bottom: 0.4rem;
   }
 
   .rarity-group { margin-bottom: 1.5rem; }
@@ -294,9 +309,10 @@
     border-radius: 10px; border: 2px solid; overflow: hidden;
     position: relative; transition: transform 0.15s;
     display: flex; flex-direction: column;
+    cursor: pointer;
   }
   .coll-card:hover { transform: scale(1.05); }
-  .coll-card.locked { filter: grayscale(1) brightness(0.3); }
+  .coll-card.locked { filter: grayscale(1) brightness(0.3); cursor: default; pointer-events: none; }
   .coll-card.locked::after {
     content: '?'; position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -340,7 +356,7 @@
   .r-exotic     { color: #fb923c; border-color: #ea580c; background: rgba(234,88,12,0.2); }
   .r-impossible { color: #e2e8f0; border-color: #334155; background: rgba(15,15,25,0.7); }
 
-  /* Impossible pack card — dark void aesthetic */
+  /* Impossible pack card */
   .pack-impossible {
     background: linear-gradient(135deg, #050508 0%, #0f0f18 60%, #150808 100%);
     border-color: rgba(255,255,255,0.06) !important;
@@ -356,8 +372,208 @@
   }
   .pack-impossible { animation: voidPulse 4s ease-in-out infinite; }
 
-  /* hidden file input */
+  /* ── SELL MODAL ── */
+  .sell-overlay {
+    display: none; position: fixed; inset: 0; z-index: 150;
+    background: rgba(0,0,0,0.75);
+    align-items: center; justify-content: center;
+  }
+  .sell-overlay.active { display: flex; }
+  .sell-modal {
+    width: min(380px, 92vw);
+    background: #0f0f1e;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  }
+  .sell-modal-header {
+    padding: 1rem 1.2rem;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .sell-modal-img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; border: 2px solid; }
+  .sell-modal-info { flex: 1; }
+  .sell-modal-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; }
+  .sell-modal-rarity { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+  .sell-modal-body { padding: 1.2rem; }
+  .sell-own-count {
+    font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-bottom: 1rem; text-align: center;
+  }
+  .sell-own-count strong { color: #fff; }
+  .sell-price-info {
+    display: flex; align-items: center; gap: 6px; justify-content: center;
+    margin-bottom: 1.2rem; font-size: 0.9rem; font-weight: 700;
+    color: #fbbf24;
+  }
+  .sell-price-info img { width: 18px; height: 18px; object-fit: contain; }
+  .sell-amount-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 1rem;
+  }
+  .sell-input {
+    flex: 1; padding: 0.5rem 0.8rem;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; color: #fff;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem;
+    outline: none; text-align: center;
+  }
+  .sell-input:focus { border-color: rgba(251,191,36,0.5); }
+  .sell-max-btn {
+    padding: 0.5rem 0.8rem; border-radius: 8px;
+    background: rgba(251,191,36,0.15); color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.3);
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.75rem;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .sell-max-btn:hover { background: rgba(251,191,36,0.28); }
+  .sell-total {
+    text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.4);
+    margin-bottom: 1.2rem;
+  }
+  .sell-total strong { color: #fbbf24; font-size: 1rem; }
+  .sell-actions { display: flex; gap: 8px; }
+  .sell-confirm-btn, .sell-cancel-btn {
+    flex: 1; padding: 0.65rem;
+    border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.9rem;
+    transition: opacity 0.15s;
+  }
+  .sell-confirm-btn:hover, .sell-cancel-btn:hover { opacity: 0.85; }
+  .sell-confirm-btn { background: linear-gradient(90deg, #d97706, #fbbf24); color: #1a0a00; }
+  .sell-cancel-btn  { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+
   #importFileInput { display: none; }
+
+  /* Coin fly animation */
+  @keyframes coinFly {
+    0%   { opacity: 1; transform: translate(0,0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(0.4); }
+  }
+  .coin-fly {
+    position: fixed; pointer-events: none; z-index: 300;
+    width: 28px; height: 28px;
+    animation: coinFly 0.8s ease-out forwards;
+  }
+
+  /* Pack cost badges */
+  .pack-cost {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 0.5rem; font-size: 0.72rem; font-weight: 700;
+    color: rgba(251,191,36,0.85);
+  }
+  .pack-cost img { width: 13px; height: 13px; object-fit: contain; }
+  .pack-cost.cant-afford { color: #f87171; }
+
+  /* ── CALCULUS CHALLENGE MODAL ── */
+  .calc-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.92);
+    align-items: center; justify-content: center;
+  }
+  .calc-overlay.active { display: flex; }
+
+  .calc-modal {
+    width: min(520px, 94vw);
+    background: #0a0a14;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    box-shadow: 0 0 80px rgba(167,139,250,0.18), 0 30px 80px rgba(0,0,0,0.8);
+    animation: calcSlideIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes calcSlideIn {
+    from { opacity:0; transform: scale(0.85) translateY(30px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+
+  .calc-header {
+    padding: 1.4rem 1.6rem 1rem;
+    background: linear-gradient(135deg, #1a0a2e, #0a1a2e);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+  }
+  .calc-header-icon { font-size: 2.4rem; margin-bottom: 0.4rem; display: block; }
+  .calc-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .calc-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem; }
+
+  .calc-body { padding: 1.4rem 1.6rem; }
+
+  .calc-question-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+  .calc-q-label { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.6rem; }
+  .calc-question {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 1px;
+    color: #e2e8f0; line-height: 1.5;
+  }
+  .calc-hint {
+    font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 0.5rem; font-style: italic;
+  }
+
+  .calc-input-row { display: flex; gap: 8px; margin-bottom: 0.8rem; align-items: center; }
+  .calc-answer-input {
+    flex: 1; padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px; color: #fff;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem;
+    outline: none; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .calc-answer-input:focus { border-color: rgba(167,139,250,0.6); }
+  .calc-answer-input.correct { border-color: #34d399; color: #34d399; }
+  .calc-answer-input.wrong   { border-color: #f87171; animation: calcShake 0.35s ease; }
+  @keyframes calcShake {
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-7px); }
+    40%{ transform:translateX(7px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(4px); }
+  }
+
+  .calc-submit-btn {
+    padding: 0.7rem 1.2rem; border-radius: 10px; border: none;
+    background: linear-gradient(90deg, #7c3aed, #3b82f6); color: #fff;
+    font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.9rem;
+    cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+  }
+  .calc-submit-btn:hover { opacity: 0.85; }
+
+  .calc-feedback {
+    text-align: center; font-size: 0.8rem; font-weight: 700; min-height: 1.2em;
+    transition: color 0.2s;
+  }
+  .calc-feedback.ok  { color: #34d399; }
+  .calc-feedback.err { color: #f87171; }
+
+  .calc-new-q-btn {
+    width: 100%; margin-top: 0.8rem; padding: 0.5rem;
+    border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4);
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.75rem;
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.5px;
+  }
+  .calc-new-q-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.65); }
+
+  .calc-reward-note {
+    text-align: center; margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.78rem; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .calc-reward-note img { width: 16px; height: 16px; object-fit: contain; }
+  .calc-reward-note strong { color: #fbbf24; }
 </style>
 </head>
 <body>
@@ -366,11 +582,77 @@
 <div class="toast" id="toast"></div>
 <input type="file" id="importFileInput" accept=".blobsave">
 
+<!-- Sell Modal -->
+<div class="sell-overlay" id="sellOverlay">
+  <div class="sell-modal">
+    <div class="sell-modal-header">
+      <img class="sell-modal-img" id="sellModalImg" src="" alt="">
+      <div class="sell-modal-info">
+        <div class="sell-modal-name" id="sellModalName"></div>
+        <div class="sell-modal-rarity" id="sellModalRarity"></div>
+      </div>
+    </div>
+    <div class="sell-modal-body">
+      <div class="sell-own-count">You own: <strong id="sellOwnCount">0</strong></div>
+      <div class="sell-price-info">
+        <img src="/bassets/blobcoin.png" alt="coin">
+        <span id="sellPriceEach">0</span> per card
+      </div>
+      <div class="sell-amount-row">
+        <input class="sell-input" type="number" id="sellAmountInput" min="1" value="1" placeholder="Amount">
+        <button class="sell-max-btn" id="sellAllBtn">Sell All</button>
+      </div>
+      <div class="sell-total">
+        Total: <strong id="sellTotalCoins">0</strong>
+        <img src="/bassets/blobcoin.png" alt="coin" style="width:14px;height:14px;vertical-align:middle;margin-left:3px;">
+      </div>
+      <div class="sell-actions">
+        <button class="sell-confirm-btn" id="sellConfirmBtn">Sell</button>
+        <button class="sell-cancel-btn" onclick="closeSellModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Calculus Challenge Modal -->
+<div class="calc-overlay" id="calcOverlay">
+  <div class="calc-modal">
+    <div class="calc-header">
+      <span class="calc-header-icon">🧮</span>
+      <div class="calc-title">Broke Blob</div>
+      <div class="calc-subtitle">Solve to earn 1000 BlobCoins</div>
+    </div>
+    <div class="calc-body">
+      <div class="calc-question-box">
+        <div class="calc-q-label">Solve this calculus problem</div>
+        <div class="calc-question" id="calcQuestion">—</div>
+        <div class="calc-hint" id="calcHint"></div>
+      </div>
+      <div class="calc-input-row">
+        <input class="calc-answer-input" id="calcAnswerInput" type="text" placeholder="Your answer..." autocomplete="off">
+        <button class="calc-submit-btn" id="calcSubmitBtn">Check</button>
+      </div>
+      <div class="calc-feedback" id="calcFeedback"></div>
+      <button class="calc-new-q-btn" id="calcNewQBtn">↻ Give me a different question</button>
+      <div class="calc-reward-note">
+        <img src="/bassets/blobcoin.png" alt="coin">
+        Correct answer = <strong>+1,000 BlobCoins</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <header>
     <div class="logo">Blob Cards</div>
     <div class="logo-sub">Collect Every Blob</div>
-    <div class="collection-count" id="collectionCount">0 / 0 collected</div>
+    <div class="header-stats">
+      <div class="collection-count" id="collectionCount">0 / 0 collected</div>
+      <div class="blobcoin-display">
+        <img src="/bassets/blobcoin.png" alt="blobcoin">
+        <span id="blobcoinAmount">0</span> BlobCoins
+      </div>
+    </div>
   </header>
 
   <div class="packs-grid">
@@ -386,7 +668,7 @@
         <span class="rarity-pip r-legendary">Legendary 7.5%</span>
         <span class="rarity-pip r-mythic">Mythic 2.5%</span>
       </div>
-      <button class="open-btn" onclick="openPack('cat')">Open Cat Pack</button>
+      <button class="open-btn" id="openCatBtn" onclick="openPack('cat')">Open Cat Pack <span style="color:#fbbf24;margin-left:6px;">🪙 10</span></button>
     </div>
 
     <div class="pack-card pack-color">
@@ -401,7 +683,7 @@
         <span class="rarity-pip r-legendary">Legendary 7.5%</span>
         <span class="rarity-pip r-mythic">Mythic 2.5%</span>
       </div>
-      <button class="open-btn" onclick="openPack('color')">Open Color Pack</button>
+      <button class="open-btn" id="openColorBtn" onclick="openPack('color')">Open Color Pack <span style="color:#fbbf24;margin-left:6px;">🪙 10</span></button>
     </div>
 
     <div class="pack-card pack-impossible">
@@ -413,14 +695,13 @@
         <span class="rarity-pip r-exotic">Exotic 0.5%</span>
         <span class="rarity-pip r-impossible">Impossible 0.01%</span>
       </div>
-      <button class="open-btn" onclick="openPack('impossible')">Open Impossible Pack</button>
+      <button class="open-btn" id="openImpossibleBtn" onclick="openPack('impossible')">Open Impossible Pack <span style="color:#fbbf24;margin-left:6px;">🪙 1</span></button>
     </div>
   </div>
 
   <div class="collection-section">
     <div class="section-title">Your Collection</div>
 
-    <!-- Import / Export bar -->
     <div class="io-bar">
       <button class="io-btn io-export" onclick="exportSave()">⬆ Export Save</button>
       <button class="io-btn io-import" onclick="document.getElementById('importFileInput').click()">⬇ Import Save</button>
@@ -439,7 +720,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Pack Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalBox">
     <div class="modal-vignette" id="modalVignette"></div>
@@ -465,10 +746,15 @@
         <div class="result-card-footer">
           <div class="result-rarity" id="resultRarity"></div>
           <div class="result-name" id="resultName"></div>
+          <div class="result-sell-value" id="resultSellValue">
+            <img src="/bassets/blobcoin.png" alt="coin">
+            <span id="resultSellPrice">0</span>
+          </div>
         </div>
       </div>
       <div class="result-actions">
         <button class="btn-open-again" id="openAgainBtn">Open Another</button>
+        <button class="btn-sell-result" id="sellResultBtn">Sell for <img src="/bassets/blobcoin.png" alt="coin" style="width:13px;height:13px;vertical-align:middle;"> <span id="sellResultPrice">0</span></button>
         <button class="btn-close" onclick="closeModal()">Close</button>
       </div>
     </div>
@@ -478,10 +764,8 @@
 <script>
 /* ═══════════════════════════════════
    SAVE ENCRYPTION
-   XOR obfuscation + simple checksum.
-   Deters casual editing; not crypto-secure by design.
 ═══════════════════════════════════ */
-const SAVE_KEY = 'blobCardsV2';
+const SAVE_KEY = 'blobCardsV3'; // bumped to v3 to include coins
 const CIPHER_SEED = 'BL0BC4RD5_S4V3_K3Y_2025';
 
 function xorCipher(str, key) {
@@ -539,14 +823,13 @@ function showToast(msg, type = 'success') {
    EXPORT / IMPORT / RESET
 ═══════════════════════════════════ */
 function exportSave() {
-  const encoded = encodeCollection(collection);
+  const saveData = { collection, coins };
+  const encoded = encodeCollection(saveData);
   const blob = new Blob([encoded], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `blobcards_save_${Date.now()}.blobsave`;
-  a.click();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = `blobcards_save_${Date.now()}.blobsave`;
+  a.click(); URL.revokeObjectURL(url);
   document.getElementById('ioStatus').textContent = 'Save exported ✓';
   setTimeout(() => { document.getElementById('ioStatus').textContent = ''; }, 3000);
   showToast('Save exported!', 'success');
@@ -559,42 +842,40 @@ document.getElementById('importFileInput').addEventListener('change', function (
   const reader = new FileReader();
   reader.onload = e => {
     const data = decodeCollection(e.target.result.trim());
-    if (!data) {
-      showToast('Invalid or corrupted save file.', 'error');
-      return;
-    }
-    // Validate: only known pack keys and card names
+    if (!data) { showToast('Invalid or corrupted save file.', 'error'); return; }
+
     const validPacks = Object.keys(PACKS);
     const allCards = {};
     for (const [pk, pack] of Object.entries(PACKS))
       for (const cards of Object.values(pack.cards))
         cards.forEach(c => { allCards[c] = pk; });
 
+    // Support old format (just collection) or new format {collection, coins}
+    let rawCollection = data.collection || data;
+    let rawCoins = typeof data.coins === 'number' ? data.coins : 0;
+
     const clean = {};
-    for (const pk of Object.keys(data)) {
+    for (const pk of Object.keys(rawCollection)) {
       if (!validPacks.includes(pk)) continue;
       clean[pk] = {};
-      for (const [card, count] of Object.entries(data[pk])) {
+      for (const [card, count] of Object.entries(rawCollection[pk])) {
         if (allCards[card] === pk && Number.isInteger(count) && count > 0 && count <= 9999)
           clean[pk][card] = count;
       }
     }
     collection = clean;
-    save();
-    renderCollection();
-    updateCount();
+    coins = Math.max(0, Math.floor(rawCoins));
+    save(); renderCollection(); updateCount(); updateCoinDisplay();
     showToast('Save imported successfully!', 'success');
   };
   reader.readAsText(file);
 });
 
 function resetSave() {
-  if (!confirm('Reset your entire collection? This cannot be undone.')) return;
-  collection = {};
-  save();
-  renderCollection();
-  updateCount();
-  showToast('Collection reset.', 'error');
+  if (!confirm('Reset your entire collection and BlobCoins? This cannot be undone.')) return;
+  collection = {}; coins = 1000;
+  save(); renderCollection(); updateCount(); updateCoinDisplay(); updateAffordability();
+  showToast('Collection reset. You have 1,000 BlobCoins to start fresh!', 'error');
 }
 
 /* ═══════════════════════════════════
@@ -637,19 +918,15 @@ function soundTick(speed = 1.0) {
 function soundPackOpen() {
   const c = ac(), t = c.currentTime;
   const o = c.createOscillator(); o.type = 'sawtooth';
-  o.frequency.setValueAtTime(60, t);
-  o.frequency.exponentialRampToValueAtTime(700, t + 0.45);
+  o.frequency.setValueAtTime(60, t); o.frequency.exponentialRampToValueAtTime(700, t + 0.45);
   const f = c.createBiquadFilter(); f.type = 'lowpass';
   f.frequency.setValueAtTime(250, t); f.frequency.exponentialRampToValueAtTime(2400, t+0.45);
   const e = c.createGain(); e.gain.setValueAtTime(0.35, t); e.gain.linearRampToValueAtTime(0, t+0.45);
-  o.connect(f); f.connect(e); e.connect(c.destination);
-  o.start(t); o.stop(t+0.5);
-
+  o.connect(f); f.connect(e); e.connect(c.destination); o.start(t); o.stop(t+0.5);
   const o2 = c.createOscillator(); o2.type = 'sine';
   o2.frequency.setValueAtTime(140, t+0.12); o2.frequency.exponentialRampToValueAtTime(35, t+0.55);
   const e2 = c.createGain(); e2.gain.setValueAtTime(0.65, t+0.12); e2.gain.exponentialRampToValueAtTime(0.001, t+0.55);
-  o2.connect(e2); e2.connect(c.destination);
-  o2.start(t+0.12); o2.stop(t+0.6);
+  o2.connect(e2); e2.connect(c.destination); o2.start(t+0.12); o2.stop(t+0.6);
 }
 
 let suspenseOscs = [];
@@ -658,20 +935,17 @@ function soundSuspenseStart() {
   suspenseOscs = [];
   [110, 165.5, 220, 330, 440].forEach((freq, i) => {
     const o = c.createOscillator(); o.type = i%2===0?'sawtooth':'triangle';
-    o.frequency.setValueAtTime(freq, t);
-    o.frequency.linearRampToValueAtTime(freq * 1.09, t + 2.8);
+    o.frequency.setValueAtTime(freq, t); o.frequency.linearRampToValueAtTime(freq * 1.09, t + 2.8);
     const lfo = c.createOscillator(); lfo.frequency.value = 3.5 + i*0.6;
     const lg = c.createGain(); lg.gain.value = freq * 0.012;
     lfo.connect(lg); lg.connect(o.frequency);
     const env = c.createGain();
-    env.gain.setValueAtTime(0, t);
-    env.gain.linearRampToValueAtTime(0.055 - i*0.008, t + 0.5 + i*0.12);
+    env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(0.055 - i*0.008, t + 0.5 + i*0.12);
     env.gain.linearRampToValueAtTime(0.07 - i*0.008, t + 2.8);
     const filt = c.createBiquadFilter(); filt.type = 'lowpass';
     filt.frequency.setValueAtTime(350, t); filt.frequency.linearRampToValueAtTime(2200, t + 2.8);
     o.connect(filt); filt.connect(env); env.connect(c.destination);
-    o.start(t); lfo.start(t);
-    suspenseOscs.push(o, lfo);
+    o.start(t); lfo.start(t); suspenseOscs.push(o, lfo);
   });
   for (let i = 0; i < 10; i++) {
     const delay = 0.25 + i * (0.26 - i * 0.015);
@@ -695,17 +969,14 @@ function soundLand(rarityKey) {
     legendary: { freqs:[740,988,1174,1480],  g:0.48, sparks:12 },
     impossible:{ freqs:[880,1108,1318,1760,2093,2637], g:0.6, sparks:40 },
   }[rarityKey] || { freqs:[440], g:0.28, sparks:0 };
-
   cfg.freqs.forEach((freq, i) => {
     tone({ freq, type:'triangle', gain: cfg.g - i*0.04, attack:0.008, decay:0.25, release:0.5, dur:0.05, dt: i*0.055 });
     tone({ freq: freq*2, type:'sine', gain: cfg.g*0.12, attack:0.01, decay:0.18, release:0.3, dur:0, dt: i*0.055+0.04 });
   });
-
   const o = c.createOscillator(); o.type = 'sine';
   o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(38, t+0.35);
   const e = c.createGain(); e.gain.setValueAtTime(cfg.g*0.9, t); e.gain.exponentialRampToValueAtTime(0.001, t+0.35);
   o.connect(e); e.connect(c.destination); o.start(t); o.stop(t+0.4);
-
   for (let i = 0; i < cfg.sparks; i++)
     tone({ freq: 900 + Math.random()*2800, type:'sine', gain:0.06, attack:0.004, decay:0.06, release:0.18, dur:0, dt: 0.08 + i*0.06 });
 }
@@ -738,7 +1009,6 @@ function checkSuspense(progress) {
 ═══════════════════════════════════ */
 const DEFAULT_IMG = 'https://www.sveedy.com/thumbs/blob-opera.jpg';
 const CARD_IMAGES = {
-  // Color blobs
   'White Blob':'/bassets/whiteblob.png','Gray Blob':'/bassets/grayblob.png',
   'Black Blob':'/bassets/blackblob.png','Green Blob':'/bassets/greenblob.png',
   'Blue Blob':'/bassets/blueblob.png','Red Blob':'/bassets/redblob.png',
@@ -749,43 +1019,109 @@ const CARD_IMAGES = {
   'Gold Blob':'/bassets/goldblob.png','Diamond Blob':'/bassets/diamondblob.png',
   'Emerald Blob':'/bassets/emeraldblob.png','Ruby Blob':'/bassets/rubyblob.png',
   'Sapphire Blob':'/bassets/sapphireblob.png',
-  // Cat blobs — common
   'Tabby Blob':'/bassets/tabbyblob.png',
   'Scottish Fold Blob':'/bassets/scottishfoldblob.png',
   'Ragdoll Blob':'/bassets/ragdollblob.png',
   'Black Tabby Blob':'/bassets/blacktabbyblob.png',
   'British Longhair Blob':'/bassets/britishlonghairblob.png',
   'American Curl Blob':'/bassets/americancurlblob.png',
-  // Cat blobs — uncommon
   'Exotic Shorthair Blob':'/bassets/exoticshorthairblob.png',
   'Siamese Blob':'/bassets/siameseblob.png',
   'Sphynx Blob':'/bassets/sphynxblob.png',
   'Japanese Shorthair Blob':'/bassets/japaneseshorthairblob.png',
   'Gray Shorthair Blob':'/bassets/grayshorthairblob.png',
-  // Cat blobs — rare
   'Bobcat Blob':'/bassets/bobcatblob.png',
   'Manx Blob':'/bassets/manxblob.png',
   'Oriental Blob':'/bassets/orientalblob.png',
   'Russian Blue Blob':'/bassets/russianblueblob.png',
-  // Cat blobs — epic
   'Birmam Blob':'/bassets/birmamblob.png',
   'Egyptian Cat Blob':'/bassets/egyptiancatblob.png',
   'Munchkin Blob':'/bassets/munchkinblob.png',
   'Tonkinese Blob':'/bassets/tonkineseblob.png',
   'Ocicat Blob':'/bassets/ocicatblob.png',
-  // Cat blobs — legendary
   'Havana Blob':'/bassets/havanablob.png',
   'Snowshoe Blob':'/bassets/snowshoeblob.png',
   'Khao Manee Blob':'/bassets/khaomaneeblob.png',
-  // Cat blobs — mythic
   'Maine Coon Blob':'/bassets/mainecoonblob.png',
   'Lykoi Blob':'/bassets/lykoiblob.png',
-  // Impossible pack
   'Empty Blob':'/bassets/emptyblob.png',
   'Cool Blob':'/bassets/coolblob.png',
   'Hamptonix Blob':'/bassets/hamptonixblob.jpg',
 };
 const img = n => CARD_IMAGES[n] || DEFAULT_IMG;
+
+// SELL PRICES — per card in BlobCoins
+// When adding new cards, choose a price within the rarity range:
+//   Common: 10–25 (Empty Blob special case: 1)
+//   Uncommon: 40–80
+//   Rare: 100–200
+//   Epic: 250–650
+//   Legendary: 800–1200
+//   Mythic: 1500–2500
+//   Exotic: 5000–10000
+//   Impossible: 100000
+const SELL_PRICES = {
+  // Common — Color (10–25 range)
+  'White Blob': 10,
+  'Gray Blob': 12,
+  'Black Blob': 15,
+  // Uncommon — Color (40–80 range)
+  'Green Blob': 40,
+  'Blue Blob': 50,
+  'Red Blob': 50,
+  // Rare — Color (100–200 range)
+  'Yellow Blob': 100,
+  'Orange Blob': 125,
+  'Brown Blob': 100,
+  // Epic — Color (250–650 range)
+  'Pink Blob': 250,
+  'Turquoise Blob': 350,
+  'Purple Blob': 350,
+  // Legendary — Color (800–1200 range)
+  'Copper Blob': 800,
+  'Silver Blob': 1000,
+  'Gold Blob': 1200,
+  // Mythic — Color (1500–2500 range)
+  'Diamond Blob': 2500,
+  'Emerald Blob': 2000,
+  'Ruby Blob': 2000,
+  'Sapphire Blob': 2500,
+  // Common — Cat (10–25 range)
+  'Tabby Blob': 20,
+  'Scottish Fold Blob': 20,
+  'Ragdoll Blob': 25,
+  'Black Tabby Blob': 15,
+  'British Longhair Blob': 20,
+  'American Curl Blob': 15,
+  // Uncommon — Cat (40–80 range)
+  'Exotic Shorthair Blob': 60,
+  'Siamese Blob': 70,
+  'Sphynx Blob': 80,
+  'Japanese Shorthair Blob': 50,
+  'Gray Shorthair Blob': 40,
+  // Rare — Cat (100–200 range)
+  'Bobcat Blob': 150,
+  'Manx Blob': 125,
+  'Oriental Blob': 125,
+  'Russian Blue Blob': 200,
+  // Epic — Cat (250–650 range)
+  'Birmam Blob': 350,
+  'Egyptian Cat Blob': 500,
+  'Munchkin Blob': 400,
+  'Tonkinese Blob': 350,
+  'Ocicat Blob': 500,
+  // Legendary — Cat (800–1200 range)
+  'Havana Blob': 1000,
+  'Snowshoe Blob': 800,
+  'Khao Manee Blob': 1200,
+  // Mythic — Cat (1500–2500 range)
+  'Maine Coon Blob': 2000,
+  'Lykoi Blob': 2500,
+  // Impossible pack
+  'Empty Blob': 1,          // special case: worthless common
+  'Cool Blob': 5000,        // Exotic
+  'Hamptonix Blob': 100000, // Impossible
+};
 
 const RC = {
   common:    { glow:'rgba(156,163,175,0.8)', flash:'rgba(156,163,175,0.15)', particles:'#9ca3af', bg:'#4b5563' },
@@ -834,31 +1170,250 @@ const RARITIES = [
 ];
 const RM = Object.fromEntries(RARITIES.map(r=>[r.key,r]));
 
-// Load collection — try new key first, fall back to old one
-let collection = (() => {
-  const v2 = localStorage.getItem(SAVE_KEY);
+/* ═══════════════════════════════════
+   STATE — Load save (v3 has {collection, coins})
+═══════════════════════════════════ */
+let collection = {}, coins = 0;
+
+(() => {
+  const v3 = localStorage.getItem(SAVE_KEY);
+  if (v3) {
+    const decoded = decodeCollection(v3);
+    if (decoded) {
+      collection = decoded.collection || decoded;
+      coins = typeof decoded.coins === 'number' ? decoded.coins : 0;
+      return;
+    }
+  }
+  // Legacy v2 fallback (collection only)
+  const v2 = localStorage.getItem('blobCardsV2');
   if (v2) {
     const decoded = decodeCollection(v2);
-    if (decoded) return decoded;
+    if (decoded) { collection = decoded; coins = 0; return; }
   }
-  // Legacy unencrypted save
+  // Legacy unencrypted
   const legacy = localStorage.getItem('blobCards');
-  if (legacy) {
-    try { return JSON.parse(legacy); } catch(e) {}
-  }
-  return {};
+  if (legacy) { try { collection = JSON.parse(legacy); } catch(e) {} }
+  // Fresh save — grant starter coins
+  coins = 1000;
 })();
 
 let currentPack = null;
 let currentTab = 'all';
 
-const save = () => localStorage.setItem(SAVE_KEY, encodeCollection(collection));
+// Pack-opening lock — prevents opening while animation plays
+let packOpenLocked = false;
+
+const save = () => localStorage.setItem(SAVE_KEY, encodeCollection({ collection, coins }));
+
+/* ═══════════════════════════════════
+   BLOBCOIN DISPLAY
+═══════════════════════════════════ */
+function updateCoinDisplay() {
+  document.getElementById('blobcoinAmount').textContent = coins.toLocaleString();
+}
+
+function animateCoinGain(amount, sourceEl) {
+  // Number flyup
+  const rect = sourceEl ? sourceEl.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2 };
+  const fly = document.createElement('img');
+  fly.src = '/bassets/blobcoin.png';
+  fly.className = 'coin-fly';
+  const tx = (document.querySelector('.blobcoin-display').getBoundingClientRect().left - rect.left) + 'px';
+  const ty = (document.querySelector('.blobcoin-display').getBoundingClientRect().top - rect.top - 40) + 'px';
+  fly.style.setProperty('--fx', tx);
+  fly.style.setProperty('--fy', ty);
+  fly.style.left = rect.left + 'px';
+  fly.style.top = (rect.top + window.scrollY) + 'px';
+  document.body.appendChild(fly);
+  setTimeout(() => fly.remove(), 900);
+}
+
+function earnCoins(amount, sourceEl) {
+  coins += amount;
+  save();
+  updateCoinDisplay();
+  animateCoinGain(amount, sourceEl);
+}
+
+/* ═══════════════════════════════════
+   PACK COSTS
+═══════════════════════════════════ */
+const PACK_COSTS = { cat: 10, color: 10, impossible: 1 };
+
+function updateAffordability() {
+  for (const [pk, cost] of Object.entries(PACK_COSTS)) {
+    const canAfford = coins >= cost;
+    const btnMap = { cat:'openCatBtn', color:'openColorBtn', impossible:'openImpossibleBtn' };
+    const btn = document.getElementById(btnMap[pk]);
+    if (btn) btn.disabled = !canAfford || packOpenLocked;
+  }
+}
+
+/* ═══════════════════════════════════
+   CALCULUS CHALLENGE
+   Fires when coins reach 0 and player tries to open a pack
+═══════════════════════════════════ */
+const CALC_QUESTIONS = [
+  // Derivatives
+  { q: "d/dx [ x³ + 5x² − 2x + 7 ] = ?", hint: "Power rule: d/dx xⁿ = n·xⁿ⁻¹", answer: "3x^2+10x-2", alts: ["3x²+10x-2","3x^2 + 10x - 2"] },
+  { q: "d/dx [ sin(x) · eˣ ] = ?", hint: "Product rule: (uv)' = u'v + uv'", answer: "e^x(sin(x)+cos(x))", alts: ["eˣ(sinx+cosx)","e^x(cosx+sinx)","e^x·(sin x + cos x)"] },
+  { q: "d/dx [ ln(x³) ] = ?", hint: "Chain rule + d/dx ln(u) = u'/u", answer: "3/x", alts: [] },
+  { q: "d/dx [ x² · cos(x) ] = ?", hint: "Product rule", answer: "2x·cos(x)−x²·sin(x)", alts: ["2xcos(x)-x^2sin(x)","2x cos x - x² sin x"] },
+  { q: "∫ 3x² dx = ?", hint: "Power rule for integrals: ∫xⁿ dx = xⁿ⁺¹/(n+1) + C", answer: "x^3+C", alts: ["x³ + C","x^3 + C"] },
+  { q: "∫ eˣ dx = ?", hint: "The magical function that is its own derivative", answer: "e^x+C", alts: ["eˣ + C","e^x + C"] },
+  { q: "∫ (1/x) dx = ?", hint: "This one's a classic", answer: "ln|x|+C", alts: ["ln(x)+C","ln|x| + C"] },
+  { q: "∫₀¹ x² dx = ?", hint: "Definite integral — evaluate from 0 to 1", answer: "1/3", alts: ["0.333","0.3333"] },
+  { q: "lim(x→0) [ sin(x)/x ] = ?", hint: "Famous limit — you should know this one!", answer: "1", alts: [] },
+  { q: "lim(x→∞) [ (2x²+1)/(x²−3) ] = ?", hint: "Divide numerator and denominator by x²", answer: "2", alts: [] },
+  { q: "d/dx [ xⁿ ] = ?", hint: "The power rule in its purest form", answer: "n·x^(n-1)", alts: ["nx^(n-1)","n·xⁿ⁻¹","nxⁿ⁻¹"] },
+  { q: "∫ cos(x) dx = ?", hint: "Which function's derivative is cos(x)?", answer: "sin(x)+C", alts: ["sin x + C","sinx+C"] },
+  { q: "d/dx [ tan(x) ] = ?", hint: "Quotient rule on sin/cos, or just remember it", answer: "sec^2(x)", alts: ["sec²(x)","1/cos²(x)"] },
+  { q: "∫ sin(x) dx = ?", hint: "Which function's derivative is −sin(x)?", answer: "-cos(x)+C", alts: ["−cos(x) + C","-cosx+C"] },
+  { q: "d²/dx² [ x⁴ ] = ?", hint: "Take the derivative twice", answer: "12x^2", alts: ["12x²"] },
+  { q: "∫₀^π sin(x) dx = ?", hint: "Use the fundamental theorem with antiderivative −cos(x)", answer: "2", alts: [] },
+  { q: "d/dx [ √x ] = ?", hint: "Rewrite as x^(1/2) then apply power rule", answer: "1/(2√x)", alts: ["1/2x^(-1/2)","(1/2)x^(-1/2)"] },
+  { q: "lim(x→2) [ (x²−4)/(x−2) ] = ?", hint: "Factor the numerator first", answer: "4", alts: [] },
+  { q: "∫ x·eˣ dx = ?", hint: "Integration by parts: ∫u dv = uv − ∫v du", answer: "x·e^x−e^x+C", alts: ["xe^x - e^x + C","(x-1)e^x+C"] },
+  { q: "d/dx [ arctan(x) ] = ?", hint: "A surprisingly clean result", answer: "1/(1+x^2)", alts: ["1/(1+x²)"] },
+];
+
+let _calcQuestion = null;
+let _calcPendingPack = null;
+
+function pickCalcQuestion() {
+  return CALC_QUESTIONS[Math.floor(Math.random() * CALC_QUESTIONS.length)];
+}
+
+function normalizeAnswer(s) {
+  return s.replace(/\s+/g, '').replace(/[·×*]/g, '').toLowerCase()
+    .replace(/\^/g,'').replace(/[²³]/g, n => n==='²'?'2':'3');
+}
+
+function openCalcChallenge(packKey) {
+  _calcPendingPack = packKey;
+  _calcQuestion = pickCalcQuestion();
+  document.getElementById('calcQuestion').textContent = _calcQuestion.q;
+  document.getElementById('calcHint').textContent = _calcQuestion.hint || '';
+  document.getElementById('calcAnswerInput').value = '';
+  document.getElementById('calcAnswerInput').className = 'calc-answer-input';
+  document.getElementById('calcFeedback').textContent = '';
+  document.getElementById('calcFeedback').className = 'calc-feedback';
+  document.getElementById('calcOverlay').classList.add('active');
+  setTimeout(() => document.getElementById('calcAnswerInput').focus(), 100);
+}
+
+function closeCalcChallenge() {
+  document.getElementById('calcOverlay').classList.remove('active');
+  _calcPendingPack = null; _calcQuestion = null;
+}
+
+function checkCalcAnswer() {
+  if (!_calcQuestion) return;
+  const raw = document.getElementById('calcAnswerInput').value.trim();
+  if (!raw) return;
+  const norm = normalizeAnswer(raw);
+  const correct = normalizeAnswer(_calcQuestion.answer);
+  const altMatch = (_calcQuestion.alts || []).some(a => normalizeAnswer(a) === norm);
+  const isCorrect = norm === correct || altMatch;
+
+  const inp = document.getElementById('calcAnswerInput');
+  const fb = document.getElementById('calcFeedback');
+
+  if (isCorrect) {
+    inp.classList.add('correct');
+    fb.textContent = '✓ Correct! +1,000 BlobCoins earned!';
+    fb.className = 'calc-feedback ok';
+    earnCoins(1000, document.getElementById('calcSubmitBtn'));
+    save(); updateAffordability();
+    setTimeout(() => {
+      closeCalcChallenge();
+    }, 1400);
+  } else {
+    inp.classList.add('wrong');
+    fb.textContent = '✗ Not quite — try again!';
+    fb.className = 'calc-feedback err';
+    setTimeout(() => inp.classList.remove('wrong'), 400);
+  }
+}
+
+document.getElementById('calcSubmitBtn').addEventListener('click', checkCalcAnswer);
+document.getElementById('calcAnswerInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkCalcAnswer();
+});
+document.getElementById('calcNewQBtn').addEventListener('click', () => {
+  _calcQuestion = pickCalcQuestion();
+  document.getElementById('calcQuestion').textContent = _calcQuestion.q;
+  document.getElementById('calcHint').textContent = _calcQuestion.hint || '';
+  document.getElementById('calcAnswerInput').value = '';
+  document.getElementById('calcAnswerInput').className = 'calc-answer-input';
+  document.getElementById('calcFeedback').textContent = '';
+  document.getElementById('calcFeedback').className = 'calc-feedback';
+  document.getElementById('calcAnswerInput').focus();
+});
+let _sellCard = null, _sellPack = null, _sellRarity = null;
+
+function openSellModal(cardName, packKey, rarityKey) {
+  _sellCard = cardName; _sellPack = packKey; _sellRarity = rarityKey;
+  const count = collection[packKey]?.[cardName] || 0;
+  if (count === 0) return;
+  const price = SELL_PRICES[cardName] || 0;
+  const r = RM[rarityKey];
+
+  document.getElementById('sellModalImg').src = img(cardName);
+  document.getElementById('sellModalImg').className = `sell-modal-img ${r.cls}`;
+  document.getElementById('sellModalName').textContent = cardName;
+  document.getElementById('sellModalRarity').className = `sell-modal-rarity ${r.cls}`;
+  document.getElementById('sellModalRarity').textContent = r.label;
+  document.getElementById('sellOwnCount').textContent = count;
+  document.getElementById('sellPriceEach').textContent = price.toLocaleString();
+  document.getElementById('sellAmountInput').value = 1;
+  document.getElementById('sellAmountInput').max = count;
+  updateSellTotal();
+  document.getElementById('sellOverlay').classList.add('active');
+}
+
+function closeSellModal() {
+  document.getElementById('sellOverlay').classList.remove('active');
+  _sellCard = null; _sellPack = null; _sellRarity = null;
+}
+
+function updateSellTotal() {
+  const count = collection[_sellPack]?.[_sellCard] || 0;
+  let amount = parseInt(document.getElementById('sellAmountInput').value) || 0;
+  amount = Math.max(1, Math.min(count, amount));
+  const price = SELL_PRICES[_sellCard] || 0;
+  document.getElementById('sellTotalCoins').textContent = (price * amount).toLocaleString();
+}
+
+document.getElementById('sellAmountInput').addEventListener('input', updateSellTotal);
+
+document.getElementById('sellAllBtn').addEventListener('click', () => {
+  const count = collection[_sellPack]?.[_sellCard] || 0;
+  document.getElementById('sellAmountInput').value = count;
+  updateSellTotal();
+});
+
+document.getElementById('sellConfirmBtn').addEventListener('click', () => {
+  if (!_sellCard) return;
+  const count = collection[_sellPack]?.[_sellCard] || 0;
+  let amount = parseInt(document.getElementById('sellAmountInput').value) || 0;
+  amount = Math.max(1, Math.min(count, amount));
+  const price = SELL_PRICES[_sellCard] || 0;
+  const total = price * amount;
+
+  collection[_sellPack][_sellCard] -= amount;
+  if (collection[_sellPack][_sellCard] <= 0) delete collection[_sellPack][_sellCard];
+  earnCoins(total, document.getElementById('sellConfirmBtn'));
+  save(); renderCollection(); updateCount();
+  showToast(`Sold ${amount}x ${_sellCard} for ${total.toLocaleString()} BlobCoins!`, 'coin');
+  closeSellModal();
+});
 
 /* ═══════════════════════════════════
    REEL
 ═══════════════════════════════════ */
 function rollRarity(packKey) {
-  // Only roll rarities that exist in this pack
   const packRarityKeys = Object.keys(PACKS[packKey].cards);
   const pool = RARITIES.filter(r => packRarityKeys.includes(r.key));
   const tot = pool.reduce((a,r)=>a+r.weight,0);
@@ -977,9 +1532,35 @@ function setVignette(on, rk) {
 }
 
 /* ═══════════════════════════════════
-   PACK OPENING
+   PACK OPENING — with lock to prevent spam
 ═══════════════════════════════════ */
+function setPackButtonsDisabled(disabled) {
+  ['openCatBtn','openColorBtn','openImpossibleBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.disabled = disabled;
+  });
+  // Also disable Open Another while locked
+  const oa = document.getElementById('openAgainBtn');
+  if (oa) oa.disabled = disabled;
+}
+
 async function openPack(packKey) {
+  if (packOpenLocked) return; // Block if already opening
+
+  // Check cost
+  const cost = PACK_COSTS[packKey] || 0;
+  if (coins < cost) {
+    openCalcChallenge(packKey);
+    return;
+  }
+
+  packOpenLocked = true;
+  setPackButtonsDisabled(true);
+
+  // Deduct cost
+  coins -= cost;
+  save(); updateCoinDisplay(); updateAffordability();
+
   ac(); soundPackOpen();
   currentPack = packKey;
   const pack = PACKS[packKey];
@@ -1045,7 +1626,14 @@ async function openPack(packKey) {
   showResult(wonCard, targetRarity, packKey);
 }
 
+// Pending result data for sell-from-result
+let _pendingResultCard = null, _pendingResultPack = null, _pendingResultRarity = null;
+
 function showResult(cardName, rarity, packKey) {
+  _pendingResultCard = cardName;
+  _pendingResultPack = packKey;
+  _pendingResultRarity = rarity;
+
   document.getElementById('resultImg').src = img(cardName);
   document.getElementById('resultImg').alt = cardName;
   const re = document.getElementById('resultRarity');
@@ -1056,16 +1644,64 @@ function showResult(cardName, rarity, packKey) {
   rc.style.setProperty('--rarity-glow', RC[rarity.key].glow);
   document.getElementById('phaseLabel').textContent = 'You got:';
   setVignette(true, rarity.key);
+
+  const price = SELL_PRICES[cardName] || 0;
+  document.getElementById('resultSellPrice').textContent = price.toLocaleString();
+  document.getElementById('sellResultPrice').textContent = price.toLocaleString();
+
   if (!collection[packKey]) collection[packKey]={};
   collection[packKey][cardName] = (collection[packKey][cardName]||0)+1;
   save(); renderCollection(); updateCount();
-  document.getElementById('openAgainBtn').onclick = ()=>openPack(packKey);
+
+  // Open Another — re-enables after result shown
+  const oa = document.getElementById('openAgainBtn');
+  oa.disabled = false;
+  oa.onclick = () => openPack(packKey);
+  updateAffordability();
+
+  // Sell from result button
+  const sellBtn = document.getElementById('sellResultBtn');
+  if (price > 0) {
+    sellBtn.style.display = '';
+    sellBtn.onclick = () => {
+      sellFromResult();
+    };
+  } else {
+    sellBtn.style.display = 'none';
+  }
+
   document.getElementById('resultArea').classList.add('visible');
   setTimeout(()=>spawnParticles(rarity.key), 300);
+
+  // Unlock pack buttons (allow opening another via button, not keyboard spam)
+  packOpenLocked = false;
+  setPackButtonsDisabled(false);
+}
+
+function sellFromResult() {
+  if (!_pendingResultCard) return;
+  const count = collection[_pendingResultPack]?.[_pendingResultCard] || 0;
+  if (count === 0) return;
+  const price = SELL_PRICES[_pendingResultCard] || 0;
+
+  collection[_pendingResultPack][_pendingResultCard] -= 1;
+  if (collection[_pendingResultPack][_pendingResultCard] <= 0) delete collection[_pendingResultPack][_pendingResultCard];
+  earnCoins(price, document.getElementById('sellResultBtn'));
+  save(); renderCollection(); updateCount();
+  showToast(`Sold ${_pendingResultCard} for ${price.toLocaleString()} BlobCoins!`, 'coin');
+
+  // Update sell button if none left
+  const remaining = collection[_pendingResultPack]?.[_pendingResultCard] || 0;
+  if (remaining === 0) {
+    document.getElementById('sellResultBtn').style.display = 'none';
+  }
 }
 
 function closeModal() {
   stopTicking(); soundSuspenseStop();
+  packOpenLocked = false;
+  setPackButtonsDisabled(false);
+  updateAffordability();
   document.getElementById('modalOverlay').classList.remove('active');
   document.getElementById('reelWrapper').style.display='block';
   document.getElementById('reelWrapper').style.transform='scale(1)';
@@ -1074,6 +1710,7 @@ function closeModal() {
   setVignette(false);
   const cv=document.getElementById('particleCanvas');
   cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+  _pendingResultCard = null; _pendingResultPack = null; _pendingResultRarity = null;
 }
 
 /* ═══════════════════════════════════
@@ -1098,18 +1735,29 @@ function fitLabel(el) {
   }
 }
 
+// Find which pack and rarity a card belongs to
+function findCardInfo(cardName) {
+  for (const [pk, pack] of Object.entries(PACKS))
+    for (const [rk, cards] of Object.entries(pack.cards))
+      if (cards.includes(cardName)) return { packKey: pk, rarityKey: rk };
+  return null;
+}
+
 function makeCardEl(cardName, packKey, rarityKey) {
   const r = RM[rarityKey];
   const count = collection[packKey]?.[cardName] || 0;
   const locked = count === 0;
   const div = document.createElement('div');
   div.className = `coll-card ${r.cls}${locked?' locked':''}`;
-  div.title = cardName;
+  div.title = locked ? cardName : `${cardName} — click to sell`;
   div.innerHTML = `
     <img src="${img(cardName)}" alt="${cardName}">
     ${count>1?`<div class="coll-count">x${count}</div>`:''}
     <div class="coll-card-label">${cardName}</div>
   `;
+  if (!locked) {
+    div.addEventListener('click', () => openSellModal(cardName, packKey, rarityKey));
+  }
   return div;
 }
 
@@ -1131,7 +1779,6 @@ function renderRarityGroup(container, packKey, rarityKey, cards) {
 }
 
 function renderAllUnified(container) {
-  // Build a flat list of {cardName, packKey, rarityKey}, sorted by rarity order
   const rarityOrder = RARITIES.map(r => r.key);
   const allCards = [];
   for (const [pk, pack] of Object.entries(PACKS))
@@ -1139,7 +1786,6 @@ function renderAllUnified(container) {
       cards.forEach(c => allCards.push({ cardName: c, packKey: pk, rarityKey: rk }));
   allCards.sort((a, b) => rarityOrder.indexOf(a.rarityKey) - rarityOrder.indexOf(b.rarityKey));
 
-  // Group by rarity for headers, but merge both packs
   for (const rk of rarityOrder) {
     const group = allCards.filter(c => c.rarityKey === rk);
     if (!group.length) continue;
@@ -1163,14 +1809,12 @@ function renderAllUnified(container) {
 function renderCollection() {
   const container = document.getElementById('collectionContainer');
   container.innerHTML = '';
-
   if (currentTab === 'all') {
     renderAllUnified(container);
   } else {
     for (const [rk, cards] of Object.entries(PACKS[currentTab].cards))
       renderRarityGroup(container, currentTab, rk, cards);
   }
-
   requestAnimationFrame(()=>{
     document.querySelectorAll('.coll-card-label').forEach(fitLabel);
   });
@@ -1183,9 +1827,16 @@ function switchTab(tab, btn) {
   renderCollection();
 }
 
+// Close sell overlay on background click
+document.getElementById('sellOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSellModal();
+});
+
 // Init
 renderCollection();
 updateCount();
+updateCoinDisplay();
+updateAffordability();
 </script>
 </body>
 </html>
