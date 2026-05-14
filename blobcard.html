@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blob Cards</title>
+ <link rel="icon" type="image/png" href="/bassets/redblob.png" />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,6 +112,42 @@
   .open-btn:hover { opacity: 0.85; }
   .pack-cat .open-btn   { background: linear-gradient(90deg, #7c3aed, #a855f7); color: #fff; }
   .pack-color .open-btn { background: linear-gradient(90deg, #1d4ed8, #3b82f6); color: #fff; }
+
+  /* ── IMPORT/EXPORT BAR ── */
+  .io-bar {
+    display: flex; gap: 10px; margin-bottom: 1.2rem; flex-wrap: wrap; align-items: center;
+  }
+  .io-btn {
+    padding: 0.45rem 1.1rem; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.8rem;
+    letter-spacing: 0.5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+  }
+  .io-btn:hover { transform: translateY(-1px); }
+  .io-export { background: rgba(124,58,237,0.25); color: #c084fc; }
+  .io-export:hover { background: rgba(124,58,237,0.4); }
+  .io-import { background: rgba(59,130,246,0.25); color: #60a5fa; }
+  .io-import:hover { background: rgba(59,130,246,0.4); }
+  .io-reset  { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+  .io-reset:hover  { background: rgba(239,68,68,0.28); }
+  .io-spacer { flex: 1; }
+  .io-status {
+    font-size: 0.75rem; color: rgba(255,255,255,0.4); font-style: italic;
+    transition: opacity 0.4s;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1e1e32; border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; padding: 0.65rem 1.4rem; border-radius: 12px;
+    font-size: 0.85rem; font-weight: 700; z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(52,211,153,0.5); color: #34d399; }
+  .toast.error   { border-color: rgba(248,113,113,0.5); color: #f87171; }
 
   /* ── MODAL ── */
   .modal-overlay {
@@ -253,7 +290,6 @@
     gap: 8px;
   }
 
-  /* Fixed-height card — no row stretching */
   .coll-card {
     border-radius: 10px; border: 2px solid; overflow: hidden;
     position: relative; transition: transform 0.15s;
@@ -268,7 +304,6 @@
   }
   .coll-card img { width: 100%; height: 65px; object-fit: cover; display: block; flex-shrink: 0; }
 
-  /* Fixed-height label — text shrinks via JS, never grows the card */
   .coll-card-label {
     height: 28px;
     display: flex; align-items: center; justify-content: center;
@@ -302,11 +337,16 @@
   .r-epic      { color: #c084fc; border-color: #9333ea; background: rgba(147,51,234,0.2); }
   .r-legendary { color: #fbbf24; border-color: #d97706; background: rgba(217,119,6,0.2); }
   .r-mythic    { color: #f87171; border-color: #dc2626; background: rgba(220,38,38,0.2); }
+
+  /* hidden file input */
+  #importFileInput { display: none; }
 </style>
 </head>
 <body>
 
 <div class="stars"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="importFileInput" accept=".blobsave">
 
 <div class="container">
   <header>
@@ -349,6 +389,16 @@
 
   <div class="collection-section">
     <div class="section-title">Your Collection</div>
+
+    <!-- Import / Export bar -->
+    <div class="io-bar">
+      <button class="io-btn io-export" onclick="exportSave()">⬇ Export Save</button>
+      <button class="io-btn io-import" onclick="document.getElementById('importFileInput').click()">⬆ Import Save</button>
+      <button class="io-btn io-reset" onclick="resetSave()">✕ Reset</button>
+      <span class="io-spacer"></span>
+      <span class="io-status" id="ioStatus"></span>
+    </div>
+
     <div class="tab-row">
       <button class="tab-btn active" onclick="switchTab('all', this)">✨ All Cards</button>
       <button class="tab-btn" onclick="switchTab('cat', this)">🐱 Cat Blobs</button>
@@ -396,6 +446,127 @@
 
 <script>
 /* ═══════════════════════════════════
+   SAVE ENCRYPTION
+   XOR obfuscation + simple checksum.
+   Deters casual editing; not crypto-secure by design.
+═══════════════════════════════════ */
+const SAVE_KEY = 'blobCardsV2';
+const CIPHER_SEED = 'BL0BC4RD5_S4V3_K3Y_2025';
+
+function xorCipher(str, key) {
+  let out = '';
+  for (let i = 0; i < str.length; i++)
+    out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return out;
+}
+
+function simpleChecksum(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+function encodeCollection(data) {
+  const json = JSON.stringify(data);
+  const cs = simpleChecksum(json);
+  const payload = cs + '|' + json;
+  const xored = xorCipher(payload, CIPHER_SEED);
+  return btoa(unescape(encodeURIComponent(xored)));
+}
+
+function decodeCollection(encoded) {
+  try {
+    const xored = decodeURIComponent(escape(atob(encoded)));
+    const payload = xorCipher(xored, CIPHER_SEED);
+    const sep = payload.indexOf('|');
+    if (sep === -1) throw new Error('Bad format');
+    const cs = payload.slice(0, sep);
+    const json = payload.slice(sep + 1);
+    if (simpleChecksum(json) !== cs) throw new Error('Checksum mismatch');
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+let _toastTimer = null;
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+}
+
+/* ═══════════════════════════════════
+   EXPORT / IMPORT / RESET
+═══════════════════════════════════ */
+function exportSave() {
+  const encoded = encodeCollection(collection);
+  const blob = new Blob([encoded], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `blobcards_save_${Date.now()}.blobsave`;
+  a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('ioStatus').textContent = 'Save exported ✓';
+  setTimeout(() => { document.getElementById('ioStatus').textContent = ''; }, 3000);
+  showToast('Save exported!', 'success');
+}
+
+document.getElementById('importFileInput').addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  this.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = decodeCollection(e.target.result.trim());
+    if (!data) {
+      showToast('Invalid or corrupted save file.', 'error');
+      return;
+    }
+    // Validate: only known pack keys and card names
+    const validPacks = Object.keys(PACKS);
+    const allCards = {};
+    for (const [pk, pack] of Object.entries(PACKS))
+      for (const cards of Object.values(pack.cards))
+        cards.forEach(c => { allCards[c] = pk; });
+
+    const clean = {};
+    for (const pk of Object.keys(data)) {
+      if (!validPacks.includes(pk)) continue;
+      clean[pk] = {};
+      for (const [card, count] of Object.entries(data[pk])) {
+        if (allCards[card] === pk && Number.isInteger(count) && count > 0 && count <= 9999)
+          clean[pk][card] = count;
+      }
+    }
+    collection = clean;
+    save();
+    renderCollection();
+    updateCount();
+    showToast('Save imported successfully!', 'success');
+  };
+  reader.readAsText(file);
+});
+
+function resetSave() {
+  if (!confirm('Reset your entire collection? This cannot be undone.')) return;
+  collection = {};
+  save();
+  renderCollection();
+  updateCount();
+  showToast('Collection reset.', 'error');
+}
+
+/* ═══════════════════════════════════
    WEB AUDIO ENGINE
 ═══════════════════════════════════ */
 let _ctx = null;
@@ -418,7 +589,6 @@ function tone({ freq=440, type='sine', gain=0.3, attack=0.005, decay=0.1, sus=0,
   o.start(t); o.stop(t + attack + decay + dur + release + 0.01);
 }
 
-// Short click tick
 function soundTick(speed = 1.0) {
   const c = ac(), t = c.currentTime;
   const len = Math.floor(c.sampleRate * 0.025);
@@ -433,7 +603,6 @@ function soundTick(speed = 1.0) {
   s.start(t);
 }
 
-// Pack open whoosh + thud
 function soundPackOpen() {
   const c = ac(), t = c.currentTime;
   const o = c.createOscillator(); o.type = 'sawtooth';
@@ -452,7 +621,6 @@ function soundPackOpen() {
   o2.start(t+0.12); o2.stop(t+0.6);
 }
 
-// Rising suspense drone + heartbeat pulses
 let suspenseOscs = [];
 function soundSuspenseStart() {
   const c = ac(), t = c.currentTime;
@@ -469,14 +637,11 @@ function soundSuspenseStart() {
     env.gain.linearRampToValueAtTime(0.055 - i*0.008, t + 0.5 + i*0.12);
     env.gain.linearRampToValueAtTime(0.07 - i*0.008, t + 2.8);
     const filt = c.createBiquadFilter(); filt.type = 'lowpass';
-    filt.frequency.setValueAtTime(350, t);
-    filt.frequency.linearRampToValueAtTime(2200, t + 2.8);
+    filt.frequency.setValueAtTime(350, t); filt.frequency.linearRampToValueAtTime(2200, t + 2.8);
     o.connect(filt); filt.connect(env); env.connect(c.destination);
     o.start(t); lfo.start(t);
     suspenseOscs.push(o, lfo);
   });
-
-  // Heartbeat-style thud pulses that get faster
   for (let i = 0; i < 10; i++) {
     const delay = 0.25 + i * (0.26 - i * 0.015);
     tone({ freq: 55 + i*3, type: 'sine', gain: 0.14 - i*0.004, attack: 0.008, decay: 0.2, release: 0.06, dur: 0, dt: delay });
@@ -488,11 +653,9 @@ function soundSuspenseStop() {
   suspenseOscs = [];
 }
 
-// Landing chord — scales with rarity
 function soundLand(rarityKey) {
   soundSuspenseStop();
   const c = ac(), t = c.currentTime;
-
   const cfg = {
     common:    { freqs:[440,554],            g:0.28, sparks:0 },
     uncommon:  { freqs:[523,659,784],        g:0.33, sparks:3 },
@@ -502,28 +665,21 @@ function soundLand(rarityKey) {
     mythic:    { freqs:[880,1108,1318,1760,2093], g:0.53, sparks:20 },
   }[rarityKey] || { freqs:[440], g:0.28, sparks:0 };
 
-  // Arpeggio
   cfg.freqs.forEach((freq, i) => {
     tone({ freq, type:'triangle', gain: cfg.g - i*0.04, attack:0.008, decay:0.25, release:0.5, dur:0.05, dt: i*0.055 });
     tone({ freq: freq*2, type:'sine', gain: cfg.g*0.12, attack:0.01, decay:0.18, release:0.3, dur:0, dt: i*0.055+0.04 });
   });
 
-  // Thud
   const o = c.createOscillator(); o.type = 'sine';
   o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(38, t+0.35);
   const e = c.createGain(); e.gain.setValueAtTime(cfg.g*0.9, t); e.gain.exponentialRampToValueAtTime(0.001, t+0.35);
   o.connect(e); e.connect(c.destination); o.start(t); o.stop(t+0.4);
 
-  // Sparkles for high rarities
-  for (let i = 0; i < cfg.sparks; i++) {
+  for (let i = 0; i < cfg.sparks; i++)
     tone({ freq: 900 + Math.random()*2800, type:'sine', gain:0.06, attack:0.004, decay:0.06, release:0.18, dur:0, dt: 0.08 + i*0.06 });
-  }
 }
 
-/* Tick scheduler */
-let _tickTimer = null;
-let _tickStart = 0;
-let _tickDur = 0;
+let _tickTimer = null, _tickStart = 0, _tickDur = 0;
 function startTicking(durationMs) {
   stopTicking();
   _tickDur = durationMs; _tickStart = performance.now();
@@ -541,13 +697,9 @@ function stopTicking() {
   if (_tickTimer) { clearTimeout(_tickTimer); _tickTimer = null; }
 }
 
-/* Suspense gate */
 let _suspenseFired = false;
 function checkSuspense(progress) {
-  if (!_suspenseFired && progress >= 0.70) {
-    _suspenseFired = true;
-    soundSuspenseStart();
-  }
+  if (!_suspenseFired && progress >= 0.70) { _suspenseFired = true; soundSuspenseStart(); }
 }
 
 /* ═══════════════════════════════════
@@ -555,6 +707,7 @@ function checkSuspense(progress) {
 ═══════════════════════════════════ */
 const DEFAULT_IMG = 'https://www.sveedy.com/thumbs/blob-opera.jpg';
 const CARD_IMAGES = {
+  // Color blobs
   'White Blob':'/bassets/whiteblob.png','Gray Blob':'/bassets/grayblob.png',
   'Black Blob':'/bassets/blackblob.png','Green Blob':'/bassets/greenblob.png',
   'Blue Blob':'/bassets/blueblob.png','Red Blob':'/bassets/redblob.png',
@@ -565,6 +718,37 @@ const CARD_IMAGES = {
   'Gold Blob':'/bassets/goldblob.png','Diamond Blob':'/bassets/diamondblob.png',
   'Emerald Blob':'/bassets/emeraldblob.png','Ruby Blob':'/bassets/rubyblob.png',
   'Sapphire Blob':'/bassets/sapphireblob.png',
+  // Cat blobs — common
+  'Tabby Blob':'/bassets/tabbyblob.png',
+  'Scottish Fold Blob':'/bassets/scottishfoldblob.png',
+  'Ragdoll Blob':'/bassets/ragdollblob.png',
+  'Black Tabby Blob':'/bassets/blacktabbyblob.png',
+  'British Longhair Blob':'/bassets/britishlonghairblob.png',
+  'American Curl Blob':'/bassets/americancurlblob.png',
+  // Cat blobs — uncommon
+  'Exotic Shorthair Blob':'/bassets/exoticshorthairblob.png',
+  'Siamese Blob':'/bassets/siameseblob.png',
+  'Sphynx Blob':'/bassets/sphynxblob.png',
+  'Japanese Shorthair Blob':'/bassets/japaneseshorthairblob.png',
+  'Gray Shorthair Blob':'/bassets/grayshorthairblob.png',
+  // Cat blobs — rare
+  'Bobcat Blob':'/bassets/bobcatblob.png',
+  'Manx Blob':'/bassets/manxblob.png',
+  'Oriental Blob':'/bassets/orientalblob.png',
+  'Russian Blue Blob':'/bassets/russianblueblob.png',
+  // Cat blobs — epic
+  'Birmam Blob':'/bassets/birmamblob.png',
+  'Egyptian Cat Blob':'/bassets/egyptiancatblob.png',
+  'Munchkin Blob':'/bassets/munchkinblob.png',
+  'Tonkinese Blob':'/bassets/tonkineseblob.png',
+  'Ocicat Blob':'/bassets/ocicatblob.png',
+  // Cat blobs — legendary
+  'Havana Blob':'/bassets/havanablob.png',
+  'Snowshoe Blob':'/bassets/snowshoeblob.png',
+  'Khao Manee Blob':'/bassets/khaomaneeblob.png',
+  // Cat blobs — mythic
+  'Maine Coon Blob':'/bassets/mainecoonblob.png',
+  'Lykoi Blob':'/bassets/lykoiblob.png',
 };
 const img = n => CARD_IMAGES[n] || DEFAULT_IMG;
 
@@ -606,11 +790,25 @@ const RARITIES = [
 ];
 const RM = Object.fromEntries(RARITIES.map(r=>[r.key,r]));
 
-let collection = JSON.parse(localStorage.getItem('blobCards')||'{}');
+// Load collection — try new key first, fall back to old one
+let collection = (() => {
+  const v2 = localStorage.getItem(SAVE_KEY);
+  if (v2) {
+    const decoded = decodeCollection(v2);
+    if (decoded) return decoded;
+  }
+  // Legacy unencrypted save
+  const legacy = localStorage.getItem('blobCards');
+  if (legacy) {
+    try { return JSON.parse(legacy); } catch(e) {}
+  }
+  return {};
+})();
+
 let currentPack = null;
 let currentTab = 'all';
 
-const save = () => localStorage.setItem('blobCards', JSON.stringify(collection));
+const save = () => localStorage.setItem(SAVE_KEY, encodeCollection(collection));
 
 /* ═══════════════════════════════════
    REEL
@@ -748,7 +946,6 @@ async function openPack(packKey) {
   reelWrapper.style.transform = 'scale(1)';
   setVignette(false); overlay.classList.add('active');
 
-  // Phase 1 — rarity
   document.getElementById('phaseLabel').textContent = 'Rolling rarity...';
   document.getElementById('rarityDisplay').textContent = '';
 
@@ -772,7 +969,6 @@ async function openPack(packKey) {
   setVignette(true, targetRarity.key);
   await new Promise(r=>setTimeout(r,900));
 
-  // Phase 2 — card
   document.getElementById('phaseLabel').textContent = `Rolling ${targetRarity.label} card...`;
   setVignette(false);
 
@@ -832,7 +1028,7 @@ function closeModal() {
 }
 
 /* ═══════════════════════════════════
-   COLLECTION + AUTO-SHRINK LABELS
+   COLLECTION
 ═══════════════════════════════════ */
 function updateCount() {
   let total=0, collected=0;
@@ -845,7 +1041,6 @@ function updateCount() {
 }
 
 function fitLabel(el) {
-  // Start from max and shrink until text fits in the fixed 28px height
   let size = 0.55;
   el.style.fontSize = size + 'rem';
   while (el.scrollHeight > el.clientHeight + 1 && size > 0.30) {
@@ -886,23 +1081,47 @@ function renderRarityGroup(container, packKey, rarityKey, cards) {
   container.appendChild(group);
 }
 
+function renderAllUnified(container) {
+  // Build a flat list of {cardName, packKey, rarityKey}, sorted by rarity order
+  const rarityOrder = RARITIES.map(r => r.key);
+  const allCards = [];
+  for (const [pk, pack] of Object.entries(PACKS))
+    for (const [rk, cards] of Object.entries(pack.cards))
+      cards.forEach(c => allCards.push({ cardName: c, packKey: pk, rarityKey: rk }));
+  allCards.sort((a, b) => rarityOrder.indexOf(a.rarityKey) - rarityOrder.indexOf(b.rarityKey));
+
+  // Group by rarity for headers, but merge both packs
+  for (const rk of rarityOrder) {
+    const group = allCards.filter(c => c.rarityKey === rk);
+    if (!group.length) continue;
+    const r = RM[rk];
+    const got = group.filter(c => collection[c.packKey]?.[c.cardName]).length;
+    const groupEl = document.createElement('div'); groupEl.className='rarity-group';
+    const hdr = document.createElement('div'); hdr.className='rarity-group-header';
+    hdr.innerHTML = `
+      <span class="rarity-group-title ${r.cls}">${r.label}</span>
+      <span class="rarity-group-progress">${got}/${group.length}</span>
+      <div class="rarity-group-line"></div>
+    `;
+    groupEl.appendChild(hdr);
+    const grid = document.createElement('div'); grid.className='collection-grid';
+    group.forEach(c => grid.appendChild(makeCardEl(c.cardName, c.packKey, c.rarityKey)));
+    groupEl.appendChild(grid);
+    container.appendChild(groupEl);
+  }
+}
+
 function renderCollection() {
   const container = document.getElementById('collectionContainer');
   container.innerHTML = '';
 
   if (currentTab === 'all') {
-    for (const [pk, pack] of Object.entries(PACKS)) {
-      const ph = document.createElement('div'); ph.className='pack-section-header';
-      ph.textContent = pack.name; container.appendChild(ph);
-      for (const [rk, cards] of Object.entries(pack.cards))
-        renderRarityGroup(container, pk, rk, cards);
-    }
+    renderAllUnified(container);
   } else {
     for (const [rk, cards] of Object.entries(PACKS[currentTab].cards))
       renderRarityGroup(container, currentTab, rk, cards);
   }
 
-  // Shrink labels after paint
   requestAnimationFrame(()=>{
     document.querySelectorAll('.coll-card-label').forEach(fitLabel);
   });
