@@ -38,10 +38,7 @@
     padding: 2rem 1rem 4rem;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+  header { text-align: center; margin-bottom: 3rem; }
 
   .logo {
     font-family: 'Bebas Neue', sans-serif;
@@ -52,7 +49,6 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1;
-    text-shadow: none;
   }
 
   .logo-sub {
@@ -89,86 +85,38 @@
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.1);
   }
-
   .pack-card::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
     pointer-events: none;
   }
-
-  .pack-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-
+  .pack-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
   .pack-card:active { transform: translateY(-2px) scale(0.99); }
-
-  .pack-cat { background: linear-gradient(135deg, #1e1035 0%, #2d1b69 100%); }
+  .pack-cat   { background: linear-gradient(135deg, #1e1035 0%, #2d1b69 100%); }
   .pack-color { background: linear-gradient(135deg, #0f1e35 0%, #1b3a69 100%); }
 
-  .pack-icon {
-    font-size: 3rem;
-    margin-bottom: 0.8rem;
-    display: block;
-  }
-
-  .pack-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 2px;
-    margin-bottom: 0.3rem;
-  }
-
-  .pack-desc {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.5;
-  }
-
-  .pack-odds {
-    margin-top: 0.8rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .rarity-pip {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 10px;
-    letter-spacing: 0.5px;
-  }
+  .pack-icon { font-size: 3rem; margin-bottom: 0.8rem; display: block; }
+  .pack-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; margin-bottom: 0.3rem; }
+  .pack-desc { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+  .pack-odds { margin-top: 0.8rem; display: flex; flex-wrap: wrap; gap: 4px; }
+  .rarity-pip { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.5px; }
 
   .open-btn {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 0.6rem;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: opacity 0.15s;
+    width: 100%; margin-top: 1rem; padding: 0.6rem;
+    border: none; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.9rem;
+    letter-spacing: 1px; cursor: pointer; transition: opacity 0.15s;
   }
-
   .open-btn:hover { opacity: 0.85; }
-  .pack-cat .open-btn { background: linear-gradient(90deg, #7c3aed, #a855f7); color: #fff; }
+  .pack-cat .open-btn   { background: linear-gradient(90deg, #7c3aed, #a855f7); color: #fff; }
   .pack-color .open-btn { background: linear-gradient(90deg, #1d4ed8, #3b82f6); color: #fff; }
 
-  /* MODAL */
+  /* ── MODAL ── */
   .modal-overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 100;
+    display: none; position: fixed; inset: 0; z-index: 100;
     background: rgba(0,0,0,0.85);
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    align-items: center; justify-content: center; flex-direction: column;
   }
   .modal-overlay.active { display: flex; }
 
@@ -177,142 +125,64 @@
     background: #0f0f1e;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.1);
-    overflow: hidden;
-    position: relative;
+    overflow: hidden; position: relative;
   }
 
   .modal-header {
     padding: 1.2rem 1.5rem;
     background: rgba(255,255,255,0.04);
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
   }
-
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 2px;
-  }
-
-  .phase-label {
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-  }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; }
+  .phase-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
 
   .reel-wrapper {
-    padding: 1.5rem;
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.1s;
+    padding: 1.5rem; overflow: hidden; position: relative; transition: transform 0.1s;
   }
-
-  /* Single center indicator line */
   .reel-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    background: rgba(255,255,255,0.9);
-    z-index: 10;
-    pointer-events: none;
+    content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+    transform: translateX(-50%); width: 3px;
+    background: rgba(255,255,255,0.9); z-index: 10; pointer-events: none;
     box-shadow: 0 0 12px rgba(255,255,255,0.6), 0 0 24px rgba(255,255,255,0.3);
   }
-
   .reel-wrapper::after { display: none; }
+  .reel-flash { position: absolute; inset: 0; z-index: 20; pointer-events: none; opacity: 0; transition: opacity 0.05s; }
 
-  /* Cinematic edge fade */
-  .reel-wrapper .reel-fade-left,
-  .reel-wrapper .reel-fade-right {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 80px;
-    z-index: 9;
-    pointer-events: none;
-  }
-
-  /* Flash overlay */
-  .reel-flash {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.05s;
-  }
-
-  /* Vignette overlay on modal */
   .modal-vignette {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
     border-radius: 20px;
     background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
-    opacity: 0;
-    transition: opacity 0.4s;
+    opacity: 0; transition: opacity 0.4s;
   }
 
-  .reel-track {
-    display: flex;
-    gap: 8px;
-    will-change: transform;
-    user-select: none;
-  }
+  .reel-track { display: flex; gap: 8px; will-change: transform; user-select: none; }
 
   .reel-item {
-    flex-shrink: 0;
-    width: 110px;
-    border-radius: 12px;
-    border: 2px solid rgba(255,255,255,0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-shrink: 0; width: 110px; border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1); overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
     background: rgba(255,255,255,0.03);
-    transition: border-color 0.3s;
   }
 
-  .reel-item img {
-    width: 100%;
-    height: 80px;
-    object-fit: cover;
-    display: block;
+  .reel-rarity-block {
+    width: 100%; height: 80px; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
   }
-
-  .reel-item-name {
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-align: center;
-    padding: 4px 4px 5px;
-    line-height: 1.3;
+  .reel-qmark {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+    color: #fff; -webkit-text-stroke: 3px #000; paint-order: stroke fill;
+    line-height: 1; user-select: none;
   }
-
+  .reel-item img { width: 100%; height: 80px; object-fit: cover; display: block; }
+  .reel-item-name { font-size: 0.6rem; font-weight: 700; text-align: center; padding: 4px 4px 5px; line-height: 1.3; }
   .rarity-tag {
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 2px 6px;
-    border-radius: 6px;
-    margin-bottom: 4px;
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 6px; margin-bottom: 4px;
   }
 
-  /* Result */
-  .result-area {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    padding: 1.5rem;
-    text-align: center;
-  }
-
+  /* ── RESULT ── */
+  .result-area { display: none; flex-direction: column; align-items: center; padding: 1.5rem; text-align: center; }
   .result-area.visible { display: flex; }
 
   @keyframes cardSlam {
@@ -321,13 +191,11 @@
     80%  { transform: scale(1.06) rotate(-0.5deg); }
     100% { transform: scale(1) rotate(0deg); }
   }
-
   @keyframes rarityPulse {
     0%   { box-shadow: 0 0 0px var(--rarity-glow); }
     50%  { box-shadow: 0 0 60px var(--rarity-glow), 0 0 120px var(--rarity-glow); }
     100% { box-shadow: 0 0 30px var(--rarity-glow); }
   }
-
   @keyframes shakeModal {
     0%,100% { transform: translate(0,0) rotate(0deg); }
     15%  { transform: translate(-6px,3px) rotate(-1deg); }
@@ -337,95 +205,47 @@
     75%  { transform: translate(-2px,2px) rotate(-0.3deg); }
   }
 
-  @keyframes zoomPulse {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.04); }
-    100% { transform: scale(1); }
-  }
-
-  @keyframes particleBurst {
-    0%   { transform: translate(0,0) scale(1); opacity: 1; }
-    100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
-  }
-
   .result-card {
-    width: 180px;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 3px solid;
-    margin-bottom: 1rem;
+    width: 180px; border-radius: 16px; overflow: hidden;
+    border: 3px solid; margin-bottom: 1rem;
     animation: cardSlam 0.6s cubic-bezier(0.22,1,0.36,1) forwards, rarityPulse 1.5s ease 0.6s infinite;
   }
+  .result-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+  #particleCanvas { position: absolute; inset: 0; pointer-events: none; z-index: 50; border-radius: 20px; }
+  .result-card-footer { padding: 8px 10px; background: rgba(0,0,0,0.5); }
+  .result-rarity { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+  .result-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; }
 
-  .result-card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Particle canvas */
-  #particleCanvas {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 50;
-    border-radius: 20px;
-  }
-
-  .result-card-footer {
-    padding: 8px 10px;
-    background: rgba(0,0,0,0.5);
-  }
-
-  .result-rarity {
-    font-size: 0.65rem;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .result-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    letter-spacing: 1px;
-  }
-
-  .result-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 1rem;
-  }
-
+  .result-actions { display: flex; gap: 10px; margin-top: 1rem; }
   .btn-open-again, .btn-close {
-    padding: 0.6rem 1.4rem;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    border: none;
-    transition: opacity 0.15s;
+    padding: 0.6rem 1.4rem; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.85rem;
+    letter-spacing: 0.5px; cursor: pointer; border: none; transition: opacity 0.15s;
   }
-
   .btn-open-again:hover, .btn-close:hover { opacity: 0.85; }
   .btn-open-again { background: linear-gradient(90deg, #7c3aed, #3b82f6); color: #fff; }
   .btn-close { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
 
-  /* Collection */
-  .collection-section {
-    margin-top: 2rem;
+  /* ── COLLECTION ── */
+  .collection-section { margin-top: 2rem; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+    letter-spacing: 3px; margin-bottom: 1rem; color: rgba(255,255,255,0.7);
   }
 
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 3px;
-    margin-bottom: 1rem;
-    color: rgba(255,255,255,0.7);
+  .pack-section-header {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+    letter-spacing: 3px; color: rgba(255,255,255,0.5);
+    margin: 1.5rem 0 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 0.4rem;
   }
+
+  .rarity-group { margin-bottom: 1.5rem; }
+  .rarity-group-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.6rem; }
+  .rarity-group-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; }
+  .rarity-group-progress { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); }
+  .rarity-group-line { flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
 
   .collection-grid {
     display: grid;
@@ -433,89 +253,55 @@
     gap: 8px;
   }
 
+  /* Fixed-height card — no row stretching */
   .coll-card {
-    border-radius: 10px;
-    border: 2px solid;
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.15s;
+    border-radius: 10px; border: 2px solid; overflow: hidden;
+    position: relative; transition: transform 0.15s;
+    display: flex; flex-direction: column;
   }
-
   .coll-card:hover { transform: scale(1.05); }
   .coll-card.locked { filter: grayscale(1) brightness(0.3); }
   .coll-card.locked::after {
-    content: '?';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: rgba(255,255,255,0.3);
+    content: '?'; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 900; color: rgba(255,255,255,0.3);
   }
+  .coll-card img { width: 100%; height: 65px; object-fit: cover; display: block; flex-shrink: 0; }
 
-  .coll-card img { width: 100%; height: 65px; object-fit: cover; display: block; }
-
+  /* Fixed-height label — text shrinks via JS, never grows the card */
   .coll-card-label {
-    font-size: 0.55rem;
-    font-weight: 700;
-    text-align: center;
-    padding: 3px 3px 4px;
+    height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; text-align: center;
+    padding: 2px 4px;
     background: rgba(0,0,0,0.5);
-    line-height: 1.3;
+    line-height: 1.2; overflow: hidden;
+    font-size: 0.55rem;
+    white-space: normal; word-break: break-word;
   }
 
   .coll-count {
-    position: absolute;
-    top: 3px; right: 3px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    font-size: 0.6rem;
-    font-weight: 900;
-    padding: 1px 5px;
-    border-radius: 8px;
+    position: absolute; top: 3px; right: 3px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 0.6rem; font-weight: 900; padding: 1px 5px; border-radius: 8px;
   }
 
-  .tab-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1rem;
-  }
-
+  .tab-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
   .tab-btn {
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.8rem;
-    cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.5);
-    transition: all 0.15s;
+    padding: 0.4rem 1rem; border-radius: 20px;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.8rem;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); transition: all 0.15s;
   }
+  .tab-btn.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3); }
 
-  .tab-btn.active {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    border-color: rgba(255,255,255,0.3);
-  }
-
-  /* Rarity colors */
+  /* Rarity palette */
   .r-common    { color: #9ca3af; border-color: #4b5563; background: rgba(75,85,99,0.2); }
   .r-uncommon  { color: #34d399; border-color: #059669; background: rgba(5,150,105,0.2); }
   .r-rare      { color: #60a5fa; border-color: #2563eb; background: rgba(37,99,235,0.2); }
   .r-epic      { color: #c084fc; border-color: #9333ea; background: rgba(147,51,234,0.2); }
   .r-legendary { color: #fbbf24; border-color: #d97706; background: rgba(217,119,6,0.2); }
   .r-mythic    { color: #f87171; border-color: #dc2626; background: rgba(220,38,38,0.2); }
-
-  .r-common-bg    { background: #374151; }
-  .r-uncommon-bg  { background: #065f46; }
-  .r-rare-bg      { background: #1e3a8a; }
-  .r-epic-bg      { background: #581c87; }
-  .r-legendary-bg { background: #78350f; }
-  .r-mythic-bg    { background: #7f1d1d; }
 </style>
 </head>
 <body>
@@ -533,7 +319,7 @@
     <div class="pack-card pack-cat">
       <span class="pack-icon">🐱</span>
       <div class="pack-name">Cat Pack</div>
-      <div class="pack-desc">22 unique cat blobs across 6 rarities. Can you find the legendary Maine Coon?</div>
+      <div class="pack-desc">22 unique cat blobs across 6 rarities</div>
       <div class="pack-odds">
         <span class="rarity-pip r-common">Common 35%</span>
         <span class="rarity-pip r-uncommon">Uncommon 25%</span>
@@ -548,7 +334,7 @@
     <div class="pack-card pack-color">
       <span class="pack-icon">🎨</span>
       <div class="pack-name">Color Pack</div>
-      <div class="pack-desc">18 colorful blobs from plain white to shimmering sapphire. Collect them all!</div>
+      <div class="pack-desc">18 colorful blobs from plain white to shimmering sapphire. Collect them all</div>
       <div class="pack-odds">
         <span class="rarity-pip r-common">Common 35%</span>
         <span class="rarity-pip r-uncommon">Uncommon 25%</span>
@@ -564,10 +350,11 @@
   <div class="collection-section">
     <div class="section-title">Your Collection</div>
     <div class="tab-row">
-      <button class="tab-btn active" onclick="switchTab('cat', this)">🐱 Cat Blobs</button>
+      <button class="tab-btn active" onclick="switchTab('all', this)">✨ All Cards</button>
+      <button class="tab-btn" onclick="switchTab('cat', this)">🐱 Cat Blobs</button>
       <button class="tab-btn" onclick="switchTab('color', this)">🎨 Color Blobs</button>
     </div>
-    <div class="collection-grid" id="collectionGrid"></div>
+    <div id="collectionContainer"></div>
   </div>
 </div>
 
@@ -585,8 +372,8 @@
     </div>
 
     <div class="reel-wrapper" id="reelWrapper">
-      <div class="reel-fade-left" id="reelFadeLeft" style="position:absolute;top:0;bottom:0;left:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to right,#0f0f1e,transparent);"></div>
-      <div class="reel-fade-right" id="reelFadeRight" style="position:absolute;top:0;bottom:0;right:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to left,#0f0f1e,transparent);"></div>
+      <div style="position:absolute;top:0;bottom:0;left:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to right,#0f0f1e,transparent);"></div>
+      <div style="position:absolute;top:0;bottom:0;right:0;width:90px;z-index:9;pointer-events:none;background:linear-gradient(to left,#0f0f1e,transparent);"></div>
       <div class="reel-flash" id="reelFlash"></div>
       <div class="reel-track" id="reelTrack"></div>
     </div>
@@ -608,392 +395,522 @@
 </div>
 
 <script>
-const BLOB_IMG = 'https://www.sveedy.com/thumbs/blob-opera.jpg';
+/* ═══════════════════════════════════
+   WEB AUDIO ENGINE
+═══════════════════════════════════ */
+let _ctx = null;
+function ac() {
+  if (!_ctx) _ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ctx.state === 'suspended') _ctx.resume();
+  return _ctx;
+}
 
-const RARITY_COLORS = {
-  common:    { glow: 'rgba(156,163,175,0.8)', flash: 'rgba(156,163,175,0.15)', particles: '#9ca3af' },
-  uncommon:  { glow: 'rgba(52,211,153,0.9)',  flash: 'rgba(52,211,153,0.18)', particles: '#34d399' },
-  rare:      { glow: 'rgba(96,165,250,0.9)',  flash: 'rgba(96,165,250,0.18)', particles: '#60a5fa' },
-  epic:      { glow: 'rgba(192,132,252,0.9)', flash: 'rgba(192,132,252,0.18)',particles: '#c084fc' },
-  legendary: { glow: 'rgba(251,191,36,1.0)',  flash: 'rgba(251,191,36,0.22)', particles: '#fbbf24' },
-  mythic:    { glow: 'rgba(248,113,113,1.0)', flash: 'rgba(248,113,113,0.25)',particles: '#f87171' }
+function tone({ freq=440, type='sine', gain=0.3, attack=0.005, decay=0.1, sus=0, dur=0.1, release=0.15, dt=0 }={}) {
+  const c = ac(), t = c.currentTime + dt;
+  const o = c.createOscillator(), e = c.createGain();
+  o.type = type; o.frequency.value = freq;
+  e.gain.setValueAtTime(0, t);
+  e.gain.linearRampToValueAtTime(gain, t + attack);
+  e.gain.linearRampToValueAtTime(gain * sus, t + attack + decay);
+  e.gain.setValueAtTime(gain * sus, t + attack + decay + dur);
+  e.gain.linearRampToValueAtTime(0, t + attack + decay + dur + release);
+  o.connect(e); e.connect(c.destination);
+  o.start(t); o.stop(t + attack + decay + dur + release + 0.01);
+}
+
+// Short click tick
+function soundTick(speed = 1.0) {
+  const c = ac(), t = c.currentTime;
+  const len = Math.floor(c.sampleRate * 0.025);
+  const buf = c.createBuffer(1, len, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/len, 4) * 0.7;
+  const s = c.createBufferSource(); s.buffer = buf;
+  const f = c.createBiquadFilter(); f.type = 'bandpass';
+  f.frequency.value = 900 + speed * 900; f.Q.value = 2;
+  const g = c.createGain(); g.gain.setValueAtTime(0.8, t); g.gain.linearRampToValueAtTime(0, t+0.025);
+  s.connect(f); f.connect(g); g.connect(c.destination);
+  s.start(t);
+}
+
+// Pack open whoosh + thud
+function soundPackOpen() {
+  const c = ac(), t = c.currentTime;
+  const o = c.createOscillator(); o.type = 'sawtooth';
+  o.frequency.setValueAtTime(60, t);
+  o.frequency.exponentialRampToValueAtTime(700, t + 0.45);
+  const f = c.createBiquadFilter(); f.type = 'lowpass';
+  f.frequency.setValueAtTime(250, t); f.frequency.exponentialRampToValueAtTime(2400, t+0.45);
+  const e = c.createGain(); e.gain.setValueAtTime(0.35, t); e.gain.linearRampToValueAtTime(0, t+0.45);
+  o.connect(f); f.connect(e); e.connect(c.destination);
+  o.start(t); o.stop(t+0.5);
+
+  const o2 = c.createOscillator(); o2.type = 'sine';
+  o2.frequency.setValueAtTime(140, t+0.12); o2.frequency.exponentialRampToValueAtTime(35, t+0.55);
+  const e2 = c.createGain(); e2.gain.setValueAtTime(0.65, t+0.12); e2.gain.exponentialRampToValueAtTime(0.001, t+0.55);
+  o2.connect(e2); e2.connect(c.destination);
+  o2.start(t+0.12); o2.stop(t+0.6);
+}
+
+// Rising suspense drone + heartbeat pulses
+let suspenseOscs = [];
+function soundSuspenseStart() {
+  const c = ac(), t = c.currentTime;
+  suspenseOscs = [];
+  [110, 165.5, 220, 330, 440].forEach((freq, i) => {
+    const o = c.createOscillator(); o.type = i%2===0?'sawtooth':'triangle';
+    o.frequency.setValueAtTime(freq, t);
+    o.frequency.linearRampToValueAtTime(freq * 1.09, t + 2.8);
+    const lfo = c.createOscillator(); lfo.frequency.value = 3.5 + i*0.6;
+    const lg = c.createGain(); lg.gain.value = freq * 0.012;
+    lfo.connect(lg); lg.connect(o.frequency);
+    const env = c.createGain();
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(0.055 - i*0.008, t + 0.5 + i*0.12);
+    env.gain.linearRampToValueAtTime(0.07 - i*0.008, t + 2.8);
+    const filt = c.createBiquadFilter(); filt.type = 'lowpass';
+    filt.frequency.setValueAtTime(350, t);
+    filt.frequency.linearRampToValueAtTime(2200, t + 2.8);
+    o.connect(filt); filt.connect(env); env.connect(c.destination);
+    o.start(t); lfo.start(t);
+    suspenseOscs.push(o, lfo);
+  });
+
+  // Heartbeat-style thud pulses that get faster
+  for (let i = 0; i < 10; i++) {
+    const delay = 0.25 + i * (0.26 - i * 0.015);
+    tone({ freq: 55 + i*3, type: 'sine', gain: 0.14 - i*0.004, attack: 0.008, decay: 0.2, release: 0.06, dur: 0, dt: delay });
+  }
+}
+function soundSuspenseStop() {
+  const c = ac(), t = c.currentTime;
+  suspenseOscs.forEach(n => { try { n.stop(t + 0.08); } catch(e){} });
+  suspenseOscs = [];
+}
+
+// Landing chord — scales with rarity
+function soundLand(rarityKey) {
+  soundSuspenseStop();
+  const c = ac(), t = c.currentTime;
+
+  const cfg = {
+    common:    { freqs:[440,554],            g:0.28, sparks:0 },
+    uncommon:  { freqs:[523,659,784],        g:0.33, sparks:3 },
+    rare:      { freqs:[587,740,880],        g:0.38, sparks:5 },
+    epic:      { freqs:[622,830,1046],       g:0.43, sparks:7 },
+    legendary: { freqs:[740,988,1174,1480],  g:0.48, sparks:12 },
+    mythic:    { freqs:[880,1108,1318,1760,2093], g:0.53, sparks:20 },
+  }[rarityKey] || { freqs:[440], g:0.28, sparks:0 };
+
+  // Arpeggio
+  cfg.freqs.forEach((freq, i) => {
+    tone({ freq, type:'triangle', gain: cfg.g - i*0.04, attack:0.008, decay:0.25, release:0.5, dur:0.05, dt: i*0.055 });
+    tone({ freq: freq*2, type:'sine', gain: cfg.g*0.12, attack:0.01, decay:0.18, release:0.3, dur:0, dt: i*0.055+0.04 });
+  });
+
+  // Thud
+  const o = c.createOscillator(); o.type = 'sine';
+  o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(38, t+0.35);
+  const e = c.createGain(); e.gain.setValueAtTime(cfg.g*0.9, t); e.gain.exponentialRampToValueAtTime(0.001, t+0.35);
+  o.connect(e); e.connect(c.destination); o.start(t); o.stop(t+0.4);
+
+  // Sparkles for high rarities
+  for (let i = 0; i < cfg.sparks; i++) {
+    tone({ freq: 900 + Math.random()*2800, type:'sine', gain:0.06, attack:0.004, decay:0.06, release:0.18, dur:0, dt: 0.08 + i*0.06 });
+  }
+}
+
+/* Tick scheduler */
+let _tickTimer = null;
+let _tickStart = 0;
+let _tickDur = 0;
+function startTicking(durationMs) {
+  stopTicking();
+  _tickDur = durationMs; _tickStart = performance.now();
+  function next() {
+    const progress = Math.min((performance.now() - _tickStart) / _tickDur, 1);
+    if (progress >= 1) { stopTicking(); return; }
+    const speed = 1 - Math.pow(progress, 2.2);
+    const interval = 35 + (1-speed)*300;
+    soundTick(speed);
+    _tickTimer = setTimeout(next, interval);
+  }
+  next();
+}
+function stopTicking() {
+  if (_tickTimer) { clearTimeout(_tickTimer); _tickTimer = null; }
+}
+
+/* Suspense gate */
+let _suspenseFired = false;
+function checkSuspense(progress) {
+  if (!_suspenseFired && progress >= 0.70) {
+    _suspenseFired = true;
+    soundSuspenseStart();
+  }
+}
+
+/* ═══════════════════════════════════
+   DATA
+═══════════════════════════════════ */
+const DEFAULT_IMG = 'https://www.sveedy.com/thumbs/blob-opera.jpg';
+const CARD_IMAGES = {
+  'White Blob':'/bassets/whiteblob.png','Gray Blob':'/bassets/grayblob.png',
+  'Black Blob':'/bassets/blackblob.png','Green Blob':'/bassets/greenblob.png',
+  'Blue Blob':'/bassets/blueblob.png','Red Blob':'/bassets/redblob.png',
+  'Yellow Blob':'/bassets/yellowblob.png','Orange Blob':'/bassets/orangeblob.png',
+  'Brown Blob':'/bassets/brownblob.png','Pink Blob':'/bassets/pinkblob.png',
+  'Turquoise Blob':'/bassets/lightblueblob.png','Purple Blob':'/bassets/purpleblob.png',
+  'Copper Blob':'/bassets/copperblob.png','Silver Blob':'/bassets/silverblob.png',
+  'Gold Blob':'/bassets/goldblob.png','Diamond Blob':'/bassets/diamondblob.png',
+  'Emerald Blob':'/bassets/emeraldblob.png','Ruby Blob':'/bassets/rubyblob.png',
+  'Sapphire Blob':'/bassets/sapphireblob.png',
+};
+const img = n => CARD_IMAGES[n] || DEFAULT_IMG;
+
+const RC = {
+  common:    { glow:'rgba(156,163,175,0.8)', flash:'rgba(156,163,175,0.15)', particles:'#9ca3af', bg:'#4b5563' },
+  uncommon:  { glow:'rgba(52,211,153,0.9)',  flash:'rgba(52,211,153,0.18)',  particles:'#34d399', bg:'#059669' },
+  rare:      { glow:'rgba(96,165,250,0.9)',  flash:'rgba(96,165,250,0.18)',  particles:'#60a5fa', bg:'#2563eb' },
+  epic:      { glow:'rgba(192,132,252,0.9)', flash:'rgba(192,132,252,0.18)', particles:'#c084fc', bg:'#9333ea' },
+  legendary: { glow:'rgba(251,191,36,1.0)',  flash:'rgba(251,191,36,0.22)',  particles:'#fbbf24', bg:'#d97706' },
+  mythic:    { glow:'rgba(248,113,113,1.0)', flash:'rgba(248,113,113,0.25)', particles:'#f87171', bg:'#dc2626' },
 };
 
 const PACKS = {
-  cat: {
-    name: 'Cat Pack',
-    cards: {
-      common:    ['Tabby Blob','Scottish Fold Blob','Ragdoll Blob','Black Tabby Blob','British Longhair Blob','American Curl Blob'],
-      uncommon:  ['Exotic Shorthair Blob','Siamese Blob','Sphynx Blob','Japanese Shorthair Blob','Gray Shorthair Blob'],
-      rare:      ['Bobcat Blob','Manx Blob','Oriental Blob','Russian Blue Blob'],
-      epic:      ['Birmam Blob','Egyptian Cat Blob','Munchkin Blob','Tonkinese Blob','Ocicat Blob'],
-      legendary: ['Havana Blob','Snowshoe Blob','Khao Manee Blob'],
-      mythic:    ['Maine Coon Blob','Lykoi Blob']
-    }
-  },
-  color: {
-    name: 'Color Pack',
-    cards: {
-      common:    ['White Blob','Gray Blob','Black Blob'],
-      uncommon:  ['Green Blob','Blue Blob','Red Blob'],
-      rare:      ['Yellow Blob','Orange Blob','Brown Blob'],
-      epic:      ['Pink Blob','Turquoise Blob','Purple Blob'],
-      legendary: ['Copper Blob','Silver Blob','Gold Blob'],
-      mythic:    ['Diamond Blob','Emerald Blob','Ruby Blob','Sapphire Blob']
-    }
-  }
+  cat: { name:'Cat Pack', cards:{
+    common:   ['Tabby Blob','Scottish Fold Blob','Ragdoll Blob','Black Tabby Blob','British Longhair Blob','American Curl Blob'],
+    uncommon: ['Exotic Shorthair Blob','Siamese Blob','Sphynx Blob','Japanese Shorthair Blob','Gray Shorthair Blob'],
+    rare:     ['Bobcat Blob','Manx Blob','Oriental Blob','Russian Blue Blob'],
+    epic:     ['Birmam Blob','Egyptian Cat Blob','Munchkin Blob','Tonkinese Blob','Ocicat Blob'],
+    legendary:['Havana Blob','Snowshoe Blob','Khao Manee Blob'],
+    mythic:   ['Maine Coon Blob','Lykoi Blob'],
+  }},
+  color: { name:'Color Pack', cards:{
+    common:   ['White Blob','Gray Blob','Black Blob'],
+    uncommon: ['Green Blob','Blue Blob','Red Blob'],
+    rare:     ['Yellow Blob','Orange Blob','Brown Blob'],
+    epic:     ['Pink Blob','Turquoise Blob','Purple Blob'],
+    legendary:['Copper Blob','Silver Blob','Gold Blob'],
+    mythic:   ['Diamond Blob','Emerald Blob','Ruby Blob','Sapphire Blob'],
+  }},
 };
 
 const RARITIES = [
-  { key: 'common',    label: 'Common',    weight: 35,  cls: 'r-common' },
-  { key: 'uncommon',  label: 'Uncommon',  weight: 25,  cls: 'r-uncommon' },
-  { key: 'rare',      label: 'Rare',      weight: 20,  cls: 'r-rare' },
-  { key: 'epic',      label: 'Epic',      weight: 10,  cls: 'r-epic' },
-  { key: 'legendary', label: 'Legendary', weight: 7.5, cls: 'r-legendary' },
-  { key: 'mythic',    label: 'Mythic',    weight: 2.5, cls: 'r-mythic' }
+  {key:'common',   label:'Common',   weight:35,  cls:'r-common'},
+  {key:'uncommon', label:'Uncommon', weight:25,  cls:'r-uncommon'},
+  {key:'rare',     label:'Rare',     weight:20,  cls:'r-rare'},
+  {key:'epic',     label:'Epic',     weight:10,  cls:'r-epic'},
+  {key:'legendary',label:'Legendary',weight:7.5, cls:'r-legendary'},
+  {key:'mythic',   label:'Mythic',   weight:2.5, cls:'r-mythic'},
 ];
+const RM = Object.fromEntries(RARITIES.map(r=>[r.key,r]));
 
-const RARITY_MAP = Object.fromEntries(RARITIES.map(r => [r.key, r]));
-
-// Collection stored as { packKey: { cardName: count } }
-let collection = JSON.parse(localStorage.getItem('blobCards') || '{}');
+let collection = JSON.parse(localStorage.getItem('blobCards')||'{}');
 let currentPack = null;
-let currentTab = 'cat';
+let currentTab = 'all';
 
-function saveCollection() {
-  localStorage.setItem('blobCards', JSON.stringify(collection));
-}
+const save = () => localStorage.setItem('blobCards', JSON.stringify(collection));
 
+/* ═══════════════════════════════════
+   REEL
+═══════════════════════════════════ */
 function rollRarity() {
-  const total = RARITIES.reduce((a, r) => a + r.weight, 0);
-  let rand = Math.random() * total;
-  for (const r of RARITIES) {
-    rand -= r.weight;
-    if (rand <= 0) return r;
-  }
+  const tot = RARITIES.reduce((a,r)=>a+r.weight,0);
+  let rand = Math.random()*tot;
+  for (const r of RARITIES) { rand -= r.weight; if (rand<=0) return r; }
   return RARITIES[0];
 }
-
-function rollCard(packKey, rarityKey) {
-  const cards = PACKS[packKey].cards[rarityKey];
-  return cards[Math.floor(Math.random() * cards.length)];
+function rollCard(pk, rk) {
+  const c = PACKS[pk].cards[rk];
+  return c[Math.floor(Math.random()*c.length)];
 }
 
-function makeReelItem(name, rarityKey) {
-  const r = RARITY_MAP[rarityKey];
+function makeReelItem(name, rarityKey, isRarity=false) {
+  const r = RM[rarityKey];
   const el = document.createElement('div');
   el.className = `reel-item ${r.cls}`;
-  el.innerHTML = `
-    <img src="${BLOB_IMG}" alt="${name}" loading="lazy">
-    <span class="rarity-tag ${r.cls}">${r.label}</span>
-    <span class="reel-item-name">${name}</span>
-  `;
+  const visual = isRarity
+    ? `<div class="reel-rarity-block" style="background:${RC[rarityKey].bg}"><span class="reel-qmark">?</span></div>`
+    : `<img src="${img(name)}" alt="${name}" loading="lazy">`;
+  el.innerHTML = `${visual}<span class="rarity-tag ${r.cls}">${r.label}</span><span class="reel-item-name">${name}</span>`;
   return el;
 }
 
-function buildReel(items) {
+function buildReel(items, isRarity=false) {
   const track = document.getElementById('reelTrack');
-  track.innerHTML = '';
-  track.style.transform = 'translateX(0)';
-  items.forEach(({ name, rarityKey }) => {
-    track.appendChild(makeReelItem(name, rarityKey));
-  });
+  track.innerHTML = ''; track.style.transform = 'translateX(0)';
+  items.forEach(({name,rarityKey}) => track.appendChild(makeReelItem(name,rarityKey,isRarity)));
 }
 
-function animateReel(track, targetIndex, itemWidth, gap, duration, rarityKey) {
+function animateReel(track, targetIndex, iw, gap, duration, rarityKey) {
   return new Promise(resolve => {
-    const wrapperEl = document.getElementById('reelWrapper');
-    const wrapperWidth = wrapperEl.clientWidth;
-    const centerOffset = wrapperWidth / 2 - itemWidth / 2 - 24; // minus padding
-    const targetX = -(targetIndex * (itemWidth + gap)) + centerOffset;
+    const wrap = document.getElementById('reelWrapper');
+    const cx = wrap.clientWidth/2 - iw/2 - 24;
+    const targetX = -(targetIndex*(iw+gap)) + cx;
     const flash = document.getElementById('reelFlash');
-    const rc = rarityKey ? RARITY_COLORS[rarityKey] : null;
-
+    const rc = RC[rarityKey];
     const start = performance.now();
+    _suspenseFired = false;
+    startTicking(duration);
 
-    function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
-
-    let lastFlash = 0;
-    let flashCount = 0;
-    const maxFlashes = rarityKey === 'mythic' ? 8 : rarityKey === 'legendary' ? 6 : rarityKey === 'epic' ? 4 : 2;
+    const ease = t => 1 - Math.pow(1-t, 5);
+    let lastFlash=0, flashCount=0;
+    const maxFlash = rarityKey==='mythic'?8:rarityKey==='legendary'?6:rarityKey==='epic'?4:2;
 
     function tick(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutQuint(progress);
-      const currentX = targetX * eased;
-      track.style.transform = `translateX(${currentX}px)`;
+      const progress = Math.min((now-start)/duration, 1);
+      const eased = ease(progress);
+      track.style.transform = `translateX(${targetX*eased}px)`;
+      checkSuspense(progress);
 
-      // Camera zoom pulse as it slows down
       if (progress > 0.75 && progress < 0.95) {
-        const zoomPhase = (progress - 0.75) / 0.2;
-        const zoom = 1 + Math.sin(zoomPhase * Math.PI) * 0.03;
-        wrapperEl.style.transform = `scale(${zoom.toFixed(4)})`;
-      } else if (progress >= 0.95) {
-        wrapperEl.style.transform = 'scale(1)';
+        const zp = (progress-0.75)/0.2;
+        wrap.style.transform = `scale(${(1+Math.sin(zp*Math.PI)*0.03).toFixed(4)})`;
+      } else if (progress >= 0.95) wrap.style.transform = 'scale(1)';
+
+      if (rc && progress < 0.5 && now-lastFlash > 180 && flashCount < maxFlash && Math.random()<(1-progress)*0.4) {
+        flash.style.background = rc.flash; flash.style.opacity = '1';
+        setTimeout(()=>{ flash.style.opacity='0'; }, 60);
+        lastFlash = now; flashCount++;
       }
 
-      // Speed-based flash flickers when fast
-      if (rc && progress < 0.5 && now - lastFlash > 180 && flashCount < maxFlashes) {
-        const speed = 1 - progress;
-        if (Math.random() < speed * 0.4) {
-          flash.style.background = rc.flash;
-          flash.style.opacity = '1';
-          setTimeout(() => { flash.style.opacity = '0'; }, 60);
-          lastFlash = now;
-          flashCount++;
-        }
-      }
-
-      // Final lock-in: big flash + shake
       if (progress >= 0.999) {
-        wrapperEl.style.transform = 'scale(1)';
+        stopTicking(); wrap.style.transform = 'scale(1)';
         if (rc) {
-          flash.style.background = rc.flash;
-          flash.style.opacity = '1';
-          setTimeout(() => { flash.style.opacity = '0'; }, 120);
-          // Shake the modal
+          flash.style.background = rc.flash; flash.style.opacity = '1';
+          setTimeout(()=>{ flash.style.opacity='0'; }, 120);
           const box = document.getElementById('modalBox');
           box.style.animation = 'shakeModal 0.35s ease';
-          setTimeout(() => { box.style.animation = ''; }, 350);
+          setTimeout(()=>{ box.style.animation=''; }, 350);
         }
-        resolve();
-        return;
+        resolve(); return;
       }
-
       requestAnimationFrame(tick);
     }
-
     requestAnimationFrame(tick);
   });
 }
 
-function spawnParticles(rarityKey) {
+/* ═══════════════════════════════════
+   PARTICLES
+═══════════════════════════════════ */
+function spawnParticles(rk) {
   const canvas = document.getElementById('particleCanvas');
   const box = document.getElementById('modalBox');
-  canvas.width = box.offsetWidth;
-  canvas.height = box.offsetHeight;
+  canvas.width = box.offsetWidth; canvas.height = box.offsetHeight;
   const ctx = canvas.getContext('2d');
-  const color = RARITY_COLORS[rarityKey]?.particles || '#fff';
-  const cx = canvas.width / 2;
-  const cy = canvas.height * 0.45;
-  const count = rarityKey === 'mythic' ? 60 : rarityKey === 'legendary' ? 45 : rarityKey === 'epic' ? 30 : 18;
-
-  const particles = Array.from({ length: count }, () => {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = 2 + Math.random() * 5;
-    return { x: cx, y: cy, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2,
-             size: 2 + Math.random() * 4, life: 1, decay: 0.015 + Math.random() * 0.02 };
+  const color = RC[rk]?.particles || '#fff';
+  const cx=canvas.width/2, cy=canvas.height*0.45;
+  const count = rk==='mythic'?60:rk==='legendary'?45:rk==='epic'?30:18;
+  const ps = Array.from({length:count},()=>{
+    const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
+    return {x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,sz:2+Math.random()*4,life:1,decay:0.015+Math.random()*0.02};
   });
-
   function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let alive = false;
-    for (const p of particles) {
-      p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life -= p.decay;
-      if (p.life <= 0) continue;
-      alive = true;
-      ctx.globalAlpha = p.life;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-      ctx.fill();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    for (const p of ps) {
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=p.decay;
+      if (p.life<=0) continue; alive=true;
+      ctx.globalAlpha=p.life; ctx.fillStyle=color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.sz*p.life,0,Math.PI*2); ctx.fill();
     }
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha=1;
     if (alive) requestAnimationFrame(draw);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
   requestAnimationFrame(draw);
 }
 
-function setVignette(on, rarityKey) {
+function setVignette(on, rk) {
   const v = document.getElementById('modalVignette');
-  if (on && rarityKey) {
-    const c = RARITY_COLORS[rarityKey];
-    v.style.background = `radial-gradient(ellipse at center, transparent 30%, ${c.glow.replace('0.8','0.35').replace('0.9','0.35').replace('1.0','0.35')} 100%)`;
-    v.style.opacity = '1';
-  } else {
-    v.style.opacity = '0';
-  }
+  if (on && rk) {
+    v.style.background = `radial-gradient(ellipse at center, transparent 30%, ${RC[rk].glow.replace(/[\d.]+\)$/,'0.35)')} 100%)`;
+    v.style.opacity='1';
+  } else v.style.opacity='0';
 }
 
+/* ═══════════════════════════════════
+   PACK OPENING
+═══════════════════════════════════ */
 async function openPack(packKey) {
+  ac(); soundPackOpen();
   currentPack = packKey;
   const pack = PACKS[packKey];
   const overlay = document.getElementById('modalOverlay');
   const reelWrapper = document.getElementById('reelWrapper');
   const resultArea = document.getElementById('resultArea');
-  const phaseLabel = document.getElementById('phaseLabel');
-  const rarityDisplay = document.getElementById('rarityDisplay');
 
   document.getElementById('modalTitle').textContent = pack.name;
   resultArea.classList.remove('visible');
   reelWrapper.style.display = 'block';
   reelWrapper.style.transform = 'scale(1)';
-  setVignette(false);
-  overlay.classList.add('active');
+  setVignette(false); overlay.classList.add('active');
 
-  // ---- PHASE 1: Roll rarity via reel ----
-  phaseLabel.textContent = 'Rolling rarity...';
-  rarityDisplay.textContent = '';
+  // Phase 1 — rarity
+  document.getElementById('phaseLabel').textContent = 'Rolling rarity...';
+  document.getElementById('rarityDisplay').textContent = '';
 
-  const reelRarities = [...RARITIES, ...RARITIES, ...RARITIES];
-  const totalItems = 36;
   const targetRarity = rollRarity();
-  const targetIndex = 28;
+  const totalItems = 36, targetIndex = 28;
+  const reelRarities = [...RARITIES,...RARITIES,...RARITIES];
+  const rarityItems = Array.from({length:totalItems},(_,i) =>
+    i===targetIndex ? {name:targetRarity.label,rarityKey:targetRarity.key}
+                    : {name:reelRarities[i%reelRarities.length].label, rarityKey:reelRarities[i%reelRarities.length].key}
+  );
 
-  const rarityItems = [];
-  for (let i = 0; i < totalItems; i++) {
-    if (i === targetIndex) {
-      rarityItems.push({ name: targetRarity.label, rarityKey: targetRarity.key });
-    } else {
-      const r = reelRarities[i % reelRarities.length];
-      rarityItems.push({ name: r.label, rarityKey: r.key });
-    }
-  }
+  buildReel(rarityItems, true);
+  const IW=110, GAP=8;
+  await animateReel(document.getElementById('reelTrack'), targetIndex, IW, GAP, 3500, targetRarity.key);
+  soundLand(targetRarity.key);
 
-  buildReel(rarityItems);
-  const itemWidth = 110, gap = 8;
-  await animateReel(document.getElementById('reelTrack'), targetIndex, itemWidth, gap, 3500, targetRarity.key);
-
-  // Zoom pulse on winner reveal
-  reelWrapper.style.transition = 'transform 0.2s ease';
-  reelWrapper.style.transform = 'scale(1.06)';
-  setTimeout(() => { reelWrapper.style.transform = 'scale(1)'; }, 300);
-
-  // Rarity color the center line
-  const reelEl = document.getElementById('reelWrapper');
-  const glowColor = RARITY_COLORS[targetRarity.key].glow;
-  reelEl.style.setProperty('--line-glow', glowColor);
-
-  rarityDisplay.innerHTML = `<span class="${targetRarity.cls}" style="font-size:1rem;font-weight:900;">${targetRarity.label}!</span>`;
+  reelWrapper.style.transition='transform 0.2s ease';
+  reelWrapper.style.transform='scale(1.06)';
+  setTimeout(()=>{ reelWrapper.style.transform='scale(1)'; }, 300);
+  document.getElementById('rarityDisplay').innerHTML = `<span class="${targetRarity.cls}" style="font-size:1rem;font-weight:900;">${targetRarity.label}!</span>`;
   setVignette(true, targetRarity.key);
+  await new Promise(r=>setTimeout(r,900));
 
-  await new Promise(r => setTimeout(r, 900));
-
-  // ---- PHASE 2: Roll card ----
-  phaseLabel.textContent = `Rolling ${targetRarity.label} card...`;
+  // Phase 2 — card
+  document.getElementById('phaseLabel').textContent = `Rolling ${targetRarity.label} card...`;
   setVignette(false);
 
   const cards = pack.cards[targetRarity.key];
-  const totalCardItems = Math.max(30, cards.length * 5);
+  const totalCardItems = Math.max(30, cards.length*5);
   const cardTargetIndex = totalCardItems - 4;
   const wonCard = rollCard(packKey, targetRarity.key);
 
-  const cardItems = [];
-  for (let i = 0; i < totalCardItems; i++) {
-    if (i === cardTargetIndex) {
-      cardItems.push({ name: wonCard, rarityKey: targetRarity.key });
-    } else {
-      cardItems.push({ name: cards[i % cards.length], rarityKey: targetRarity.key });
-    }
-  }
+  const cardItems = Array.from({length:totalCardItems},(_,i) =>
+    i===cardTargetIndex ? {name:wonCard,rarityKey:targetRarity.key}
+                        : {name:cards[i%cards.length],rarityKey:targetRarity.key}
+  );
 
-  buildReel(cardItems);
-  await animateReel(document.getElementById('reelTrack'), cardTargetIndex, itemWidth, gap, 3200, targetRarity.key);
+  buildReel(cardItems, false);
+  await animateReel(document.getElementById('reelTrack'), cardTargetIndex, IW, GAP, 3200, targetRarity.key);
+  soundLand(targetRarity.key);
 
-  // Final zoom burst
-  reelWrapper.style.transition = 'transform 0.15s ease';
-  reelWrapper.style.transform = 'scale(1.1)';
+  reelWrapper.style.transition='transform 0.15s ease';
+  reelWrapper.style.transform='scale(1.1)';
   setVignette(true, targetRarity.key);
-  await new Promise(r => setTimeout(r, 180));
-  reelWrapper.style.transform = 'scale(1)';
-  await new Promise(r => setTimeout(r, 400));
-
-  reelWrapper.style.display = 'none';
+  await new Promise(r=>setTimeout(r,180));
+  reelWrapper.style.transform='scale(1)';
+  await new Promise(r=>setTimeout(r,400));
+  reelWrapper.style.display='none';
   showResult(wonCard, targetRarity, packKey);
 }
 
 function showResult(cardName, rarity, packKey) {
-  const resultArea = document.getElementById('resultArea');
-  const resultCard = document.getElementById('resultCard');
-  const resultImg = document.getElementById('resultImg');
-  const resultRarityEl = document.getElementById('resultRarity');
-  const resultNameEl = document.getElementById('resultName');
-
-  resultImg.src = BLOB_IMG;
-  resultImg.alt = cardName;
-  resultRarityEl.textContent = rarity.label;
-  resultRarityEl.className = `result-rarity ${rarity.cls}`;
-  resultNameEl.textContent = cardName;
-
-  const glowColor = RARITY_COLORS[rarity.key].glow;
-  resultCard.className = `result-card ${rarity.cls}`;
-  resultCard.style.setProperty('--rarity-glow', glowColor);
-
+  document.getElementById('resultImg').src = img(cardName);
+  document.getElementById('resultImg').alt = cardName;
+  const re = document.getElementById('resultRarity');
+  re.textContent = rarity.label; re.className = `result-rarity ${rarity.cls}`;
+  document.getElementById('resultName').textContent = cardName;
+  const rc = document.getElementById('resultCard');
+  rc.className = `result-card ${rarity.cls}`;
+  rc.style.setProperty('--rarity-glow', RC[rarity.key].glow);
   document.getElementById('phaseLabel').textContent = 'You got:';
   setVignette(true, rarity.key);
-
-  if (!collection[packKey]) collection[packKey] = {};
-  collection[packKey][cardName] = (collection[packKey][cardName] || 0) + 1;
-  saveCollection();
-  renderCollection();
-  updateCount();
-
-  document.getElementById('openAgainBtn').onclick = () => openPack(packKey);
-  resultArea.classList.add('visible');
-
-  // Trigger particles after card animation
-  setTimeout(() => spawnParticles(rarity.key), 300);
+  if (!collection[packKey]) collection[packKey]={};
+  collection[packKey][cardName] = (collection[packKey][cardName]||0)+1;
+  save(); renderCollection(); updateCount();
+  document.getElementById('openAgainBtn').onclick = ()=>openPack(packKey);
+  document.getElementById('resultArea').classList.add('visible');
+  setTimeout(()=>spawnParticles(rarity.key), 300);
 }
 
 function closeModal() {
+  stopTicking(); soundSuspenseStop();
   document.getElementById('modalOverlay').classList.remove('active');
-  document.getElementById('reelWrapper').style.display = 'block';
-  document.getElementById('reelWrapper').style.transform = 'scale(1)';
+  document.getElementById('reelWrapper').style.display='block';
+  document.getElementById('reelWrapper').style.transform='scale(1)';
   document.getElementById('resultArea').classList.remove('visible');
-  document.getElementById('rarityDisplay').textContent = '';
+  document.getElementById('rarityDisplay').textContent='';
   setVignette(false);
-  const canvas = document.getElementById('particleCanvas');
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const cv=document.getElementById('particleCanvas');
+  cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
 }
 
+/* ═══════════════════════════════════
+   COLLECTION + AUTO-SHRINK LABELS
+═══════════════════════════════════ */
 function updateCount() {
-  const allCards = [];
-  for (const packKey of Object.keys(PACKS)) {
-    for (const cards of Object.values(PACKS[packKey].cards)) {
-      allCards.push(...cards);
+  let total=0, collected=0;
+  for (const pk of Object.keys(PACKS))
+    for (const cards of Object.values(PACKS[pk].cards)) {
+      total += cards.length;
+      for (const c of cards) if (collection[pk]?.[c]) collected++;
     }
-  }
-  const total = allCards.length;
-  let collected = 0;
-  for (const packKey of Object.keys(PACKS)) {
-    for (const cards of Object.values(PACKS[packKey].cards)) {
-      for (const c of cards) {
-        if (collection[packKey]?.[c]) collected++;
-      }
-    }
-  }
   document.getElementById('collectionCount').textContent = `${collected} / ${total} collected`;
 }
 
-function renderCollection() {
-  const grid = document.getElementById('collectionGrid');
-  grid.innerHTML = '';
-  const pack = PACKS[currentTab];
-
-  for (const [rarityKey, cards] of Object.entries(pack.cards)) {
-    const r = RARITY_MAP[rarityKey];
-    for (const cardName of cards) {
-      const count = collection[currentTab]?.[cardName] || 0;
-      const locked = count === 0;
-      const div = document.createElement('div');
-      div.className = `coll-card ${r.cls}${locked ? ' locked' : ''}`;
-      div.title = cardName;
-      div.innerHTML = `
-        <img src="${BLOB_IMG}" alt="${cardName}">
-        ${count > 1 ? `<div class="coll-count">x${count}</div>` : ''}
-        <div class="coll-card-label">${cardName}</div>
-      `;
-      grid.appendChild(div);
-    }
+function fitLabel(el) {
+  // Start from max and shrink until text fits in the fixed 28px height
+  let size = 0.55;
+  el.style.fontSize = size + 'rem';
+  while (el.scrollHeight > el.clientHeight + 1 && size > 0.30) {
+    size = Math.round((size - 0.02) * 100) / 100;
+    el.style.fontSize = size + 'rem';
   }
+}
+
+function makeCardEl(cardName, packKey, rarityKey) {
+  const r = RM[rarityKey];
+  const count = collection[packKey]?.[cardName] || 0;
+  const locked = count === 0;
+  const div = document.createElement('div');
+  div.className = `coll-card ${r.cls}${locked?' locked':''}`;
+  div.title = cardName;
+  div.innerHTML = `
+    <img src="${img(cardName)}" alt="${cardName}">
+    ${count>1?`<div class="coll-count">x${count}</div>`:''}
+    <div class="coll-card-label">${cardName}</div>
+  `;
+  return div;
+}
+
+function renderRarityGroup(container, packKey, rarityKey, cards) {
+  const r = RM[rarityKey];
+  const got = cards.filter(c=>collection[packKey]?.[c]).length;
+  const group = document.createElement('div'); group.className='rarity-group';
+  const hdr = document.createElement('div'); hdr.className='rarity-group-header';
+  hdr.innerHTML = `
+    <span class="rarity-group-title ${r.cls}">${r.label}</span>
+    <span class="rarity-group-progress">${got}/${cards.length}</span>
+    <div class="rarity-group-line"></div>
+  `;
+  group.appendChild(hdr);
+  const grid = document.createElement('div'); grid.className='collection-grid';
+  cards.forEach(c=>grid.appendChild(makeCardEl(c, packKey, rarityKey)));
+  group.appendChild(grid);
+  container.appendChild(group);
+}
+
+function renderCollection() {
+  const container = document.getElementById('collectionContainer');
+  container.innerHTML = '';
+
+  if (currentTab === 'all') {
+    for (const [pk, pack] of Object.entries(PACKS)) {
+      const ph = document.createElement('div'); ph.className='pack-section-header';
+      ph.textContent = pack.name; container.appendChild(ph);
+      for (const [rk, cards] of Object.entries(pack.cards))
+        renderRarityGroup(container, pk, rk, cards);
+    }
+  } else {
+    for (const [rk, cards] of Object.entries(PACKS[currentTab].cards))
+      renderRarityGroup(container, currentTab, rk, cards);
+  }
+
+  // Shrink labels after paint
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.coll-card-label').forEach(fitLabel);
+  });
 }
 
 function switchTab(tab, btn) {
   currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderCollection();
 }
