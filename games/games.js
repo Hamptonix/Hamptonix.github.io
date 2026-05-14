@@ -21,7 +21,7 @@ const GAMES = [
     tag: "Loot Boxes",
     desc: "gamble :P",
     icon: "/bassets/redblob.png",
-    url: "https://hamptonix.com/blobcard",
+    url: "https://hamptonix.com/blobcards",
     category: "Loot Boxes"
   },
   {
