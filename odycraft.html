@@ -40,7 +40,7 @@
 
     .shell { display: flex; min-height: 100vh; }
 
-    /* ── SIDEBAR ── */
+    /* SIDEBAR */
     .sidebar {
       width: 240px;
       flex-shrink: 0;
@@ -70,55 +70,33 @@
       object-fit: cover;
     }
 
-    .brand-name {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.01em;
-    }
+    .brand-name { font-size: 1.3rem; font-weight: 800; color: var(--text); letter-spacing: -0.01em; }
     .brand-name span { color: var(--green); }
 
     .brand-tag {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--green);
-      background: var(--green-pale);
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--green); background: var(--green-pale);
       border: 1.5px solid var(--green-mid);
-      padding: 4px 12px;
-      border-radius: 99px;
+      padding: 4px 12px; border-radius: 99px;
     }
 
     .sidebar-nav {
-      flex: 1;
-      padding: 16px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      flex: 1; padding: 16px 12px;
+      display: flex; flex-direction: column; gap: 4px;
     }
 
     .nav-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--text-3);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 0.68rem; font-weight: 700; color: var(--text-3);
+      letter-spacing: 0.1em; text-transform: uppercase;
       padding: 8px 10px 4px;
     }
 
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: var(--text-2);
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: var(--radius-sm);
+      cursor: pointer; font-size: 1.05rem; font-weight: 500;
+      color: var(--text-2); border: none; background: none;
+      width: 100%; text-align: left;
       transition: background 0.12s, color 0.12s;
       font-family: 'Outfit', sans-serif;
     }
@@ -126,439 +104,312 @@
     .nav-item.active { background: var(--green-pale); color: var(--green); font-weight: 700; }
     .nav-icon { font-size: 1.15rem; flex-shrink: 0; }
 
-    .sidebar-footer {
-      padding: 16px 12px;
-      border-top: 1.5px solid var(--border);
-    }
+    .sidebar-footer { padding: 16px 12px; border-top: 1.5px solid var(--border); }
 
     .discord-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      width: 100%;
-      padding: 12px 14px;
-      background: #5865f2;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center;
+      gap: 9px; width: 100%; padding: 12px 14px;
+      background: #5865f2; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
+      border: none; border-radius: var(--radius-sm);
+      cursor: pointer; text-decoration: none;
       transition: background 0.12s;
     }
     .discord-btn:hover { background: #4752c4; }
     .discord-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-    /* ── MOBILE ── */
+    /* MOBILE */
     .hamburger {
-      display: none;
-      position: fixed;
-      top: 14px; left: 14px;
-      z-index: 200;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      width: 44px; height: 44px;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.3rem;
-      color: var(--text);
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); width: 44px; height: 44px;
+      align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.3rem; color: var(--text);
     }
 
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.22);
-      z-index: 99;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.22); z-index: 99;
     }
     .overlay.visible { display: block; }
 
-    /* ── MAIN ── */
+    /* MAIN */
     .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
     .topbar {
-      background: var(--surface);
-      border-bottom: 1.5px solid var(--border);
-      padding: 0 32px;
-      height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      background: var(--surface); border-bottom: 1.5px solid var(--border);
+      padding: 0 32px; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
     }
 
     .topbar-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
 
     .online-pill {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--green);
-      background: var(--green-pale);
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.88rem; font-weight: 600;
+      color: var(--green); background: var(--green-pale);
       border: 1.5px solid var(--green-mid);
-      padding: 5px 14px;
-      border-radius: 99px;
+      padding: 5px 14px; border-radius: 99px;
     }
     .online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-lt); flex-shrink: 0; }
+    .online-pill.offline { color: var(--red); background: var(--red-pale); border-color: #fca5a5; }
+    .online-pill.offline .online-dot { background: var(--red); }
+    .online-pill.checking { color: var(--text-3); background: var(--bg); border-color: var(--border); }
+    .online-pill.checking .online-dot { background: var(--text-3); }
 
-    /* ── PAGES ── */
+    /* PAGES */
     .page { display: none; }
     .page.active { display: block; }
     .page-body { padding: 36px 36px 64px; max-width: 900px; }
 
-    /* ── HOME ── */
+    /* HOME */
     .hero-card {
       background: linear-gradient(135deg, #edf7eb 0%, #e2f2de 100%);
-      border: 1.5px solid var(--green-mid);
-      border-radius: var(--radius);
-      padding: 36px;
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      border: 1.5px solid var(--green-mid); border-radius: var(--radius);
+      padding: 36px; display: flex; align-items: center;
+      gap: 28px; margin-bottom: 28px; flex-wrap: wrap;
     }
-
-    .hero-logo {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-
+    .hero-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
     .hero-text { flex: 1; min-width: 180px; }
-
     .hero-title {
-      font-size: clamp(1.9rem, 4vw, 2.6rem);
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 12px;
+      font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800;
+      color: var(--text); letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 12px;
     }
     .hero-title span { color: var(--green); }
-
     .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge {
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 4px 13px;
-      border-radius: 99px;
-      border: 1.5px solid;
-    }
+    .badge { font-size: 0.82rem; font-weight: 600; padding: 4px 13px; border-radius: 99px; border: 1.5px solid; }
     .badge-green { color: var(--green); background: var(--green-pale); border-color: var(--green-mid); }
-    .badge-blue  { color: var(--blue); background: var(--blue-pale); border-color: #bfdbfe; }
+    .badge-blue  { color: var(--blue);  background: var(--blue-pale);  border-color: #bfdbfe; }
 
-    /* JOIN */
     .join-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 28px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 28px;
     }
-
-    .join-head {
-      background: #f9faf8;
-      border-bottom: 1.5px solid var(--border);
-      padding: 18px 28px;
-    }
+    .join-head { background: #f9faf8; border-bottom: 1.5px solid var(--border); padding: 18px 28px; }
     .join-head h2 { font-size: 1.15rem; font-weight: 700; color: var(--text); }
-
-    .join-body {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    @media (max-width: 900px) {
-      .join-body { grid-template-columns: 1fr; }
-      .join-left { border-right: none; border-bottom: 1.5px solid var(--border); }
-    }
-
-    .join-left {
-      padding: 28px;
-      border-right: 1.5px solid var(--border);
-    }
-
-    .join-left p {
-      font-size: 1.05rem;
-      color: var(--text-2);
-      line-height: 1.75;
-      margin-bottom: 18px;
-    }
+    .join-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .join-left { padding: 28px; border-right: 1.5px solid var(--border); }
+    .join-left p { font-size: 1.05rem; color: var(--text-2); line-height: 1.75; margin-bottom: 18px; }
     .join-left p strong { color: var(--amber); }
-
-    .join-steps {
-      list-style: none;
-      counter-reset: steps;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .join-steps { list-style: none; counter-reset: steps; display: flex; flex-direction: column; gap: 14px; }
     .join-steps li {
-      counter-increment: steps;
-      display: grid;
-      grid-template-columns: 26px 1fr;
-      gap: 13px;
-      font-size: 1rem;
-      color: var(--text-2);
-      line-height: 1.65;
-      align-items: start;
+      counter-increment: steps; display: grid;
+      grid-template-columns: 26px 1fr; gap: 13px;
+      font-size: 1rem; color: var(--text-2); line-height: 1.65; align-items: start;
     }
     .join-steps li::before {
-      content: counter(steps);
-      background: var(--green-pale);
-      color: var(--green);
-      font-weight: 700;
-      font-size: 0.85rem;
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-      border: 1.5px solid var(--green-mid);
+      content: counter(steps); background: var(--green-pale); color: var(--green);
+      font-weight: 700; font-size: 0.85rem; width: 26px; height: 26px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--green-mid);
     }
     .join-steps li strong { color: var(--green); font-weight: 600; }
-
-    .join-right {
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      justify-content: center;
-    }
-
+    .join-right { padding: 28px; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
     .ip-group { display: flex; flex-direction: column; gap: 8px; }
-    .ip-label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-    }
-
+    .ip-label { font-size: 0.82rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; }
     .ip-box {
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 13px 16px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); padding: 13px 16px;
+      font-size: 1.1rem; font-weight: 600; color: var(--text);
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
       transition: border-color 0.12s, background 0.12s;
-      user-select: all;
-      min-width: 0;
-      overflow: hidden;
+      user-select: all; min-width: 0; overflow: hidden;
     }
-    .ip-box .ip-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      min-width: 0;
-    }
+    .ip-box .ip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
     .ip-box:hover { border-color: var(--green-lt); background: var(--green-pale); }
-
     .ip-copy-hint {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-3);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 3px 9px;
-      border-radius: 5px;
-      flex-shrink: 0;
-      white-space: nowrap;
+      font-size: 0.75rem; font-weight: 500; color: var(--text-3);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 3px 9px; border-radius: 5px; flex-shrink: 0; white-space: nowrap;
     }
     .ip-box:hover .ip-copy-hint { border-color: var(--green-mid); color: var(--green); }
-
     .ip-port {
-      font-size: 0.82rem;
-      color: var(--text-3);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 2px 8px;
-      font-weight: 500;
-      margin-left: 6px;
+      font-size: 0.82rem; color: var(--text-3);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 5px; padding: 2px 8px; font-weight: 500; margin-left: 6px;
     }
 
-    /* ABOUT */
-    .about-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-    }
-    .card-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--green);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
-    .about-text {
-      font-size: 1.08rem;
-      color: var(--text-2);
-      line-height: 1.85;
-    }
+    .about-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 28px; }
+    .card-label { font-size: 0.8rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+    .about-text { font-size: 1.08rem; color: var(--text-2); line-height: 1.85; }
     .about-text strong { color: var(--text); font-weight: 600; }
 
-    /* ── RULES PAGE ── */
+    /* RULES */
     .page-header { margin-bottom: 28px; }
-    .page-header h1 {
-      font-size: clamp(1.5rem, 3.5vw, 2rem);
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.01em;
-      margin-bottom: 6px;
-    }
+    .page-header h1 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 800; color: var(--text); letter-spacing: -0.01em; margin-bottom: 6px; }
     .page-header p { font-size: 1rem; color: var(--text-3); }
 
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
+    .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 24px; }
     .rule-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-left: 4px solid var(--green);
-      border-radius: var(--radius-sm);
-      padding: 18px 20px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-left: 4px solid var(--green); border-radius: var(--radius-sm); padding: 18px 20px;
     }
     .rule-card.danger { border-left-color: var(--red); }
     .rule-card.warn   { border-left-color: var(--amber); }
     .rule-card.info   { border-left-color: var(--blue); }
-
-    .rule-num {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-3);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
+    .rule-num { font-size: 0.72rem; font-weight: 700; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
     .rule-card.danger .rule-num { color: var(--red); }
     .rule-card.warn .rule-num   { color: var(--amber); }
     .rule-card.info .rule-num   { color: var(--blue); }
-
     .rule-text { font-size: 1rem; color: var(--text-2); line-height: 1.7; }
     .rule-text strong { color: var(--text); font-weight: 600; }
-    .rule-text .no    { color: var(--red); font-weight: 600; }
-    .rule-text .yes   { color: var(--green); font-weight: 600; }
+    .rule-text .no  { color: var(--red);   font-weight: 600; }
+    .rule-text .yes { color: var(--green); font-weight: 600; }
 
     .punish-box {
-      background: #fffaf4;
-      border: 1.5px solid #fcd9a0;
-      border-left: 4px solid var(--amber);
-      border-radius: var(--radius-sm);
-      padding: 22px 24px;
+      background: #fffaf4; border: 1.5px solid #fcd9a0;
+      border-left: 4px solid var(--amber); border-radius: var(--radius-sm); padding: 22px 24px;
     }
-    .punish-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--amber);
-      margin-bottom: 14px;
-    }
+    .punish-title { font-size: 1rem; font-weight: 700; color: var(--amber); margin-bottom: 14px; }
     .punish-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .punish-list li {
-      font-size: 1rem;
-      color: var(--text-2);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      line-height: 1.65;
-    }
+    .punish-list li { font-size: 1rem; color: var(--text-2); display: flex; align-items: flex-start; gap: 10px; line-height: 1.65; }
     .punish-list li::before {
-      content: '!';
-      background: var(--amber-pale);
-      color: var(--amber);
-      font-weight: 800;
-      font-size: 0.75rem;
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-      border: 1.5px solid #fbbf24;
+      content: '!'; background: var(--amber-pale); color: var(--amber);
+      font-weight: 800; font-size: 0.75rem; width: 22px; height: 22px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px; border: 1.5px solid #fbbf24;
     }
     .punish-list li strong { color: var(--text); }
 
-    .online-pill.offline {
-      color: var(--red);
-      background: var(--red-pale);
-      border-color: #fca5a5;
+    /* LINKING */
+    .link-section {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-left: 4px solid var(--blue); border-radius: var(--radius-sm);
+      overflow: hidden; margin-bottom: 20px;
     }
-    .online-pill.offline .online-dot { background: var(--red); }
-    .online-pill.checking {
-      color: var(--text-3);
-      background: var(--bg);
-      border-color: var(--border);
+    .link-section-head {
+      background: var(--blue-pale); border-bottom: 1.5px solid #bfdbfe; padding: 16px 24px;
     }
-    .online-pill.checking .online-dot { background: var(--text-3); }
+    .link-section-head h2 { font-size: 1.1rem; font-weight: 700; color: var(--blue); }
+    .link-section-body { padding: 24px; }
+    .link-section-body > p { font-size: 1rem; color: var(--text-2); line-height: 1.75; margin-bottom: 18px; }
+
+    .link-steps { display: flex; flex-direction: column; gap: 14px; }
+    .link-step {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 1rem; color: var(--text-2); line-height: 1.65;
+    }
+    .link-step-num {
+      background: var(--blue-pale); color: var(--blue);
+      font-weight: 700; font-size: 0.85rem;
+      min-width: 28px; height: 28px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; border: 1.5px solid #bfdbfe; margin-top: 1px;
+    }
+    .link-step strong { color: var(--text); font-weight: 600; }
+
+    .mention-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #5865f220; color: #5865f2;
+      font-weight: 700; padding: 1px 8px; border-radius: 5px; font-size: 0.95em;
+    }
+
+    .success-step {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--green-pale); border: 1.5px solid var(--green-mid);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      font-size: 1rem; font-weight: 600; color: var(--green);
+      grid-column: 1 / -1;
+    }
+    .success-step::before { content: '✓'; font-size: 1.1rem; }
+
+    .access-section {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-left: 4px solid var(--amber); border-radius: var(--radius-sm);
+      overflow: hidden; margin-bottom: 20px;
+    }
+    .access-section-head {
+      background: var(--amber-pale); border-bottom: 1.5px solid #fcd9a0; padding: 16px 24px;
+    }
+    .access-section-head h2 { font-size: 1.1rem; font-weight: 700; color: var(--amber); }
+    .access-section-body { padding: 24px; }
+    .access-section-body > p { font-size: 1rem; color: var(--text-2); line-height: 1.75; margin-bottom: 18px; }
+
+    .admin-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fef3c7; color: #92400e;
+      font-weight: 700; padding: 2px 10px; border-radius: 5px;
+      font-size: 0.95em; border: 1px solid #fcd34d;
+    }
+
+    .access-bullets { display: flex; flex-direction: column; gap: 12px; }
+    .access-bullet { display: flex; align-items: flex-start; gap: 12px; font-size: 1rem; color: var(--text-2); line-height: 1.65; }
+    .access-bullet-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+    .access-bullet strong { color: var(--text); font-weight: 600; }
+
+    /* SOCIALS */
+    .socials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+
+    .social-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 30px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .social-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,0.09); }
+    .social-card.discord   { border-top: 4px solid #5865f2; }
+    .social-card.instagram { border-top: 4px solid #e1306c; }
+    .social-card.youtube   { border-top: 4px solid #ff0000; }
+
+    .social-icon-wrap {
+      width: 62px; height: 62px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .social-icon-wrap.discord   { background: #eef0fd; }
+    .social-icon-wrap.instagram { background: #fce7ef; }
+    .social-icon-wrap.youtube   { background: #ffe5e5; }
+    .social-icon-wrap svg { width: 30px; height: 30px; }
+
+    .social-name   { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .social-handle { font-size: 0.9rem; color: var(--text-3); font-weight: 500; }
+
+    .social-btn {
+      margin-top: 6px; padding: 9px 24px; border-radius: 99px;
+      font-family: 'Outfit', sans-serif; font-size: 0.92rem; font-weight: 600;
+      border: none; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: opacity 0.12s;
+    }
+    .social-btn:hover { opacity: 0.85; }
+    .social-btn.discord   { background: #5865f2; color: #fff; }
+    .social-btn.instagram { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
+    .social-btn.youtube   { background: #ff0000; color: #fff; }
+
+    /* TOAST */
     .toast {
-      position: fixed;
-      bottom: 28px; left: 50%;
+      position: fixed; bottom: 28px; left: 50%;
       transform: translateX(-50%) translateY(10px);
-      background: #1a1a1a;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 500;
-      padding: 10px 22px;
-      border-radius: var(--radius-sm);
-      opacity: 0;
-      pointer-events: none;
+      background: #1a1a1a; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 500;
+      padding: 10px 22px; border-radius: var(--radius-sm);
+      opacity: 0; pointer-events: none;
       transition: opacity 0.18s, transform 0.18s;
-      z-index: 9999;
-      white-space: nowrap;
+      z-index: 9999; white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── RESPONSIVE ── */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
       .sidebar {
-        position: fixed;
-        left: -260px; top: 0;
-        height: 100vh;
-        z-index: 100;
-        transition: left 0.22s ease;
-        box-shadow: 4px 0 24px rgba(0,0,0,0.10);
+        position: fixed; left: -260px; top: 0; height: 100vh; z-index: 100;
+        transition: left 0.22s ease; box-shadow: 4px 0 24px rgba(0,0,0,0.10);
       }
       .sidebar.open { left: 0; }
       .hamburger { display: flex; }
       .topbar { padding: 0 16px 0 68px; }
       .page-body { padding: 24px 18px 52px; }
-
       .hero-card { padding: 22px 20px; gap: 18px; }
       .hero-logo { width: 72px; height: 72px; }
-
-      .join-left { padding: 22px 20px; }
+      .join-body { grid-template-columns: 1fr; }
+      .join-left { border-right: none; border-bottom: 1.5px solid var(--border); padding: 22px 20px; }
       .join-right { padding: 22px 20px; }
       .join-head { padding: 14px 20px; }
       .about-card { padding: 20px; }
       .rules-grid { grid-template-columns: 1fr; }
+      .socials-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
@@ -591,6 +442,12 @@
       <button class="nav-item" onclick="goPage('rules', this)">
         <span class="nav-icon">📜</span> Rules
       </button>
+      <button class="nav-item" onclick="goPage('linking', this)">
+        <span class="nav-icon">🔗</span> Linking
+      </button>
+      <button class="nav-item" onclick="goPage('socials', this)">
+        <span class="nav-icon">🌐</span> Socials
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -606,7 +463,10 @@
 
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Home</div>
-      <div class="online-pill" id="status-pill"><div class="online-dot" id="status-dot"></div> <span id="status-text">Checking...</span></div>
+      <div class="online-pill checking" id="status-pill">
+        <div class="online-dot"></div>
+        <span id="status-text">Checking...</span>
+      </div>
     </div>
 
     <!-- HOME -->
@@ -619,7 +479,7 @@
             <div class="hero-title"><span>Ody</span>Craft SMP</div>
             <div class="hero-badges">
               <span class="badge badge-green">School SMP</span>
-              <span class="badge badge-blue">Java 1.21.11+</span>
+              <span class="badge badge-blue">Java 1.21.1+</span>
               <span class="badge badge-blue">Bedrock</span>
             </div>
           </div>
@@ -674,47 +534,38 @@
         </div>
 
         <div class="rules-grid">
-
           <div class="rule-card">
             <div class="rule-num">Rule 01 — Core</div>
             <div class="rule-text">This server is an <span class="yes">SMP</span>, meaning that you are allowed to build, destroy, and interact with the world as you please.</div>
           </div>
-
           <div class="rule-card danger">
             <div class="rule-num">Rule 02 — No Cheats</div>
             <div class="rule-text"><span class="no">No freecam, wall viewing, or xraying.</span></div>
           </div>
-
           <div class="rule-card">
             <div class="rule-num">Rule 03 — Destruction</div>
             <div class="rule-text">Griefing, stealing, rioting, is <span class="yes">allowed</span> but not encouraged.</div>
           </div>
-
           <div class="rule-card danger">
             <div class="rule-num">Rule 04 — Server Health</div>
             <div class="rule-text">No <span class="no">lag machines or attacks</span> that hurt the server.</div>
           </div>
-
           <div class="rule-card info">
             <div class="rule-num">Rule 05 — Family Members</div>
             <div class="rule-text">Family members are allowed, but <strong>if the school attendee gets banned, they also get banned.</strong></div>
           </div>
-
           <div class="rule-card info">
             <div class="rule-num">Rule 06 — Registration</div>
             <div class="rule-text">Family members not attending Odyssey must state their <strong>real name, relationship, and age</strong> in the Discord Server or will face a <span class="no">permanent ban</span>.</div>
           </div>
-
           <div class="rule-card danger">
             <div class="rule-num">Rule 07 — No Alts</div>
             <div class="rule-text">No <span class="no">alternate accounts</span> allowed.</div>
           </div>
-
           <div class="rule-card danger">
             <div class="rule-num">Rule 08 — NSFW</div>
             <div class="rule-text">Any <span class="no">NSFW content</span> in any channel results in a <span class="no">lifetime ban</span> from all OdyCraft related services.</div>
           </div>
-
         </div>
 
         <div class="punish-box">
@@ -729,18 +580,111 @@
       </div>
     </div>
 
+    <!-- LINKING -->
+    <div class="page" id="page-linking">
+      <div class="page-body">
+
+        <div class="page-header">
+          <h1>🔗 Account Linking</h1>
+          <p>Link your Discord to your Minecraft account to gain full access to OdyCraft.</p>
+        </div>
+
+        <!-- How to link -->
+        <div class="link-section">
+          <div class="link-section-head">
+            <h2>How to Link Your Accounts</h2>
+          </div>
+          <div class="link-section-body">
+            <p>To link your Discord Account to your Minecraft Account, you must:</p>
+            <div class="link-steps">
+              <div class="link-step"><span class="link-step-num">1</span><span>Join the Minecraft Server at <strong>play.hamptonix.com</strong></span></div>
+              <div class="link-step"><span class="link-step-num">2</span><span>Get the code — a unique code will appear in chat when you join</span></div>
+              <div class="link-step"><span class="link-step-num">3</span><span>Message the code to <span class="mention-tag">@OdyCraft</span> in Discord private messages</span></div>
+              <div class="success-step">You're Successfully Linked!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- To gain access -->
+        <div class="access-section">
+          <div class="access-section-head">
+            <h2>To Gain Access</h2>
+          </div>
+          <div class="access-section-body">
+            <p>To play OdyCraft, you must link your <strong>Discord Account</strong> to <strong>Minecraft</strong> and be verified by <span class="admin-tag">👑 Eli (hamptonix)</span></p>
+            <div class="access-bullets">
+              <div class="access-bullet">
+                <span class="access-bullet-icon">➥</span>
+                <span>Send your <strong>Real Name</strong> and confirm whether you attend <strong>Odyssey Highschool</strong> in the Discord server.</span>
+              </div>
+              <div class="access-bullet">
+                <span class="access-bullet-icon">➥</span>
+                <span>If you do <strong>not</strong> attend Odyssey Highschool, you must be a <strong>family member</strong> of an Odyssey attendee — tell us the attendee you are related to.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SOCIALS -->
+    <div class="page" id="page-socials">
+      <div class="page-body">
+
+        <div class="page-header">
+          <h1>🌐 Our Socials</h1>
+          <p>Follow OdyCraft across all platforms to stay in the loop.</p>
+        </div>
+
+        <div class="socials-grid">
+
+          <div class="social-card discord">
+            <div class="social-icon-wrap discord">
+              <svg viewBox="0 0 24 24" fill="#5865f2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.19.373-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            </div>
+            <div class="social-name">Discord</div>
+            <div class="social-handle">OdyCraft Community</div>
+            <a class="social-btn discord" href="https://discord.gg/sqYKPByba4" target="_blank" rel="noopener">Join Server</a>
+          </div>
+
+          <div class="social-card instagram">
+            <div class="social-icon-wrap instagram">
+              <svg viewBox="0 0 24 24" fill="#e1306c"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </div>
+            <div class="social-name">Instagram</div>
+            <div class="social-handle">@odycraftsmp</div>
+            <a class="social-btn instagram" href="https://instagram.com/odycraftsmp" target="_blank" rel="noopener">Follow</a>
+          </div>
+
+          <div class="social-card youtube">
+            <div class="social-icon-wrap youtube">
+              <svg viewBox="0 0 24 24" fill="#ff0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <div class="social-name">YouTube</div>
+            <div class="social-handle">@odycraftmc</div>
+            <a class="social-btn youtube" href="https://youtube.com/@odycraftmc" target="_blank" rel="noopener">Subscribe</a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+  const PAGE_TITLES = { home: 'Home', rules: 'Rules', linking: 'Linking', socials: 'Socials' };
+
   function goPage(id, el) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
     el.classList.add('active');
-    document.getElementById('topbar-title').textContent = { home: 'Home', rules: 'Rules' }[id] || id;
+    document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
     closeSidebar();
     window.scrollTo(0, 0);
   }
@@ -767,14 +711,9 @@
     document.getElementById('overlay').classList.remove('visible');
   }
 
-  // Server status check
   (function checkStatus() {
     const pill = document.getElementById('status-pill');
-    const dot  = document.getElementById('status-dot');
     const text = document.getElementById('status-text');
-
-    pill.classList.add('checking');
-
     fetch('https://api.mcsrvstat.us/3/play.hamptonix.com')
       .then(r => r.json())
       .then(data => {
