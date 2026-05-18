@@ -5,488 +5,417 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hamptonix | Home</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-(2).png" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #0a0a0a;
-      --white: #f0f0f0;
-      --gray: #141414;
-      --border: #242424;
-      --accent: #7ecfea;
-      --accent-dim: #4aafcc;
-      --accent-glow: rgba(126, 207, 234, 0.15);
+      --accent:      #3d8b37;
+      --accent-lt:   #52b84a;
+      --accent-pale: #eaf4e8;
+      --accent-mid:  #b8ddb4;
+      --blue:        #1d6fb8;
+      --blue-pale:   #dbeafe;
+      --text:        #1a1a1a;
+      --text-2:      #4b4b4b;
+      --text-3:      #6b7280;
+      --border:      #e2e8e0;
+      --surface:     #ffffff;
+      --bg:          #f5f7f4;
+      --radius:      14px;
+      --radius-sm:   9px;
     }
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      background: var(--black);
-      color: var(--white);
-      font-family: 'Space Mono', monospace;
-    }
-
+    html { scroll-behavior: smooth; }
     body {
-      overflow-x: hidden;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1.5px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh;
       overflow-y: auto;
     }
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(126,207,234,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(126,207,234,0.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-      pointer-events: none;
-      z-index: 0;
+    .sidebar-brand {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+      padding: 32px 20px 24px;
+      border-bottom: 1.5px solid var(--border);
     }
 
-    .scene {
-      position: relative; z-index: 1;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 16px 60px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-      animation: fadeDown 0.55s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    .header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2rem, 8vw, 3.4rem);
-      letter-spacing: 0.22em;
-      color: var(--white);
-      text-shadow: 0 0 40px rgba(126,207,234,0.2);
-    }
-    .header-line {
-      width: 50px; height: 1.5px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      margin: 7px auto 0;
-    }
-
-    /* Outer flex row: profile | card-stack | odycraft */
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      align-items: flex-start;
-      justify-content: center;
-      animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.08s both;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .card {
-      background: var(--gray);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(126,207,234,0.06),
-        0 12px 40px rgba(0,0,0,0.7);
-      transition: box-shadow 0.3s, transform 0.3s;
-    }
-    .card:hover {
-      box-shadow:
-        0 0 0 1px rgba(126,207,234,0.2),
-        0 12px 50px rgba(0,0,0,0.75),
-        0 0 24px var(--accent-glow);
-      transform: translateY(-2px);
-    }
-
-    /* Profile card fills left column */
-    .card-profile {
-      flex: 1 1 190px;
-      max-width: 265px;
-      width: clamp(190px, 100%, 265px);
-    }
-
-    /* Middle column wrapper — Games stacked above Directory */
-    .card-stack {
-      flex: 1 1 190px;
-      max-width: 265px;
-      width: clamp(190px, 100%, 265px);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* OdyCraft card — right column, 1.5x taller than the Games card */
-    .card-odycraft {
-      flex: 1 1 190px;
-      max-width: 265px;
-      width: clamp(190px, 100%, 265px);
-      /* Stretch to match siblings naturally; min-height creates the 1.5x feel */
-      min-height: calc(1.5 * 180px); /* approx 1.5× the games card height */
-    }
-
-    @media (max-width: 600px) {
-      .cards {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .card-profile,
-      .card-stack,
-      .card-odycraft {
-        width: 100%;
-        max-width: 100%;
-        flex: none;
-        min-height: unset;
-      }
-    }
-
-    .card-top {
-      padding: 16px 14px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 9px;
-    }
-    .card-label {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.25em;
-      color: var(--accent);
-      align-self: flex-start;
-      opacity: 0.8;
-    }
-    .avatar {
-      width: 68px; height: 68px;
-      border-radius: 6px;
-      border: 1.5px solid var(--accent);
+    .brand-logo {
+      width: 80px; height: 80px;
+      border-radius: 8px;
       object-fit: cover;
-      box-shadow: 0 0 20px rgba(126,207,234,0.25);
     }
-    .avatar-lg {
-      width: 102px; height: 102px;
-      border-radius: 6px;
-      border: 1.5px solid var(--accent);
-      object-fit: cover;
-      box-shadow: 0 0 28px rgba(126,207,234,0.3);
+
+    .brand-name { font-size: 1.3rem; font-weight: 800; color: var(--text); letter-spacing: -0.01em; }
+    .brand-name span { color: var(--accent); }
+
+    .brand-tag {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--accent); background: var(--accent-pale);
+      border: 1.5px solid var(--accent-mid);
+      padding: 4px 12px; border-radius: 99px;
     }
-    .avatar-placeholder {
-      width: 68px; height: 68px;
-      border-radius: 6px;
-      border: 1.5px solid var(--border);
-      background: rgba(255,255,255,0.03);
+
+    .sidebar-nav {
+      flex: 1; padding: 16px 12px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    .nav-label {
+      font-size: 0.68rem; font-weight: 700; color: var(--text-3);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 8px 10px 4px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 11px;
+      padding: 11px 14px; border-radius: var(--radius-sm);
+      cursor: pointer; font-size: 1rem; font-weight: 500;
+      color: var(--text-2); border: none; background: none;
+      width: 100%; text-align: left;
+      transition: background 0.12s, color 0.12s;
+      font-family: 'Outfit', sans-serif;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: var(--accent-pale); color: var(--accent); }
+    .nav-item.active { background: var(--accent-pale); color: var(--accent); font-weight: 700; }
+
+    .nav-icon {
+      width: 22px; height: 22px;
+      object-fit: contain; flex-shrink: 0;
+      border-radius: 4px;
+      filter: grayscale(1) brightness(0.55);
+      transition: filter 0.12s;
+    }
+    .nav-item:hover .nav-icon,
+    .nav-item.active .nav-icon { filter: none; }
+    .nav-icon-round { border-radius: 4px; }
+
+    .sidebar-footer { padding: 16px 12px; border-top: 1.5px solid var(--border); }
+
+    .discord-btn {
       display: flex; align-items: center; justify-content: center;
+      gap: 9px; width: 100%; padding: 12px 14px;
+      background: #5865f2; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
+      border: none; border-radius: var(--radius-sm);
+      cursor: pointer; text-decoration: none;
+      transition: background 0.12s;
     }
-    .name-tag {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.35rem;
-      letter-spacing: 0.16em;
-      color: var(--white);
+    .discord-btn:hover { background: #4752c4; }
+    .discord-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* ── MOBILE ── */
+    .hamburger {
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); width: 44px; height: 44px;
+      align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.3rem; color: var(--text);
     }
-    .name-tag-lg {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.7rem;
-      letter-spacing: 0.18em;
-      color: var(--white);
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.22); z-index: 99;
+    }
+    .overlay.visible { display: block; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .topbar {
+      background: var(--surface); border-bottom: 1.5px solid var(--border);
+      padding: 0 32px; height: 62px;
+      display: flex; align-items: center;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-body { padding: 36px 36px 64px; max-width: 900px; }
+
+    /* ── HERO ── */
+    .hero-card {
+      background: linear-gradient(135deg, #edf7eb 0%, #e2f2de 100%);
+      border: 1.5px solid var(--accent-mid); border-radius: var(--radius);
+      padding: 36px; display: flex; align-items: center;
+      gap: 28px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .hero-logo {
+      width: 96px; height: 96px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .hero-text { flex: 1; min-width: 180px; }
+    .hero-title {
+      font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800;
+      color: var(--text); letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 12px;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { font-size: 0.82rem; font-weight: 600; padding: 4px 13px; border-radius: 99px; border: 1.5px solid; }
+    .badge-green { color: var(--accent); background: var(--accent-pale); border-color: var(--accent-mid); }
+    .badge-blue  { color: var(--blue);   background: var(--blue-pale);   border-color: #bfdbfe; }
+
+    /* ── SOCIALS CARD ── */
+    .socials-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .socials-head {
+      background: #f9faf8; border-bottom: 1.5px solid var(--border);
+      padding: 16px 24px;
+    }
+    .socials-head h2 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    .social-row {
+      display: flex; align-items: center; gap: 13px;
+      padding: 13px 24px;
+      border-bottom: 1.5px solid var(--border);
+      text-decoration: none; color: var(--text-2);
+      font-size: 1rem; font-weight: 500;
+      transition: background 0.12s, color 0.12s;
+    }
+    .social-row:last-child { border-bottom: none; }
+    .social-row:hover { background: var(--accent-pale); color: var(--accent); }
+    .social-row img {
+      width: 22px; height: 22px;
+      object-fit: contain; flex-shrink: 0; border-radius: 4px;
     }
 
-    .btn-list {
-      display: flex;
-      flex-direction: column;
+    /* ── SUB-PAGES ── */
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 {
+      font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 800;
+      color: var(--text); letter-spacing: -0.01em; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 12px;
     }
+    .page-header h1 img {
+      width: 36px; height: 36px; object-fit: contain;
+      border-radius: 6px; border: 1.5px solid var(--border);
+    }
+    .page-header p { font-size: 1rem; color: var(--text-3); }
 
-    .social-btn {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 14px;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      color: rgba(240,240,240,0.75);
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s, padding-left 0.2s;
-      text-transform: uppercase;
-      min-height: 40px;
+    .sub-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
     }
-    .social-btn:last-child { border-bottom: none; }
-    .social-btn:hover {
-      background: rgba(126,207,234,0.07);
-      color: var(--accent);
-      padding-left: 20px;
+    .sub-card-head {
+      background: #f9faf8; border-bottom: 1.5px solid var(--border);
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
     }
-    .social-btn img {
-      width: 14px; height: 14px;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-      opacity: 0.55;
-      flex-shrink: 0;
-      transition: opacity 0.15s, filter 0.15s;
-    }
-    .social-btn:hover img {
-      filter: brightness(0) saturate(100%) invert(78%) sepia(50%) saturate(400%) hue-rotate(160deg);
-      opacity: 1;
-    }
-    .social-arrow {
-      margin-left: auto;
-      color: var(--accent);
-      opacity: 0;
-      font-size: 0.65rem;
-      transition: opacity 0.15s;
-    }
-    .social-btn:hover .social-arrow { opacity: 1; }
+    .sub-card-head h2 { font-size: 1rem; font-weight: 700; color: var(--text); }
 
-    .old-btn-wrap {
-      padding: 16px 14px;
+    .open-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px;
+      background: var(--accent-pale); color: var(--accent);
+      border: 1.5px solid var(--accent-mid); border-radius: 99px;
+      font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      white-space: nowrap;
     }
-    .old-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 14px;
-      background: transparent;
-      border: 1px solid var(--accent);
-      border-radius: 2px;
-      color: var(--accent);
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-decoration: none;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      width: 100%;
-      min-height: 40px;
-    }
-    .old-btn:hover {
-      background: var(--accent);
-      color: var(--black);
-      box-shadow: 0 0 20px rgba(126,207,234,0.35);
-    }
+    .open-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .open-btn svg { width: 14px; height: 14px; }
 
-    /* OdyCraft description text */
-    .card-desc {
-      padding: 0 14px 14px;
-      font-size: 0.64rem;
-      line-height: 1.6;
-      letter-spacing: 0.06em;
-      color: rgba(240,240,240,0.45);
-      text-align: center;
-      text-transform: uppercase;
+    .sub-placeholder {
+      padding: 56px 32px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 18px; text-align: center;
     }
-
-    /* Spacer to push button toward bottom in OdyCraft card */
-    .card-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+    .sub-placeholder img {
+      width: 80px; height: 80px;
+      object-fit: contain; border-radius: 12px;
+      border: 1.5px solid var(--border);
     }
+    .sub-placeholder p { font-size: 1rem; color: var(--text-3); max-width: 320px; line-height: 1.7; }
 
-    .footer {
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%;
-      text-align: center;
-      padding: 10px 16px;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      color: rgba(240,240,240,0.28);
-      z-index: 10;
-      pointer-events: none;
+    /* OdyCraft extra */
+    .about-box {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 26px; margin-bottom: 20px;
     }
-
-    .corner { position: fixed; width: 26px; height: 26px; }
-    .corner.tl { top:14px; left:14px; border-top:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
-    .corner.tr { top:14px; right:14px; border-top:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
-    .corner.bl { bottom:14px; left:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-left:1px solid rgba(126,207,234,0.4); }
-    .corner.br { bottom:14px; right:14px; border-bottom:1px solid rgba(126,207,234,0.4); border-right:1px solid rgba(126,207,234,0.4); }
-
-    @media (max-width: 360px) { .corner { display: none; } }
-
-    @keyframes fadeDown {
-      from { opacity:0; transform: translateY(-14px); }
-      to   { opacity:1; transform: translateY(0); }
+    .section-label {
+      font-size: 0.78rem; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
     }
-    @keyframes fadeUp {
-      from { opacity:0; transform: translateY(14px); }
-      to   { opacity:1; transform: translateY(0); }
+    .about-text { font-size: 1.05rem; color: var(--text-2); line-height: 1.85; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: #1a1a1a; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 500;
+      padding: 10px 22px; border-radius: var(--radius-sm);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.18s, transform 0.18s;
+      z-index: 9999; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed; left: -260px; top: 0; height: 100vh; z-index: 100;
+        transition: left 0.22s ease; box-shadow: 4px 0 24px rgba(0,0,0,0.10);
+      }
+      .sidebar.open { left: 0; }
+      .hamburger { display: flex; }
+      .topbar { padding: 0 16px 0 68px; }
+      .page-body { padding: 24px 18px 52px; }
+      .hero-card { padding: 22px 20px; }
+      .hero-logo { width: 72px; height: 72px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="corner tl"></div>
-  <div class="corner tr"></div>
-  <div class="corner bl"></div>
-  <div class="corner br"></div>
+<button class="hamburger" id="hamburger" aria-label="Open menu" onclick="toggleSidebar()">☰</button>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-  <div class="scene">
+<div class="shell">
 
-    <div class="header">
-      <h1>hamptonix</h1>
-      <div class="header-line"></div>
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="/assets/iconhamp.png" alt="hamptonix" class="brand-logo" />
+      <div class="brand-name">Hampton<span>ix</span></div>
     </div>
 
-    <div class="cards">
+    <nav class="sidebar-nav">
+      <div class="nav-label">Menu</div>
 
-      <!-- ── Profile Card (left column) ── -->
-      <div class="card card-profile">
-        <div class="card-top">
-          <span class="card-label">Profile</span>
-          <img
-            class="avatar"
-            src="/assets/iconhamp.png"
-            alt="hamptonix"
-          />
-          <span class="name-tag">hamptonix</span>
+      <button class="nav-item active" onclick="goPage('home', this)">
+        <img src="/assets/iconhamp.png" alt="" class="nav-icon" />
+        Profile
+      </button>
+
+      <a class="nav-item" href="https://hamptonix.com/games" target="_blank" rel="noopener">
+        <img src="/assets/icongame.png" alt="" class="nav-icon" />
+        Games
+      </a>
+
+      <a class="nav-item" href="https://hamptonix.com/directory" target="_blank" rel="noopener">
+        <img src="/assets/icondire.png" alt="" class="nav-icon" />
+        Directory
+      </a>
+
+      <a class="nav-item" href="https://hamptonix.com/odycraft" target="_blank" rel="noopener">
+        <img src="/assets/odycraftnew.png" alt="" class="nav-icon" />
+        OdyCraft
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Profile</div>
+    </div>
+
+    <!-- ── HOME / PROFILE ── -->
+    <div class="page active" id="page-home">
+      <div class="page-body">
+
+        <div class="hero-card">
+          <img src="/assets/iconhamp.png" alt="hamptonix" class="hero-logo" />
+          <div class="hero-text">
+            <div class="hero-title">Hampton<span>ix</span></div>
+            <div class="hero-badges">
+              <span class="badge badge-blue">Developer</span>
+            </div>
+          </div>
         </div>
 
-        <div class="btn-list">
-          <a class="social-btn" href="https://youtube.com/@hamptonix" target="_blank">
-            <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="" />
+        <div class="socials-card">
+          <div class="socials-head"><h2>Socials</h2></div>
+
+          <a class="social-row" href="https://youtube.com/@hamptonix" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/youtube/ff0000" alt="YouTube" />
             YouTube
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://instagram.com/eliahamp" target="_blank">
-            <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="" />
+          <a class="social-row" href="https://instagram.com/eliahamp" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/instagram/e1306c" alt="Instagram" />
             Instagram
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://discord.gg/862493254272286730" target="_blank">
-            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="" />
+          <a class="social-row" href="https://discord.gg/862493254272286730" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/discord/5865f2" alt="Discord" />
             Discord
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://kloak.app/invite/GHX8Z3ZV" target="_blank">
-            <img src="https://r2.guns.lol/d5ebd606-b3b4-4789-bdb5-4b2c59a0e012.webp" alt="" />
-            Kloak
-            <span class="social-arrow">→</span>
-          </a>
-          <a class="social-btn" href="https://github.com/hamptonix" target="_blank">
-            <img src="https://cdn.simpleicons.org/github/ffffff" alt="" />
+          <a class="social-row" href="https://github.com/hamptonix" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/github/1a1a1a" alt="GitHub" />
             GitHub
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://steamcommunity.com/profiles/76561199373335121/" target="_blank">
-            <img src="https://cdn.simpleicons.org/steam/ffffff" alt="" />
+          <a class="social-row" href="https://steamcommunity.com/profiles/76561199373335121/" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/steam/1b2838" alt="Steam" />
             Steam
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://roblox.com/users/1806308043/profile" target="_blank">
-            <img src="https://cdn.simpleicons.org/roblox/ffffff" alt="" />
+          <a class="social-row" href="https://roblox.com/users/1806308043/profile" target="_blank" rel="noopener">
+            <img src="https://cdn.simpleicons.org/roblox/e2231a" alt="Roblox" />
             Roblox
-            <span class="social-arrow">→</span>
           </a>
-          <a class="social-btn" href="https://www.rolimons.com/player/1806308043" target="_blank">
-            <img src="/assets/rolimons.png" alt="" />
-            Rolimons
-            <span class="social-arrow">→</span>
-          </a>
-          <a class="social-btn" href="https://namemc.com/profile/hamptonix" target="_blank">
-            <img src="/assets/namemctrans.png" alt="" />
+          <a class="social-row" href="https://namemc.com/profile/hamptonix" target="_blank" rel="noopener">
+            <img src="/assets/namemctrans.png" alt="Minecraft" />
             Minecraft
-            <span class="social-arrow">→</span>
           </a>
         </div>
-      </div>
-
-      <!-- ── Middle column: Games on top, Directory below ── -->
-      <div class="card-stack">
-
-        <!-- Games Card -->
-        <div class="card">
-          <div class="card-top">
-            <span class="card-label">Games</span>
-            <div class="avatar-placeholder">
-              <img
-                class="avatar"
-                src="assets/icongame.png"
-                alt="games"
-              />
-            </div>
-            <span class="name-tag">Games Page</span>
-          </div>
-          <div class="old-btn-wrap">
-            <a class="old-btn" href="https://hamptonix.com/games" target="_blank">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              Visit Games Page
-            </a>
-          </div>
-        </div>
-
-        <!-- Directory Card -->
-        <div class="card">
-          <div class="card-top">
-            <span class="card-label">Directory</span>
-            <div class="avatar-placeholder">
-              <img
-                class="avatar"
-                src="/assets/icondire.png"
-                alt="directory"
-              />
-            </div>
-            <span class="name-tag">Directory</span>
-          </div>
-          <div class="old-btn-wrap">
-            <a class="old-btn" href="https://hamptonix.com/directory" target="_blank">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              Visit Directory
-            </a>
-          </div>
-        </div>
 
       </div>
-
-      <!-- ── OdyCraft Card (right column) ── -->
-      <div class="card card-odycraft">
-        <div class="card-top">
-          <span class="card-label">OdyCraft</span>
-          <img
-            class="avatar-lg"
-            src="/assets/odycraftnew.png"
-            alt="OdyCraft"
-          />
-          <span class="name-tag-lg">OdyCraft</span>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">The Official Odyssey Anarchy Server</p>
-          <div class="old-btn-wrap">
-            <a class="old-btn" href="https://hamptonix.com/odycraft" target="_blank">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              Visit OdyCraft
-            </a>
-          </div>
-        </div>
-      </div>
-
     </div>
+
   </div>
+</div>
 
-  <div class="footer">Ⓒ 2026 Hamptonix | support@hamptonix.com</div>
+<div class="toast" id="toast"></div>
 
+<script>
+  const PAGE_TITLES = {
+    home: 'Profile',
+    games: 'Games',
+    directory: 'Directory',
+    odycraft: 'OdyCraft'
+  };
+
+  function goPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    el.classList.add('active');
+    document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
+    closeSidebar();
+    window.scrollTo(0, 0);
+  }
+
+  function toggleSidebar() {
+    const s = document.getElementById('sidebar');
+    const o = document.getElementById('overlay');
+    const open = s.classList.toggle('open');
+    open ? o.classList.add('visible') : o.classList.remove('visible');
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('visible');
+  }
+</script>
 </body>
 </html>
