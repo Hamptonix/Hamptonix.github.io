@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gatsby Derby</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{width:100%;height:100%;background:#0d0902;display:flex;align-items:center;justify-content:center;}
+  body{font-family:'Playfair Display',serif;}
+  #game-wrap{width:680px;height:600px;background:#1a1006;position:relative;overflow:hidden;flex-shrink:0;}
+  #title-screen{position:absolute;inset:0;background:#0d0902;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .title-ornament{color:#c9a84c;font-size:28px;letter-spacing:8px;margin-bottom:4px;}
+  .game-title{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#c9a84c;text-align:center;line-height:1;letter-spacing:2px;}
+  .game-subtitle{font-family:'Libre Baskerville',serif;color:#a07830;font-size:14px;letter-spacing:6px;text-transform:uppercase;margin:8px 0 24px;}
+  .art-deco-line{width:300px;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:10px auto;}
+  .player-info{display:flex;gap:50px;margin:18px 0 22px;}
+  .pi-box{text-align:center;padding:10px 18px;border:1px solid #c9a84c44;}
+  .pi-name{font-size:20px;font-weight:700;}
+  .pi-detail{font-size:11px;color:#a07830;letter-spacing:3px;text-transform:uppercase;margin-top:4px;}
+  .pi-keys{margin-top:6px;font-size:12px;color:#c9a84c88;}
+  .start-btn{background:transparent;border:2px solid #c9a84c;color:#c9a84c;font-family:'Playfair Display',serif;font-size:18px;letter-spacing:4px;padding:12px 44px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;margin-top:6px;}
+  .start-btn:hover{background:#c9a84c;color:#0d0902;}
+  .vs-text{font-size:14px;color:#c9a84c66;letter-spacing:4px;align-self:center;}
+  #game-container{display:none;width:100%;position:relative;}
+  canvas{display:block;width:100%;}
+  #game-over{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(13,9,2,0.94);align-items:center;justify-content:center;flex-direction:column;z-index:50;padding:20px;}
+  .go-title{font-size:38px;font-weight:900;color:#c9a84c;letter-spacing:4px;margin-bottom:6px;text-align:center;}
+  .go-winner{font-size:20px;color:#f5f0e0;margin-bottom:4px;text-align:center;}
+  .go-daisy{font-size:13px;color:#c9a84c99;letter-spacing:2px;margin-bottom:16px;text-align:center;font-style:italic;max-width:360px;}
+  .go-scores{display:flex;gap:36px;margin:14px 0 22px;}
+  .go-score-box{text-align:center;padding:10px 22px;border:1px solid #c9a84c44;}
+  .go-score-name{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#a07830;}
+  .go-score-val{font-size:34px;font-weight:900;margin-top:4px;}
+  .daisy-svg{margin:8px 0 4px;}
+</style>
+</head>
+<body>
+<div id="game-wrap">
+  <div id="title-screen">
+    <div class="title-ornament">◆ ◇ ◆</div>
+    <div class="game-title">THE GATSBY<br>DERBY</div>
+    <div class="game-subtitle">A Grand Competition of Speed &amp; Style</div>
+    <div class="art-deco-line"></div>
+    <div class="player-info">
+      <div class="pi-box">
+        <div class="pi-name" style="color:#f5c842;">GATSBY</div>
+        <div class="pi-detail">Yellow Roadster</div>
+        <div class="pi-keys">W A S D</div>
+      </div>
+      <div class="vs-text">— VS —</div>
+      <div class="pi-box">
+        <div class="pi-name" style="color:#4a6dd8;">TOM</div>
+        <div class="pi-detail">Navy Speedster</div>
+        <div class="pi-keys">↑ ← ↓ →</div>
+      </div>
+    </div>
+    <div class="art-deco-line"></div>
+    <button class="start-btn" id="startBtn">Begin the Race</button>
+    <div style="font-size:11px;color:#c9a84c33;margin-top:14px;letter-spacing:2px;">AVOID OBSTACLES · WIN DAISY'S HEART</div>
+  </div>
+
+  <div id="game-container">
+    <canvas id="gc"></canvas>
+    <div id="game-over">
+      <div class="title-ornament">◆ ◇ ◆</div>
+      <div class="go-title">RACE OVER</div>
+      <div class="go-winner" id="goWinner"></div>
+      <div class="daisy-svg" id="daisySvg"></div>
+      <div class="go-daisy" id="goDaisy"></div>
+      <div class="art-deco-line" style="margin:10px auto;width:260px;"></div>
+      <div class="go-scores">
+        <div class="go-score-box">
+          <div class="go-score-name">Gatsby</div>
+          <div class="go-score-val" style="color:#f5c842;" id="goScoreG">0</div>
+        </div>
+        <div class="go-score-box">
+          <div class="go-score-name">Tom</div>
+          <div class="go-score-val" style="color:#4a6dd8;" id="goScoreT">0</div>
+        </div>
+      </div>
+      <button class="start-btn" id="restartBtn">Race Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const titleScreen = document.getElementById('title-screen');
+const gameContainer = document.getElementById('game-container');
+const gameOverEl = document.getElementById('game-over');
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+
+const W = 680, H = 560;
+canvas.width = W; canvas.height = H;
+
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, type, dur, vol, delay=0) {
+  try {
+    const ac = getAudio();
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, ac.currentTime + delay);
+    g.gain.linearRampToValueAtTime(vol, ac.currentTime + delay + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + delay + dur);
+    o.start(ac.currentTime + delay);
+    o.stop(ac.currentTime + delay + dur + 0.05);
+  } catch(e){}
+}
+function playCrash() {
+  try {
+    const ac = getAudio();
+    const buf = ac.createBuffer(1, ac.sampleRate * 0.6, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(d.length*0.3)) * 0.6;
+    const src = ac.createBufferSource();
+    const g = ac.createGain(); g.gain.value = 0.5;
+    src.buffer = buf; src.connect(g); g.connect(ac.destination);
+    src.start();
+    playTone(80, 'sawtooth', 0.4, 0.15, 0.05);
+  } catch(e){}
+}
+function playWin() {
+  [523,659,784,1047].forEach((f,i) => playTone(f,'triangle',0.25,0.18,i*0.18));
+}
+function playStartBeep() {
+  [440,550,660].forEach((f,i) => playTone(f,'square',0.12,0.12,i*0.15));
+}
+function playScoreTick() {
+  playTone(880,'sine',0.04,0.06);
+}
+
+let keys = {};
+let gameRunning = false;
+let animId;
+
+const ROAD_W = 196;
+const LANE_L_CX = W * 0.22;
+const LANE_R_CX = W * 0.78;
+const MID_L = W * 0.44, MID_R = W * 0.56;
+
+let speed, dist, frameCount;
+let gatsbyAlive, tomAlive;
+let scoreG, scoreT, lastTickG, lastTickT;
+let roadOffset;
+let gatsby, tom;
+let obstacles = [];
+let particles = [];
+
+const OBS_TYPES = ['lamppost','rock','bush'];
+const SPAWN_INTERVAL_START = 140;
+let spawnTimer = 0;
+
+function initGame() {
+  speed = 3; dist = 0; frameCount = 0; spawnTimer = 0;
+  gatsbyAlive = true; tomAlive = true;
+  scoreG = 0; scoreT = 0; lastTickG = 0; lastTickT = 0;
+  roadOffset = 0;
+  obstacles = [];
+  particles = [];
+  gatsby = { x: LANE_L_CX, y: H * 0.72, w: 28, h: 48 };
+  tom    = { x: LANE_R_CX, y: H * 0.72, w: 28, h: 48 };
+  for (let i = 0; i < 3; i++) {
+    spawnObs('left',  -180 - i * 200);
+    spawnObs('right', -180 - i * 200);
+  }
+}
+
+function spawnObs(side, forcedY) {
+  const cx = side === 'left' ? LANE_L_CX : LANE_R_CX;
+  const halfRoad = ROAD_W / 2 - 24;
+  const x = cx + (Math.random() * 2 - 1) * halfRoad;
+  const y = forcedY !== undefined ? forcedY : -70;
+  const type = OBS_TYPES[Math.floor(Math.random() * OBS_TYPES.length)];
+  obstacles.push({ x, y, type, side });
+}
+
+function drawRoad(side) {
+  const cx = side === 'left' ? LANE_L_CX : LANE_R_CX;
+  const lx = cx - ROAD_W / 2;
+  ctx.fillStyle = '#2a2416';
+  ctx.fillRect(lx, 0, ROAD_W, H);
+  ctx.strokeStyle = '#3d3420';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([28, 24]);
+  ctx.lineDashOffset = -(roadOffset % 52);
+  for (let i = 1; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(lx + (ROAD_W/3)*i, 0);
+    ctx.lineTo(lx + (ROAD_W/3)*i, H);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.strokeStyle = '#c9a84c66';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(lx+ROAD_W, 0); ctx.lineTo(lx+ROAD_W, H); ctx.stroke();
+}
+
+function drawGrass() {
+  ctx.fillStyle = '#1a2a10';
+  ctx.fillRect(0, 0, W*0.1, H);
+  ctx.fillRect(W*0.9, 0, W*0.1, H);
+}
+
+function drawCenter() {
+  const cx = W / 2;
+  ctx.fillStyle = '#0d0902';
+  ctx.fillRect(MID_L, 0, MID_R - MID_L, H);
+  ctx.strokeStyle = '#c9a84c33';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(MID_L, 0); ctx.lineTo(MID_L, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(MID_R, 0); ctx.lineTo(MID_R, H); ctx.stroke();
+  ctx.strokeStyle = '#c9a84c18';
+  ctx.lineWidth = 1;
+  const step = 60, off = roadOffset % step;
+  for (let y = -off; y < H + step; y += step) {
+    ctx.beginPath(); ctx.moveTo(MID_L+4, y); ctx.lineTo(MID_R-4, y); ctx.stroke();
+  }
+  ctx.textAlign = 'center';
+  ctx.font = '700 9px serif';
+  ctx.fillStyle = '#f5c84277';
+  ctx.fillText('GATSBY', cx, H*0.35 - 22);
+  ctx.font = '900 28px "Playfair Display", serif';
+  ctx.fillStyle = gatsbyAlive ? '#f5c842' : '#f5c84255';
+  ctx.fillText(scoreG, cx, H*0.35);
+  ctx.fillStyle = '#c9a84c44';
+  ctx.font = '11px serif';
+  ctx.fillText('◆', cx, H*0.35 + 18);
+  ctx.font = '700 8px serif';
+  ctx.fillStyle = '#c9a84c55';
+  ctx.fillText('THE DERBY', cx, H*0.5 - 4);
+  ctx.fillText('◇', cx, H*0.5 + 8);
+  ctx.font = '700 9px serif';
+  ctx.fillStyle = '#4a6dd877';
+  ctx.fillText('TOM', cx, H*0.65 - 4);
+  ctx.font = '900 28px "Playfair Display", serif';
+  ctx.fillStyle = tomAlive ? '#4a6dd8' : '#4a6dd855';
+  ctx.fillText(scoreT, cx, H*0.65 + 18);
+  if (gatsbyAlive || tomAlive) {
+    ctx.font = '700 7px serif';
+    ctx.fillStyle = '#c9a84c33';
+    ctx.fillText(Math.floor(speed*18)+' MPH', cx, H - 14);
+  }
+}
+
+function drawObstacle(obs) {
+  const {x, y, type} = obs;
+  ctx.save(); ctx.translate(x, y);
+  if (type === 'lamppost') {
+    ctx.fillStyle = '#c9a84c';
+    ctx.fillRect(-3, -28, 6, 42);
+    ctx.fillRect(-16, -28, 32, 6);
+    ctx.fillRect(-18, -32, 4, 8);
+    ctx.fillRect(14, -32, 4, 8);
+    ctx.fillStyle = '#ffe97066';
+    ctx.beginPath(); ctx.arc(-16,-30,5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(16,-30,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fffbe8cc';
+    ctx.beginPath(); ctx.arc(-16,-30,2.5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(16,-30,2.5,0,Math.PI*2); ctx.fill();
+  } else if (type === 'rock') {
+    ctx.fillStyle = '#5a5248';
+    ctx.beginPath(); ctx.ellipse(0,4,18,11,0.3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#3d3a36';
+    ctx.beginPath(); ctx.ellipse(2,1,13,8,0.1,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#6a6358';
+    ctx.beginPath(); ctx.ellipse(-3,-2,6,4,-0.4,0,Math.PI*2); ctx.fill();
+  } else {
+    ctx.fillStyle = '#265018';
+    ctx.beginPath(); ctx.arc(-8,4,13,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(8,5,12,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0,-2,14,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#38711f';
+    ctx.beginPath(); ctx.arc(-5,-4,8,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(6,-3,7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#4e9428';
+    ctx.beginPath(); ctx.arc(0,-6,5,0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawCar(car, isGatsby, alive) {
+  if (!alive) return;
+  ctx.save(); ctx.translate(car.x, car.y);
+  const main = isGatsby ? '#f5c842' : '#1e3a8a';
+  const dark = isGatsby ? '#b89000' : '#0f1f5c';
+  ctx.fillStyle = main; ctx.strokeStyle = dark; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.roundRect(-10,-22,20,44,5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = dark;
+  ctx.fillRect(-10,-24,20,6); ctx.fillRect(-10,18,20,6);
+  ctx.fillStyle = '#a8d8f0bb';
+  ctx.beginPath(); ctx.roundRect(-7,-18,14,14,3); ctx.fill();
+  ctx.fillStyle = '#ffffff33'; ctx.fillRect(-6,-17,5,12);
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(-13,-16,4,12); ctx.fillRect(9,-16,4,12);
+  ctx.fillRect(-13,4,4,14); ctx.fillRect(9,4,4,14);
+  ctx.fillStyle = '#ffe97077';
+  ctx.beginPath(); ctx.ellipse(-5,-26,4,3,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(5,-26,4,3,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#ff333366';
+  ctx.beginPath(); ctx.ellipse(-5,26,4,3,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(5,26,4,3,0,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.life / p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+}
+
+function explodeAt(x, y, color) {
+  for (let i = 0; i < 20; i++) {
+    const a = Math.random()*Math.PI*2, s = 1+Math.random()*4;
+    particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:2+Math.random()*4,color,life:40,maxLife:40});
+  }
+}
+
+function collides(car, obs) {
+  return Math.abs(car.x - obs.x) < 17 && Math.abs(car.y - obs.y) < 24;
+}
+
+function update() {
+  roadOffset += speed; dist += speed; frameCount++;
+  speed = 3 + dist / 3500;
+  if (gatsbyAlive) {
+    const dx = (keys['d']?1:0)-(keys['a']?1:0);
+    const dy = (keys['s']?1:0)-(keys['w']?1:0);
+    gatsby.x += dx*3.5; gatsby.y += dy*2.5;
+    gatsby.x = Math.max(LANE_L_CX-ROAD_W/2+14, Math.min(LANE_L_CX+ROAD_W/2-14, gatsby.x));
+    gatsby.y = Math.max(28, Math.min(H-28, gatsby.y));
+    scoreG = Math.floor(dist/10);
+    if (scoreG !== lastTickG && scoreG % 5 === 0) { playScoreTick(); lastTickG = scoreG; }
+  }
+  if (tomAlive) {
+    const dx2 = (keys['ArrowRight']?1:0)-(keys['ArrowLeft']?1:0);
+    const dy2 = (keys['ArrowDown']?1:0)-(keys['ArrowUp']?1:0);
+    tom.x += dx2*3.5; tom.y += dy2*2.5;
+    tom.x = Math.max(LANE_R_CX-ROAD_W/2+14, Math.min(LANE_R_CX+ROAD_W/2-14, tom.x));
+    tom.y = Math.max(28, Math.min(H-28, tom.y));
+    scoreT = Math.floor(dist/10);
+    if (scoreT !== lastTickT && scoreT % 5 === 0) { playScoreTick(); lastTickT = scoreT; }
+  }
+  const spawnInterval = Math.max(70, SPAWN_INTERVAL_START - Math.floor(dist/300)*5);
+  spawnTimer++;
+  if (spawnTimer >= spawnInterval) {
+    spawnObs('left'); spawnObs('right'); spawnTimer = 0;
+  }
+  obstacles.forEach(o => { o.y += speed; });
+  obstacles = obstacles.filter(o => {
+    if (o.y > H + 80) return false;
+    if (gatsbyAlive && o.side==='left' && collides(gatsby,o)) {
+      explodeAt(gatsby.x, gatsby.y, '#f5c842'); playCrash(); gatsbyAlive = false;
+    }
+    if (tomAlive && o.side==='right' && collides(tom,o)) {
+      explodeAt(tom.x, tom.y, '#4a6dd8'); playCrash(); tomAlive = false;
+    }
+    return true;
+  });
+  particles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life--; });
+  particles = particles.filter(p => p.life > 0);
+  if (!gatsbyAlive && !tomAlive) endGame();
+}
+
+function draw() {
+  ctx.fillStyle = '#1a1006'; ctx.fillRect(0,0,W,H);
+  drawGrass(); drawRoad('left'); drawRoad('right'); drawCenter();
+  obstacles.forEach(drawObstacle);
+  drawParticles();
+  drawCar(gatsby, true, gatsbyAlive);
+  drawCar(tom, false, tomAlive);
+  if (!gatsbyAlive) {
+    ctx.save(); ctx.globalAlpha=0.65; ctx.fillStyle='#0d0902';
+    ctx.fillRect(LANE_L_CX-ROAD_W/2,0,ROAD_W,H); ctx.restore();
+    ctx.fillStyle='#f5c842'; ctx.font='bold 14px serif'; ctx.textAlign='center';
+    ctx.fillText('CRASHED', LANE_L_CX, H/2-8);
+    ctx.font='11px serif'; ctx.fillStyle='#f5c84288';
+    ctx.fillText('Score: '+scoreG, LANE_L_CX, H/2+10);
+  }
+  if (!tomAlive) {
+    ctx.save(); ctx.globalAlpha=0.65; ctx.fillStyle='#0d0902';
+    ctx.fillRect(LANE_R_CX-ROAD_W/2,0,ROAD_W,H); ctx.restore();
+    ctx.fillStyle='#4a6dd8'; ctx.font='bold 14px serif'; ctx.textAlign='center';
+    ctx.fillText('CRASHED', LANE_R_CX, H/2-8);
+    ctx.font='11px serif'; ctx.fillStyle='#4a6dd888';
+    ctx.fillText('Score: '+scoreT, LANE_R_CX, H/2+10);
+  }
+}
+
+function daisySvgStr(color) {
+  const petals = [];
+  for (let i = 0; i < 8; i++) {
+    const a = (i/8)*Math.PI*2;
+    const px = 20 + Math.cos(a)*14, py = 20 + Math.sin(a)*14;
+    petals.push(`<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="5" ry="8" fill="${color}88" transform="rotate(${(a*180/Math.PI).toFixed(1)},${px.toFixed(1)},${py.toFixed(1)})"/>`);
+  }
+  return `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">${petals.join('')}<circle cx="20" cy="20" r="7" fill="#f5e050"/><circle cx="20" cy="20" r="4" fill="#e8c820"/></svg>`;
+}
+
+function endGame() {
+  gameRunning = false;
+  cancelAnimationFrame(animId);
+  draw();
+  setTimeout(() => {
+    document.getElementById('goScoreG').textContent = scoreG;
+    document.getElementById('goScoreT').textContent = scoreT;
+    if (scoreG === scoreT) {
+      document.getElementById('goWinner').textContent = "A Dead Heat — It's a Tie!";
+      document.getElementById('goDaisy').textContent = "Daisy couldn't choose between them...";
+      document.getElementById('daisySvg').innerHTML = daisySvgStr('#c9a84c');
+    } else if (scoreG > scoreT) {
+      document.getElementById('goWinner').textContent = '🏆 Gatsby Wins the Derby!';
+      document.getElementById('goDaisy').textContent = '"You\'re worth the whole damn bunch put together." — Daisy is yours, old sport.';
+      document.getElementById('daisySvg').innerHTML = daisySvgStr('#f5c842');
+    } else {
+      document.getElementById('goWinner').textContent = '🏆 Tom Wins the Derby!';
+      document.getElementById('goDaisy').textContent = '"I never loved him." — Daisy returns to Tom after all.';
+      document.getElementById('daisySvg').innerHTML = daisySvgStr('#4a6dd8');
+    }
+    playWin();
+    gameOverEl.style.display = 'flex';
+  }, 700);
+}
+
+function loop() {
+  if (!gameRunning) return;
+  update(); draw();
+  animId = requestAnimationFrame(loop);
+}
+
+function startGame() {
+  getAudio(); playStartBeep();
+  titleScreen.style.display = 'none';
+  gameContainer.style.display = 'block';
+  gameOverEl.style.display = 'none';
+  initGame(); gameRunning = true; loop();
+}
+
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', () => {
+  gameOverEl.style.display = 'none';
+  initGame(); gameRunning = true; loop();
+});
+document.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('keyup', e => { keys[e.key] = false; });
+</script>
+</body>
+</html>
