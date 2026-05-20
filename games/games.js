@@ -1,6 +1,14 @@
 
 const GAMES = [
   {
+    title: "The Gatsby Derby",
+    tag: "Arcade",
+    desc: "My School English Final",
+    icon: "/assets/pick.webp",
+    url: "https://hamptonix.com/games/localgames/gatsbyderby.html",
+    category: "Arcade"
+  },
+  {
     title: "Mining Game",
     tag: "Simulator",
     desc: "I made this game with ai because I was bored, its pretty bad",
