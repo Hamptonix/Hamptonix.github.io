@@ -4,7 +4,7 @@ const GAMES = [
     title: "The Gatsby Derby",
     tag: "Arcade",
     desc: "My School English Final",
-    icon: "/assets/pick.webp",
+    icon: "/assets/gatsby.jpg",
     url: "https://hamptonix.com/games/localgames/gatsbyderby.html",
     category: "Arcade"
   },
