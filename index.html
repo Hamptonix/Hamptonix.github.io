@@ -301,7 +301,8 @@
       padding: 4px 12px; border-radius: 99px; white-space: nowrap;
     }
 
-    .tp-body-bottom { display: flex; justify-content: flex-end; margin-top: 14px; }
+    .tp-body-bottom { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-top: 14px; }
+    .tp-count { font-size: 0.85rem; font-weight: 600; color: var(--text-3); white-space: nowrap; }
 
     .tp-download-btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -509,6 +510,8 @@
      - thumbnail:   path/URL to a 640x480 preview image. Leave "" to show an empty placeholder slot.
      - downloadUrl: path/URL to the actual texture pack file (zip, etc). Leave "" while you don't have the file yet.
      - fileName:    the filename the browser should save the download as
+     - counterKey:  a unique id used to track this version's download count. Give every
+                     version its own value (e.g. "hamptonix-gd-tp-v1-0") so counts don't mix.
      Newest version should go first in the array — that's the order they render in. */
   const textureVersions = [
     {
@@ -516,11 +519,21 @@
       name: 'Hamptonix Texture Pack',
       desc: 'This is the first ever version of my texture pack, I will update it and make it look better in the future!',
       thumbnail: '/assets/texturepackv1.png',
-      downloadUrl: 'downloads/HamptonixTexturePackv1.zip',
-      fileName: 'HamptonixTexturePackv1.zip'
+      downloadUrl: '/downloads/HamptonixTexturePackv1.zip',
+      fileName: 'HamptonixTexturePackv1.zip',
+      counterKey: 'hamptonix-gd-tp-v1-0'
     }
-    // { version: 'v1.1', name: 'Hamptonix Texture Pack', desc: '', thumbnail: '', downloadUrl: '', fileName: 'hamptonix-texture-pack-v1.1.zip' },
+    // { version: 'v1.1', name: 'Hamptonix Texture Pack', desc: '', thumbnail: '', downloadUrl: '', fileName: 'hamptonix-texture-pack-v1.1.zip', counterKey: 'hamptonix-gd-tp-v1-1' },
   ];
+
+  // Free, no-signup hit counter service (https://countapi.mileshilliard.com)
+  // GET .../get/<key>  -> reads the current count without changing it
+  // GET .../hit/<key>  -> increments the count by 1 and returns the new value
+  const COUNTER_BASE = 'https://countapi.mileshilliard.com/api/v1';
+
+  function formatCount(n) {
+    return new Intl.NumberFormat().format(n);
+  }
 
   function renderTextureVersions() {
     const list = document.getElementById('tp-list');
@@ -537,7 +550,7 @@
 
       const hasFile = !!v.downloadUrl;
       const btnHTML = hasFile
-        ? `<a class="tp-download-btn" href="${v.downloadUrl}" download="${v.fileName || ''}">
+        ? `<a class="tp-download-btn" href="${v.downloadUrl}" download="${v.fileName || ''}" data-counter-key="${v.counterKey || ''}" onclick="hitCounter(this)">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
              Download
            </a>`
@@ -545,6 +558,10 @@
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
              Coming Soon
            </span>`;
+
+      const countHTML = v.counterKey
+        ? `<span class="tp-count" id="tp-count-${v.counterKey}">— downloads</span>`
+        : '';
 
       card.innerHTML = `
         <div class="tp-thumb">${thumbHTML}</div>
@@ -556,12 +573,42 @@
             </div>
             <div class="tp-version">${v.version}</div>
           </div>
-          <div class="tp-body-bottom">${btnHTML}</div>
+          <div class="tp-body-bottom">
+            ${countHTML}
+            ${btnHTML}
+          </div>
         </div>
       `;
 
       list.appendChild(card);
+
+      // Load the current count (read-only, doesn't increment) once the card is in the DOM
+      if (v.counterKey) {
+        fetch(`${COUNTER_BASE}/get/${v.counterKey}`)
+          .then(res => res.json())
+          .then(data => {
+            const el = document.getElementById(`tp-count-${v.counterKey}`);
+            if (el) el.textContent = `${formatCount(data.value || 0)} downloads`;
+          })
+          .catch(() => {
+            const el = document.getElementById(`tp-count-${v.counterKey}`);
+            if (el) el.textContent = '';
+          });
+      }
     });
+  }
+
+  function hitCounter(el) {
+    const key = el.getAttribute('data-counter-key');
+    if (!key) return;
+    // Fire-and-forget: don't block or delay the actual download.
+    fetch(`${COUNTER_BASE}/hit/${key}`)
+      .then(res => res.json())
+      .then(data => {
+        const countEl = document.getElementById(`tp-count-${key}`);
+        if (countEl) countEl.textContent = `${formatCount(data.value)} downloads`;
+      })
+      .catch(() => {});
   }
 
   renderTextureVersions();
