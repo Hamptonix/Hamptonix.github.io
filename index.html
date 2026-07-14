@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hamptonix | Home</title>
+  <title>Hamptonix</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/R0Pj0sp7/channels4-profile-removebg-preview-(2).png" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -258,6 +258,70 @@
     .about-text { font-size: 1.05rem; color: var(--text-2); line-height: 1.85; }
     .about-text strong { color: var(--text); font-weight: 600; }
 
+    /* ── TEXTURE PACK DOWNLOADS ── */
+    .tp-section { margin-top: 0; }
+    .tp-section-title {
+      font-size: 1.25rem; font-weight: 800; color: var(--text);
+      letter-spacing: -0.01em; margin-bottom: 14px;
+    }
+
+    .tp-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .tp-card {
+      display: flex; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .tp-thumb {
+      flex-shrink: 0; width: 220px; aspect-ratio: 4 / 3;
+      background: #eef1ed repeating-conic-gradient(#e4e8e2 0% 25%, #eef1ed 0% 50%) 0 0 / 24px 24px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; border-right: 1.5px solid var(--border);
+    }
+    .tp-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tp-thumb-placeholder {
+      font-size: 0.8rem; font-weight: 600; color: var(--text-3);
+      text-align: center; padding: 0 14px; line-height: 1.5;
+    }
+
+    .tp-body {
+      flex: 1; min-width: 0; padding: 16px 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    .tp-body-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .tp-name { font-size: 1.02rem; font-weight: 700; color: var(--text); }
+    .tp-desc { font-size: 0.88rem; color: var(--text-3); margin-top: 4px; }
+
+    .tp-version {
+      flex-shrink: 0; font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); background: var(--accent-pale);
+      border: 1.5px solid var(--accent-mid);
+      padding: 4px 12px; border-radius: 99px; white-space: nowrap;
+    }
+
+    .tp-body-bottom { display: flex; justify-content: flex-end; margin-top: 14px; }
+
+    .tp-download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      background: var(--accent); color: #fff;
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif; font-size: 0.92rem; font-weight: 700;
+      text-decoration: none; cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+      white-space: nowrap;
+    }
+    .tp-download-btn:hover { background: var(--accent-lt); border-color: var(--accent-lt); }
+    .tp-download-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    @media (max-width: 560px) {
+      .tp-card { flex-direction: column; }
+      .tp-thumb { width: 100%; border-right: none; border-bottom: 1.5px solid var(--border); }
+    }
+
     /* ── TOAST ── */
     .toast {
       position: fixed; bottom: 28px; left: 50%;
@@ -312,6 +376,11 @@
         <img src="/assets/gameiconnewblue.png" alt="" class="nav-icon" />
         Games
       </a>
+
+      <button class="nav-item" onclick="goPage('texturepacks', this)">
+        <img src="/assets/icon_1.png" alt="" class="nav-icon" />
+        Texture Packs
+      </button>
     </nav>
   </aside>
 
@@ -384,6 +453,18 @@
       </div>
     </div>
 
+    <!-- ── TEXTURE PACKS ── -->
+    <div class="page" id="page-texturepacks">
+      <div class="page-body">
+
+        <div class="tp-section">
+          <div class="tp-section-title">Hamptonix Geometry Dash Texture Pack</div>
+          <div class="tp-list" id="tp-list"><!-- version cards render here --></div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -393,6 +474,7 @@
   const PAGE_TITLES = {
     home: 'Profile',
     games: 'Games',
+    texturepacks: 'Texture Packs',
     directory: 'Directory',
     odycraft: 'OdyCraft'
   };
@@ -418,6 +500,71 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('overlay').classList.remove('visible');
   }
+
+  /* ── TEXTURE PACK VERSIONS ──
+     To add a new version, just add another object to this array.
+     - version:     text shown in the badge, top right, e.g. "v1.2"
+     - name:        title shown for that version's card
+     - desc:        short subtitle/description (optional, leave "" to omit)
+     - thumbnail:   path/URL to a 640x480 preview image. Leave "" to show an empty placeholder slot.
+     - downloadUrl: path/URL to the actual texture pack file (zip, etc). Leave "" while you don't have the file yet.
+     - fileName:    the filename the browser should save the download as
+     Newest version should go first in the array — that's the order they render in. */
+  const textureVersions = [
+    {
+      version: 'v1.0',
+      name: 'Hamptonix Texture Pack',
+      desc: 'This is the first ever version of my texture pack, I will update it and make it look better in the future!',
+      thumbnail: '/assets/texturepackv1.png',
+      downloadUrl: 'downloads/HamptonixTexturePackv1.zip',
+      fileName: 'HamptonixTexturePackv1.zip'
+    }
+    // { version: 'v1.1', name: 'Hamptonix Texture Pack', desc: '', thumbnail: '', downloadUrl: '', fileName: 'hamptonix-texture-pack-v1.1.zip' },
+  ];
+
+  function renderTextureVersions() {
+    const list = document.getElementById('tp-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    textureVersions.forEach(v => {
+      const card = document.createElement('div');
+      card.className = 'tp-card';
+
+      const thumbHTML = v.thumbnail
+        ? `<img src="${v.thumbnail}" alt="${v.name} thumbnail" />`
+        : `<div class="tp-thumb-placeholder">640×480<br>thumbnail</div>`;
+
+      const hasFile = !!v.downloadUrl;
+      const btnHTML = hasFile
+        ? `<a class="tp-download-btn" href="${v.downloadUrl}" download="${v.fileName || ''}">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+             Download
+           </a>`
+        : `<span class="tp-download-btn" style="opacity:.5; cursor:not-allowed; pointer-events:none;">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+             Coming Soon
+           </span>`;
+
+      card.innerHTML = `
+        <div class="tp-thumb">${thumbHTML}</div>
+        <div class="tp-body">
+          <div class="tp-body-top">
+            <div>
+              <div class="tp-name">${v.name}</div>
+              ${v.desc ? `<div class="tp-desc">${v.desc}</div>` : ''}
+            </div>
+            <div class="tp-version">${v.version}</div>
+          </div>
+          <div class="tp-body-bottom">${btnHTML}</div>
+        </div>
+      `;
+
+      list.appendChild(card);
+    });
+  }
+
+  renderTextureVersions();
 </script>
 </body>
 </html>
